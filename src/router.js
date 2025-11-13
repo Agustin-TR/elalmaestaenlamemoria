@@ -10,18 +10,17 @@ const routes = [
     { path: '/', component: Inicio  },
     
     /* ---- definición de las rutas activas ---- */
-    { path: '/inicio', component: Inicio  },
     { path: '/galeria', component: Galeria  },
     { path: '/header', component: Header  },
     { path: '/info', component: Info  },
 
     /* ------ definición del comportamiento del rutear para rutas no existentes ----- */
-    { path: '/:pathmatch(.*)*', redirect: '/inicio' }
+    { path: '/:pathmatch(.*)*', redirect: '/' }
 ]
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes // es igual a -> routes: routes
+    history: createWebHistory(import.meta.env.BASE_URL),
+    routes
 })
 
 export default router

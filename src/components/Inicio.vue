@@ -257,6 +257,7 @@ export default {
     width: 100%;
     height: 100vh;
     overflow: hidden; /* Mantiene el scroll dentro de .scroll-container */
+    background-color: black;
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
