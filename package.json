@@ -12,7 +12,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "deploy": "npm run build", 
-    "deploy-gh": "npm run build && gh-pages -d dist"
+    "copy-404": "copy dist\\index.html dist\\404.html",
+    "deploy-gh": "npm run build && npm run copy-404 && gh-pages -d dist"
   },
   "dependencies": {
     "boostrap": "^2.0.0",
