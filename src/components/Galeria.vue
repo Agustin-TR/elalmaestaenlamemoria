@@ -60,10 +60,11 @@ export default {
     name: "Galeria",
     data() {
         return {
-            poemas: dataPoemas, //esto las hace reactivas
+            poemas: dataPoemas, 
             fotografos: dataFotografos,
             activeContainer: null,
             tapTimeout: null,
+            BASE_URL: import.meta.env.BASE_URL, // variable de entorno url
         };
     },
     mounted() {
@@ -71,7 +72,13 @@ export default {
         this.setupTouchInteraction();
     },
     methods: {
-        // Método de utilidad para crear el mapa de búsqueda rápida
+        // método para prefijar la ruta base a la ruta de la imagen.
+        // Esto transforma 'img/casa.JPG' en '/elalmaestaenlamemoria/img/casa.JPG'
+        getImagePath(imagePath) {
+            const cleanedPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
+            return this.BASE_URL + cleanedPath;
+        },
+        //crea el mapa de búsqueda rápida
         crearFotografosMap() {
             return this.fotografos.reduce((map, fotografo) => {
                 map[fotografo.id] = fotografo;
@@ -80,10 +87,8 @@ export default {
         },
         // ---------- LÓGICA DE DOBLE TOQUE EN CELULAR ----------
         setupTouchInteraction() {
-            //Usamos this.$refs.galeriaRoot en lugar de this.$el ***
             const rootElement = this.$refs.galeriaRoot;
             
-            // Si el elemento raíz aún no está disponible (lo cual es raro después de mounted, pero posible), salimos
             if (!rootElement) return;
 
             const fotoContainers = rootElement.querySelectorAll('.foto'); 
@@ -92,7 +97,7 @@ export default {
             let tapTimeout = null;
             
             const isTouchDevice = window.matchMedia('(hover: none)').matches || 
-                                  ('ontouchstart' in window);
+                                     ('ontouchstart' in window);
 
             if (!isTouchDevice) {
                 return; 
@@ -144,7 +149,6 @@ export default {
         },
     },
     computed: {
-        // La propiedad computada principal para unir los datos
         galeriaItems() {
             // Creamos el mapa de fotógrafos
             const fotografosMap = this.crearFotografosMap(); 
@@ -160,7 +164,8 @@ export default {
                 return {
                     id: poema.id,
                     poema: poema.title, 
-                    src: poema.bg,
+                    // FUNCIÓN DE RUTA
+                    src: this.getImagePath(poema.bg),
                     fotografo: fotografoInfo.nombre,
                     instaHandle: fotografoInfo.instaHandle,
                     instaLink: fotografoInfo.instaLink,
@@ -169,8 +174,6 @@ export default {
         },
     },
 };
-
-
 </script>
 
 <style scoped>

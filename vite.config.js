@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
+//despues del push ejecutar npm run deploy-gh
 export default defineConfig({
 
   base: '/elalmaestaenlamemoria/', 
