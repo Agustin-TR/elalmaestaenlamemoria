@@ -7,7 +7,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 // https://vite.dev/config/
 export default defineConfig({
 
-  base: '/nombre-de-tu-repositorio/', 
+  base: '/elAlmaEstaEnLaMemoria/', 
 
   plugins: [
     vue(),
