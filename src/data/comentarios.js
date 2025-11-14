@@ -1,8 +1,8 @@
 export const dataComentarios = [
     {
         id: 1,
-        nombreUsuario: 'Elena R.',
-        comentario: 'Una colección que te toca el alma. "Escrituras efímeras infinitas" es mi favorito, la fusión de poesía y fotografía es sublime. ¡Felicidades al autor!'
+        nombreUsuario: 'Pauke',
+        comentario: 'Tengo el orgullo y la satisfacción más grande que es tener a mi autor favorito de mejor amigo. Te amo!'
     },
     {
         id: 2,
@@ -23,5 +23,10 @@ export const dataComentarios = [
         id: 5,
         nombreUsuario: 'Andrea B.',
         comentario: 'Simplemente hermoso. La composición visual y lírica es perfecta. Se lo regalé a una amiga y le fascinó. Es arte puro.'
-    }
+    },
+    {
+        id: 6,
+        nombreUsuario: 'Elena R.',
+        comentario: 'Una colección que te toca el alma. "Escrituras efímeras infinitas" es mi favorito, la fusión de poesía y fotografía es sublime. ¡Felicidades al autor!'
+    },
 ];

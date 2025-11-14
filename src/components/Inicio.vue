@@ -332,7 +332,7 @@ ul#itemList li {
     left: 50%;
     transform: translateX(-50%);
     background-color: rgba(0, 0, 0, 0.6);
-    padding: 1rem 2rem;
+    padding: 1rem 1rem;
     border-radius: 8px;
     color: #f5f5f5;
     font-style: italic;
