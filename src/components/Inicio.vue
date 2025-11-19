@@ -307,9 +307,8 @@ ul#itemList {
     padding: 0;
     margin: 0;
     width: 100%;
-    max-width: 800px;
-    padding-top: 50vh;
-    padding-bottom: 50vh; 
+    max-width: 1000px;
+    padding: 50vh 5vw 30vh 5vw; /*top - right - bottom - left*/
 }
 
 ul#itemList li.item-activo {
@@ -347,12 +346,6 @@ ul#itemList li.scroll-to-top-item h2 {
     line-height: 1;
 }
 
-/* El espaciador final es esencial para centrar el último elemento */
-.padding-bottom-spacer {
-    height: 5vh; 
-    width: 100%;
-}
-
 /* ========= DETALLE ========= */
 
 #detalle {
@@ -365,13 +358,15 @@ ul#itemList li.scroll-to-top-item h2 {
     color: #f5f5f5;
     font-style: italic;
     line-height: 1.6;
-    max-width: 80vw;
+    max-width: 100vw;
+    width: 70vw;
     z-index: 10;
     box-shadow: 0 5px 20px rgba(0,0,0,0.4);
     white-space: pre-line;
     opacity: 0; /*inicial*/
     transition: opacity 0.4s ease, top 0.3s ease;
     pointer-events: none;
+    margin: 0 0;
 }
 
 #detalle[style*="opacity: 1"] {

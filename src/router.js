@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from "vue-router"
 import Inicio from "./components/Inicio.vue"
 import Galeria from "./components/Galeria.vue"
 import Header from "./components/Header.vue"
-import Info from "./components/Info.vue"
+import Tienda from "./components/Tienda.vue"
 
 const routes = [
     /* ----- definición de la ruta raíz ---- */
@@ -12,7 +12,7 @@ const routes = [
     /* ---- definición de las rutas activas ---- */
     { path: '/galeria', component: Galeria  },
     { path: '/header', component: Header  },
-    { path: '/info', component: Info  },
+    { path: '/tienda', component: Tienda  },
 
     /* ------ definición del comportamiento del rutear para rutas no existentes ----- */
     { path: '/:pathmatch(.*)*', redirect: '/' }

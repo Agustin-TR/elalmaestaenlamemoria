@@ -29,7 +29,7 @@ const cambiarSeccion = (targetId) => {
    INICIO
   </a>
   
-  <a href="#" class="tab" :class="{ 'activo': props.seccionActiva === 'info' }" @click.prevent="cambiarSeccion('info')" data-section="info">
+  <a href="#" class="tab" :class="{ 'activo': props.seccionActiva === 'tienda' }" @click.prevent="cambiarSeccion('tienda')" data-section="tienda">
    TIENDA
   </a>
  </nav>

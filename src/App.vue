@@ -6,7 +6,7 @@
         <Header :seccion-activa="$route.path.substring(1)" @cambiar-seccion="handleCambiarSeccion" />
         <div class="content-container">
             <RouterView v-slot="{ Component }">
-                <Transition :name="animacionDireccion" mode="out-in">
+                <Transition :name="animacionDireccion">
                     <div :key="$route.path" class="router-view-wrapper">
                         <component :is="Component" />
                     </div>
@@ -21,7 +21,7 @@
 import Header from './components/Header.vue';
 import Preloader from './components/Preloader.vue';
 
-const ordenRutas = ["/galeria", "/inicio", "/info"];
+const ordenRutas = ["/galeria", "/inicio", "/tienda"];
 
 export default {
     name: "App",
@@ -31,8 +31,14 @@ export default {
     },
     data() {
         return {
-            ordenRutas: ordenRutas
+            ordenRutas: ordenRutas,
+            previousRoutePath: null,
         };
+    },
+    watch: {
+        '$route'(to, from) {
+            this.previousRoutePath = from.path;
+        }
     },
     methods: {
         // Función que maneja la navegación desde el componente Header.
@@ -41,37 +47,35 @@ export default {
         },
     },
     computed: {
-        // Propiedad computada que determina el nombre de la transición (ej. 'slide-up').
         animacionDireccion() {
-            // Accedemos al estado del historial directamente desde $router.options.history.state
-            const routerHistoryState = this.$router.options.history.state;
+            const currentPath = this.$route.path;
+            const previousPath = this.previousRoutePath; //watcher
 
-            // Si la aplicación acaba de cargar, no hay historial y no se anima.
-            if (!routerHistoryState.back) {
+            if (!previousPath) {
                 return 'no-animation';
             }
 
-            const currentPath = this.$route.path;
-            // Intentamos obtener la ruta previa del historial.
-            const previousPath = routerHistoryState.back ? routerHistoryState.back.split('?')[0] : '';
-
             const indexActual = this.ordenRutas.indexOf(currentPath);
+            // Aseguramos que la ruta anterior esté en nuestro orden definido.
             const indexPrevio = this.ordenRutas.indexOf(previousPath);
 
-            // Si la nueva ruta tiene un índice mayor, vamos hacia abajo/subiendo (slide-up).
+            if (indexActual === -1 || indexPrevio === -1) {
+                 return 'no-animation';
+            }
+            
             if (indexActual > indexPrevio) {
                 return 'slide-up';
             }
-            // Si la nueva ruta tiene un índice menor, vamos hacia arriba/bajando (slide-down).
             else if (indexActual < indexPrevio) {
                 return 'slide-down';
             }
 
-            return 'slide-default';
+            return 'no-animation'; // Si los índices son iguales o no hay cambio.
         },
     },
     mounted() {
-        // Nada adicional.
+        // Al montar, inicializamos la ruta previa con la ruta actual para que no anime.
+        this.previousRoutePath = this.$route.path;
     },
 };
 </script>
@@ -113,7 +117,6 @@ body,
     width: 100%;
     height: 100%;
     overflow-y: auto;
-    /* Permite el scroll dentro de cada sección (Inicio, Galeria, etc.). */
 }
 
 /* ------------------------------------------------ */
