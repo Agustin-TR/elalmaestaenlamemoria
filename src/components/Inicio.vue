@@ -15,6 +15,12 @@
               <h2>{{ item.title }}</h2>
             </div>
           </li>
+          
+          <li class="scroll-to-top-item" @click="scrollToTop">
+            <div class="item-content">
+              <h2><i class="bi bi-arrow-up"></i></h2>
+            </div>
+          </li>
         </ul>
       </div>
 
@@ -222,6 +228,13 @@ export default {
                 if (first) this.scrollToItem(first);
             }
         },
+        scrollToTop() {
+            this.$refs.scrollContainer?.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+            this.detalle.isVisible = false; 
+        },
     },
 
     mounted() {
@@ -319,9 +332,24 @@ ul#itemList li {
     pointer-events: none; /* No permite clicks a menos que esté activo */
 }
 
+/*Volver Arriba*/
+ul#itemList li.scroll-to-top-item {
+    pointer-events: all;
+    cursor: pointer;
+    color: #f5f5f5;
+    transition: color 0.3s ease;
+    filter: none;
+    margin: 8rem 0;
+}
+
+ul#itemList li.scroll-to-top-item h2 {
+    font-size: 5rem;
+    line-height: 1;
+}
+
 /* El espaciador final es esencial para centrar el último elemento */
 .padding-bottom-spacer {
-    height: 50vh; 
+    height: 5vh; 
     width: 100%;
 }
 

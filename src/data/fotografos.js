@@ -13,15 +13,15 @@ export const dataFotografos = [
     },
     { 
         id: 3, 
-        nombre: 'Franco Campanella', 
-        instaHandle: '@francocampanellaa', 
-        instaLink: 'google.com' 
+        nombre: 'Luana', 
+        instaHandle: '@', 
+        instaLink: ' ' 
     },
     { 
         id: 4, 
-        nombre: 'Franco Campanella', 
-        instaHandle: '@francocampanellaapedroo', 
-        instaLink: 'https://www.instagram.com/francocampanellaa'  
+        nombre: 'Maiten', 
+        instaHandle: '@maitengonzalezat', 
+        instaLink: 'https://www.instagram.com/maitengonzalezat'  
     },
     { 
         id: 5, 
