@@ -366,6 +366,9 @@ ul#itemList li.scroll-to-top-item h2 {
     opacity: 0; /*inicial*/
     transition: opacity 0.4s ease, top 0.3s ease;
     pointer-events: none;
+}
+
+p {
     margin: 0 0;
 }
 

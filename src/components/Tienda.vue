@@ -2,18 +2,46 @@
   <!-- Sección Pre-compra -->
   <section class="pantalla" id="info">
     <div class="libros m-5">
-      <div class="version">
-        <h3>Versión digital</h3>
-        <p>Disponible en formato PDF y EPUB. Incluye acceso anticipado a contenido adicional.</p>
-        <button class="btn-precompra">Pre-comprar</button>
-      </div>
+
       <div class="version">
         <h3>Versión impresa</h3>
+
+        <div class="foto-libro">
+          <img src='/img/libro.jpg' alt="libro" />
+        </div>
+
         <p>Edición limitada en papel reciclado, con sobrecubierta ilustrada. Envío internacional disponible.</p>
-        <button class="btn-precompra">Pre-comprar</button>
+        <button class="btn-precompra" @click="goToPayment('printed')">Quiero el mío</button>
       </div>
+      <div class="version">
+        <h3>Versión digital</h3>
+
+        <div class="foto-libro">
+          <img src='/img/libro.jpg' alt="libro" />
+        </div>
+
+        <p>Edición limitada en papel reciclado, con sobrecubierta ilustrada. Envío internacional disponible.</p>
+        <button class="btn-precompra" @click="goToPayment('digital')">Quiero el mío</button>
+      </div>
+
+      <!--<div class="version">
+        <h3>Versión impresa</h3>
+
+        <div class="foto-libro">
+          <img src='/img/libro.jpg' alt="libro" />
+        </div>
+
+        <p>Edición limitada en papel reciclado, con sobrecubierta ilustrada. Envío internacional disponible.</p>
+        <button class="btn-precompra" @click="goToStore('digital')">Quiero el mío</button>
+      </div>-->
     </div>
   </section>
+
+  <PaymentModal 
+    v-if="showModal && modalKey" 
+    :version-key="modalKey" 
+    @close="closeModal" 
+  />
 
   <!-- Sección Comentarios y Formulario -->
   <section class="pantalla section-comentarios" id="comentarios">
@@ -75,9 +103,13 @@
 
 <script>
 import { dataComentarios } from '@/data/comentarios.js';
+import PaymentModal from '@/components/PaymentModal.vue';
 
 export default {
-  name: 'Info',
+  name: 'Tienda',
+  components: {
+    PaymentModal,
+  },
   data() {
     return {
       comentarios: dataComentarios,
@@ -86,6 +118,8 @@ export default {
       formEmail: '',
       formComment: '',
       submissionMessage: null,
+      showModal: false,
+      modalKey: null,
     };
   },
   methods: {
@@ -118,13 +152,34 @@ export default {
           this.submissionMessage = 'No se pudo conectar con el servidor. Verificá tu conexión.';
         });
     },
+    /*goToStore(version) {
+      const storeUrls = {
+        digital: 'https://fuzhion.mitiendanube.com/productos/6xvelvet-bloom/',
+        printed: 'https://fuzhion.mitiendanube.com/productos/6xvelvet-bloom/',
+      };
 
+      const url = storeUrls[version];
+
+      if (url) {
+        window.open(url, '_blank');
+      } else {
+        console.error("URL de tienda no configurada para la versión:", version);
+      }
+    },*/
+    goToPayment(versionKey) {
+      this.modalKey = versionKey;
+      this.showModal = true;
+    },
+    closeModal() {
+      this.showModal = false;
+      this.modalKey = null;
+    },
   },
 };
 </script>
 
 <style scoped>
-/* ========= INFO (Estilos originales) ========= */
+/* ========= TIENDA (Estilos originales) ========= */
 
 .info-titulo {
   font-size: 2.5rem;
@@ -142,6 +197,23 @@ export default {
   column-gap: 4rem;
   justify-content: center;
   padding: 0rem;
+}
+
+.foto-libro {
+  width: 280px;
+  height: 300px;
+  margin: 1rem auto;
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.foto-libro img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
 }
 
 .version {

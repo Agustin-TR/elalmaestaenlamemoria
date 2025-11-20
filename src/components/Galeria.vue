@@ -323,14 +323,13 @@ export default {
 .creditos {
   margin-top: 3rem;
   padding: 2rem;
-  /*background-color: rgba(0,0,0,0.4);*/
   background-color: #005f6a;
   border-radius: 4px;
   color: #f0f0f0;
   max-width: 80%;
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 10vh;
+  margin-bottom: 22vh;
 }
 
 .creditos h2 {
