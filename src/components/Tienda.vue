@@ -5,35 +5,21 @@
 
       <div class="version">
         <h3>Versión impresa</h3>
-
         <div class="foto-libro">
           <img src='/img/libro.jpg' alt="libro" />
         </div>
-
-        <p>Edición limitada en papel reciclado, con sobrecubierta ilustrada. Envío internacional disponible.</p>
-        <button class="btn-precompra" @click="goToPayment('printed')">Quiero el mío</button>
-      </div>
-      <div class="version">
-        <h3>Versión digital</h3>
-
-        <div class="foto-libro">
-          <img src='/img/libro.jpg' alt="libro" />
-        </div>
-
         <p>Edición limitada en papel reciclado, con sobrecubierta ilustrada. Envío internacional disponible.</p>
         <button class="btn-precompra" @click="goToPayment('digital')">Quiero el mío</button>
       </div>
 
-      <!--<div class="version">
-        <h3>Versión impresa</h3>
-
+      <div class="version">
+        <h3>Versión digital</h3>
         <div class="foto-libro">
           <img src='/img/libro.jpg' alt="libro" />
         </div>
-
         <p>Edición limitada en papel reciclado, con sobrecubierta ilustrada. Envío internacional disponible.</p>
-        <button class="btn-precompra" @click="goToStore('digital')">Quiero el mío</button>
-      </div>-->
+        <button class="btn-precompra" @click="goToPayment('digital')">Quiero el mío</button>
+      </div>
     </div>
   </section>
 
@@ -152,20 +138,6 @@ export default {
           this.submissionMessage = 'No se pudo conectar con el servidor. Verificá tu conexión.';
         });
     },
-    /*goToStore(version) {
-      const storeUrls = {
-        digital: 'https://fuzhion.mitiendanube.com/productos/6xvelvet-bloom/',
-        printed: 'https://fuzhion.mitiendanube.com/productos/6xvelvet-bloom/',
-      };
-
-      const url = storeUrls[version];
-
-      if (url) {
-        window.open(url, '_blank');
-      } else {
-        console.error("URL de tienda no configurada para la versión:", version);
-      }
-    },*/
     goToPayment(versionKey) {
       this.modalKey = versionKey;
       this.showModal = true;
