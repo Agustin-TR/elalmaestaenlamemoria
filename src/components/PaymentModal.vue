@@ -30,6 +30,13 @@
                     <p class="modal-info">{{ content.info }}</p>
                     <p class="modal-transferencia mt-3">{{ content.transferencia }}</p>
                 </div>
+
+                <!-- Botón Mercado Pago -->
+                <div class="mp-button-container d-flex justify-content-center mb-3" v-if="content.alias">
+                    <button class="btn-mp" @click="goToMp(content.alias)">
+                        <img :src="getMpLogoPath()" alt="Mercado Pago" class="mp-icon" />
+                    </button>
+                </div>
             </div>
 
             <!-- Mensaje de copiado -->
@@ -38,23 +45,6 @@
                     <i class="bi bi-check-circle-fill"></i> Copiado
                 </span>
             </transition>
-
-            <!-- Bloque de Botones -->
-            <div class="d-flex justify-content-center mb-3 button-group">
-                <!-- Botón Mercado Pago -->
-                <div class="mp-button-container" v-if="content.alias">
-                    <button class="btn-mp" @click="goToMp(content.alias)">
-                        <img :src="getMpLogoPath()" alt="Mercado Pago" class="mp-icon" />
-                    </button>
-                </div>
-
-                <!-- Botón Ir a Confirmación 
-                <div class="center-button-container">
-                    <button class="btn-precompra btn-comentar" @click="goToConfirmation">
-                        Ir al formulario
-                    </button>
-                </div>-->
-            </div>
 
         </div>
     </div>
@@ -98,15 +88,6 @@ export default {
         },
     },
     methods: {
-        /*goToConfirmation() {
-            this.$emit('close');
-            if (this.$router) {
-                this.$router.push('/confirmacion');
-            } else {
-                console.warn('Vue Router no está disponible para la redirección. Emitir evento "confirmation-requested"');
-                this.$emit('confirmation-requested');
-            }
-        },*/
         async copiarAlias(texto) {
             if (!texto) return;
 
@@ -260,27 +241,21 @@ export default {
 }
 
 .modal-info {
-    font-size: 1rem;
+    font-size: 0.9rem;
     line-height: 1.6;
     color: #333;
     margin-bottom: 0;
+    text-align: center;
 }
 
 .modal-transferencia {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #777;
     font-style: italic;
     text-align: center;
 }
 
 /* BOTONES */
-.button-group {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin: 0vw;
-}
-
 .btn-comentar {
     color: #fff;
     padding: 0.9rem 1.2rem;
