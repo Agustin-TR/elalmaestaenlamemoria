@@ -4,50 +4,55 @@
             <button class="modal-close bi bi-x-circle" @click="$emit('close')"></button>
 
             <h3 class="modal-title">{{ content.title }}</h3>
-            
-            <h5 class="modal-alias">Alias: {{ content.alias }}</h5>
-            <h6 class="modal-name">Nombre: {{ content.nombre }}</h6>
 
-            </br>
-            <p class="modal-valor">{{content.valor }}</p>
-            <p class="modal-info">{{ content.info }}</p>
+            <div v-show="!showForm" class="modal-body">
+                
+                <h5 class="modal-alias">Alias: {{ content.alias }}</h5>
+                <h6 class="modal-name">Nombre: {{ content.nombre }}</h6>
+
+                </br>
+                <p class="modal-valor">{{ content.valor }}</p>
+                <p class="modal-info">{{ content.info }}</p>
+            </div>
 
             <!-- Botón envío de comprobante -->
-        <div class="center-button-container m-3">
-            <button class="btn-precompra btn-comentar" @click="showForm = !showForm">
-                {{ showForm ? 'Ocultar Formulario' : 'Enviar datos' }}
-            </button>
+            <div class="center-button-container m-3">
+                <button class="btn-precompra btn-comentar" @click="showForm = !showForm">
+                    {{ showForm ? 'Ocultar Formulario' : 'Enviar datos' }}
+                </button>
+            </div>
+
+            <!-- Formulario de Contacto -->
+            <div v-if="showForm" class="contact-form-container mb-2">
+
+                <form class="contact-form" @submit.prevent="submitForm" action="https://formspree.io/f/xgvrvrrr"
+                    method="POST">
+
+                    <p class="modal-info">Si ya abonaste, completá tus datos y a la brevedad me voy a estar
+                        comunicando con vos para
+                        contarte sobre los siguentes pasos para que recibas: <br><strong>"El alma está en la memoria"</strong></p>
+
+                    <p>Muchas gracias por tu compra!!!</p>
+
+                    <div class="form-group">
+                        <label for="name">Nombre</label>
+                        <input type="text" id="name" name="name" v-model="formName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" v-model="formEmail"
+                            placeholder="ejemplo@correo.com">
+                    </div>
+
+                    <button type="submit" class="btn-submit">Enviar formulario</button>
+
+                    <p v-if="submissionMessage" class="submission-message">{{ submissionMessage }}</p>
+
+                </form>
+            </div>
         </div>
 
-        <!-- Formulario de Contacto -->
-        <div v-if="showForm" class="contact-form-container mb-2">
-
-            <form class="contact-form" @submit.prevent="submitForm" action="https://formspree.io/f/xgvrvrrr"
-                method="POST">               
-
-                <p class="modal-info">Si ya abonaste, completá tus datos que a la brevedad me voy a estar comunicando con vos para 
-                    contarte sobre los siguentes pasos para que recibas "El alma está en la memoria"</p>
-                
-                <p>Muchas gracias por tu compra!!!</p>
-
-                <div class="form-group">
-                    <label for="name">Nombre</label>
-                    <input type="text" id="name" name="name" v-model="formName" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" v-model="formEmail" placeholder="ejemplo@correo.com">
-                </div>
-
-                <button type="submit" class="btn-submit">Enviar formulario</button>
-
-                <p v-if="submissionMessage" class="submission-message">{{ submissionMessage }}</p>
-
-            </form>
-        </div>
-        </div>
-        
     </div>
 </template>
 
@@ -71,7 +76,7 @@ export default {
                     alias: 'agustin.t.rojas',
                     nombre: 'Agustin Tomas Rojas',
                     valor: 'El valor del libro es de: $30.000',
-                    info: 'El pago se realiza mediante Mercado Pago. Luego me comunico por email para coordinar el envío del libro.',
+                    info: 'El pago se realiza mediante Mercado Pago. Luego de enviar tus datos por el formulario, te va a llegar un email para coordinar el envío del libro.',
                 },
                 printed: {
                     title: '📦 Pre-compra Versión Impresa',
@@ -203,108 +208,108 @@ export default {
 
 /* Centrado del botón de comentario */
 .center-button-container {
-  width: 100%;
-  text-align: center;
-  margin-top: -2rem;
+    width: 100%;
+    text-align: center;
+    margin-top: -2rem;
 }
 
 .btn-comentar {
-  color: #fff;
-  padding: 0.8rem 1rem;
-  font-size: 0.8rem;
-  border-radius: 8px;
-  background-color: #005f6a;
-  box-shadow: 0 4px 10px rgba(0, 95, 106, 0.4);
-  display: flex;
+    color: #fff;
+    padding: 0.8rem 1rem;
+    font-size: 0.8rem;
+    border-radius: 8px;
+    background-color: #005f6a;
+    box-shadow: 0 4px 10px rgba(0, 95, 106, 0.4);
+    display: flex;
 }
 
 .btn-comentar:hover {
-  background-color: #003f48;
+    background-color: #003f48;
 }
 
 
 /*FORMULARIO*/
 .contact-form-container {
-  width: 100%;
-  max-width: 600px;
-  padding: 1rem;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  border: 1px solid #005f6a;
+    width: 100%;
+    max-width: 600px;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid #005f6a;
 }
 
 .contact-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .form-title {
-  font-size: 1.8rem;
-  color: #005f6a;
-  margin-bottom: 0.5rem;
-  text-align: center;
+    font-size: 1.8rem;
+    color: #005f6a;
+    margin-bottom: 0.5rem;
+    text-align: center;
 }
 
 .form-title2 {
-  font-size: 1.5rem;
-  color: #005f6a;
-  margin-bottom: 0.5rem;
-  text-align: center;
+    font-size: 1.5rem;
+    color: #005f6a;
+    margin-bottom: 0.5rem;
+    text-align: center;
 }
 
 .form-group {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-group label {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #333;
-  font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-size: 0.95rem;
 }
 
 .form-group input,
 .form-group textarea {
-  padding: 0.8rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
-  transition: border-color 0.3s, box-shadow 0.3s;
+    padding: 0.8rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
-  border-color: #005f6a;
-  box-shadow: 0 0 0 3px rgba(0, 95, 106, 0.2);
-  outline: none;
+    border-color: #005f6a;
+    box-shadow: 0 0 0 3px rgba(0, 95, 106, 0.2);
+    outline: none;
 }
 
 .form-group textarea {
-  resize: vertical;
+    resize: vertical;
 }
 
 .btn-submit {
-  background-color: #005f6a;
-  color: #fff;
-  border: none;
-  padding: 0.6rem 1rem;
-  font-size: 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+    background-color: #005f6a;
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .submission-message {
-  padding: 1rem;
-  margin-top: 1rem;
-  border-radius: 6px;
-  background-color: #e6ffe6;
-  color: #005f6a;
-  font-weight: bold;
-  text-align: center;
-  border: 1px solid #005f6a;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 6px;
+    background-color: #e6ffe6;
+    color: #005f6a;
+    font-weight: bold;
+    text-align: center;
+    border: 1px solid #005f6a;
 }
 </style>
