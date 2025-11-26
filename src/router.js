@@ -4,6 +4,7 @@ import Inicio from "./components/Inicio.vue"
 import Galeria from "./components/Galeria.vue"
 import Header from "./components/Header.vue"
 import Tienda from "./components/Tienda.vue"
+import ConfirmacionPago from "./components/ConfirmacionPago.vue"
 
 const routes = [
     /* ----- definición de la ruta raíz ---- */
@@ -13,6 +14,7 @@ const routes = [
     { path: '/galeria', component: Galeria  },
     { path: '/header', component: Header  },
     { path: '/tienda', component: Tienda  },
+     { path: '/confirmacion', component: ConfirmacionPago, name: 'confirmacion' }, 
 
     /* ------ definición del comportamiento del rutear para rutas no existentes ----- */
     { path: '/:pathmatch(.*)*', redirect: '/' }

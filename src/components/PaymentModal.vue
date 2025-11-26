@@ -5,12 +5,10 @@
 
             <h3 class="modal-title">{{ content.title }}</h3>
 
-            <div v-show="!showForm" class="modal-body">
-
+                <h6 class="modal-tienda">Tienda: {{ content.tienda }}</h6>
                 <h5 class="modal-alias">
                     Alias: {{ content.alias }}
-
-                    <i class="bi bi-copy ms-2" style="cursor: pointer;" @click="copiarAlias(content.alias)"
+                   <i class="bi bi-copy ms-2" style="cursor: pointer;" @click="copiarAlias(content.alias)"
                         title="Copiar alias"></i>
                 </h5>
                 <transition name="fade">
@@ -24,17 +22,9 @@
                 </br>
                 <p class="modal-valor">{{ content.valor }}</p>
                 <p class="modal-info">{{ content.info }}</p>
-            </div>
+            
 
-            <div class="d-flex justify-content-center gap-3 mt-4 mb-3">
-
-                <div class="center-button-container">
-                    <!-- Envío de datos -->
-                    <button class="btn-enviar-datos" @click="showForm = !showForm">
-                        {{ showForm ? 'Ocultar Formulario' : 'Enviar datos' }}
-                    </button>
-                </div>
-
+            <div class="d-flex justify-content-center mt-3 mb-2">
                 <!-- Mercado Pago -->
                 <div class="mp-button-container" v-if="content.alias">
                     <button class="btn-mp" @click="goToMp(content.alias)">
@@ -43,36 +33,6 @@
                 </div>
             </div>
 
-            <!-- Formulario de Contacto -->
-            <div v-if="showForm" class="contact-form-container mb-2">
-
-                <form class="contact-form" @submit.prevent="submitForm" action="https://formspree.io/f/xgvrvrrr"
-                    method="POST">
-
-                    <p class="modal-info">Si ya abonaste, completá tus datos y a la brevedad me voy a estar
-                        comunicando con vos para
-                        contarte sobre los siguentes pasos para que recibas: <br><strong>"El alma está en la
-                            memoria"</strong></p>
-
-                    <p>Muchas gracias por tu compra!!!</p>
-
-                    <div class="form-group">
-                        <label for="name">Nombre</label>
-                        <input type="text" id="name" name="name" v-model="formName" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" v-model="formEmail"
-                            placeholder="ejemplo@correo.com">
-                    </div>
-
-                    <button type="submit" class="btn-submit">Enviar formulario</button>
-
-                    <p v-if="submissionMessage" class="submission-message">{{ submissionMessage }}</p>
-
-                </form>
-            </div>
         </div>
 
     </div>
@@ -96,19 +56,16 @@ export default {
                 digital: {
                     title: '🛒 Ya casi es tuyo',
                     alias: 'agustin.t.rojas',
+                    tienda: 'El alma está en la memoria',
                     nombre: 'Agustin Tomas Rojas',
                     valor: 'El valor del libro es de: $30.000',
-                    info: 'El pago se realiza mediante Mercado Pago. Luego de enviar tus datos por el formulario, te va a llegar un email para coordinar el envío del libro.',
+                    info: 'El pago se realiza mediante Mercado Pago. Luego de abonar en la app, te va a redirigir a una pantalla de confirmación para que completes tus datos y poder coordinar el envío del libro.',
                 },
                 printed: {
                     title: '📦 Pre-compra Versión Impresa',
                     info: 'La pre-compra te asegura una edición limitada. Te contactaremos por email para coordinar el método de pago, el costo exacto del envío internacional y la fecha de entrega. ¡Gracias por tu interés!'
                 }
             },
-            showForm: false,
-            formName: '',
-            formEmail: '',
-            submissionMessage: null,
             mensajeVisible: false,
             BASE_URL: import.meta.env.BASE_URL,
         };
@@ -120,34 +77,6 @@ export default {
         },
     },
     methods: {
-        submitForm() {
-            const formData = new FormData();
-            formData.append('name', this.formName);
-            formData.append('email', this.formEmail);
-            formData.append('message', 'COMPRA');
-
-            fetch('https://formspree.io/f/xgvrvrrr', {
-                method: 'POST',
-                headers: { Accept: 'application/json' },
-                body: formData,
-            })
-                .then(response => {
-                    if (response.ok) {
-                        this.submissionMessage = '¡Gracias por tu compra! Hemos recibido tu información.';
-                        this.formName = '';
-                        this.formEmail = '';
-                        setTimeout(() => {
-                            this.submissionMessage = null;
-                            this.showForm = false;
-                        }, 4000);
-                    } else {
-                        this.submissionMessage = 'Hubo un error al enviar el formulario. Intentá nuevamente.';
-                    }
-                })
-                .catch(() => {
-                    this.submissionMessage = 'No se pudo conectar con el servidor. Verificá tu conexión.';
-                });
-        },
         async copiarAlias(texto) {
             if (!texto) return;
 
