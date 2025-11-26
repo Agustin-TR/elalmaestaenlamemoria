@@ -6,8 +6,19 @@
             <h3 class="modal-title">{{ content.title }}</h3>
 
             <div v-show="!showForm" class="modal-body">
-                
-                <h5 class="modal-alias">Alias: {{ content.alias }}</h5>
+
+                <h5 class="modal-alias">
+                    Alias: {{ content.alias }}
+
+                    <i class="bi bi-copy ms-2" style="cursor: pointer;" @click="copiarAlias(content.alias)"
+                        title="Copiar alias"></i>
+                </h5>
+                <transition name="fade">
+                    <span v-if="mensajeVisible" class="floating-msg">
+                        <i class="bi bi-check-circle-fill text-success"></i> Copiado
+                    </span>
+                </transition>
+
                 <h6 class="modal-name">Nombre: {{ content.nombre }}</h6>
 
                 </br>
@@ -15,11 +26,21 @@
                 <p class="modal-info">{{ content.info }}</p>
             </div>
 
-            <!-- Botón envío de comprobante -->
-            <div class="center-button-container m-3">
-                <button class="btn-precompra btn-comentar" @click="showForm = !showForm">
-                    {{ showForm ? 'Ocultar Formulario' : 'Enviar datos' }}
-                </button>
+            <div class="d-flex justify-content-center gap-3 mt-4 mb-3">
+
+                <div class="center-button-container">
+                    <!-- Envío de datos -->
+                    <button class="btn-enviar-datos" @click="showForm = !showForm">
+                        {{ showForm ? 'Ocultar Formulario' : 'Enviar datos' }}
+                    </button>
+                </div>
+
+                <!-- Mercado Pago -->
+                <div class="mp-button-container" v-if="content.alias">
+                    <button class="btn-mp" @click="goToMp(content.alias)">
+                        <img :src="getMpLogoPath()" alt="Mercado Pago" class="mp-icon" />
+                    </button>
+                </div>
             </div>
 
             <!-- Formulario de Contacto -->
@@ -30,7 +51,8 @@
 
                     <p class="modal-info">Si ya abonaste, completá tus datos y a la brevedad me voy a estar
                         comunicando con vos para
-                        contarte sobre los siguentes pasos para que recibas: <br><strong>"El alma está en la memoria"</strong></p>
+                        contarte sobre los siguentes pasos para que recibas: <br><strong>"El alma está en la
+                            memoria"</strong></p>
 
                     <p>Muchas gracias por tu compra!!!</p>
 
@@ -60,12 +82,12 @@
 
 export default {
     name: 'PaymentModal',
-    // 1. Recibimos la clave del padre
+    //Recibimos la clave del padre
     props: {
         versionKey: {
             type: String,
             required: true,
-            validator: (value) => ['digital', 'printed'].includes(value) // Opcional: validación
+            validator: (value) => ['digital', 'printed'].includes(value) // Opcional
         }
     },
     data() {
@@ -87,10 +109,12 @@ export default {
             formName: '',
             formEmail: '',
             submissionMessage: null,
+            mensajeVisible: false,
+            BASE_URL: import.meta.env.BASE_URL,
         };
     },
     computed: {
-        // 3. Propiedad computada que selecciona el contenido según la clave
+        //selecciona el contenido según la clave
         content() {
             return this.paymentInfo[this.versionKey];
         },
@@ -124,15 +148,41 @@ export default {
                     this.submissionMessage = 'No se pudo conectar con el servidor. Verificá tu conexión.';
                 });
         },
+        async copiarAlias(texto) {
+            if (!texto) return;
+
+            try {
+                await navigator.clipboard.writeText(texto);
+
+                this.mensajeVisible = true;
+
+                setTimeout(() => {
+                    this.mensajeVisible = false;
+                }, 1500);
+
+            } catch (err) {
+                console.error('Error al copiar', err);
+            }
+        },
+        async goToMp(alias) {
+            await this.copiarAlias(alias);
+
+            setTimeout(() => {
+                //redireccionamiento
+                window.open('https://mpago.li/2jL8GFk', '_blank');
+            }, 300);
+        },
+        getMpLogoPath() {
+            const imagePath = 'img/mercado-pago.png';
+            const cleanedPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
+            return this.BASE_URL + cleanedPath;
+        },
     }
 };
 </script>
 
 <style scoped>
-/* ======================================= */
-/* ESTILOS DEL MODAL (POP-UP) */
-/* ======================================= */
-
+/*POP UP*/
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -144,7 +194,6 @@ export default {
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    /* Asegura que esté por encima de todo */
     transition: opacity 0.3s ease;
 }
 
@@ -206,24 +255,25 @@ export default {
     }
 }
 
-/* Centrado del botón de comentario */
+
+/* Enviar datos */
 .center-button-container {
-    width: 100%;
     text-align: center;
-    margin-top: -2rem;
 }
 
-.btn-comentar {
+.btn-enviar-datos {
     color: #fff;
-    padding: 0.8rem 1rem;
-    font-size: 0.8rem;
+    padding: 0.95rem 1.3rem;
+    font-size: 0.9rem;
     border-radius: 8px;
     background-color: #005f6a;
-    box-shadow: 0 4px 10px rgba(0, 95, 106, 0.4);
-    display: flex;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
 }
 
-.btn-comentar:hover {
+.btn-enviar-datos:hover {
     background-color: #003f48;
 }
 
@@ -311,5 +361,86 @@ export default {
     font-weight: bold;
     text-align: center;
     border: 1px solid #005f6a;
+}
+
+
+/*COPIADO*/
+/* Contenedor necesario para que el 'absolute' funcione respecto al icono */
+.icon-container {
+    position: relative;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.click-icon {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.click-icon:hover {
+    color: #0d6efd;
+}
+
+.floating-msg {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #090909;
+    color: #f9f9f9;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    pointer-events: none;
+    margin-bottom: 5px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: all 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+    /* Empieza de abajo */
+}
+
+.fade-enter-to,
+.fade-leave-from {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    /* Termina en su posición original */
+}
+
+
+
+/* BOTON MERCADO PAGO */
+.mp-button-container {
+    display: inline-block;
+}
+
+.btn-mp {
+    padding: 0.1rem 0.1rem;
+    max-width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border: 1px solid black;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-mp:hover {
+    background: #979797;
+}
+
+.mp-icon {
+    width: 100%;
+    height: auto;
 }
 </style>

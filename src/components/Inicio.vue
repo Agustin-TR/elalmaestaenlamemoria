@@ -67,7 +67,6 @@ export default {
                 // Usamos el ID del contenedor para asegurar que el fondo se aplica
                 return { 
                     backgroundImage: `url(${bgUrl})`,
-                    // Asegurar que el fondo cubre todo el contenedor
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundAttachment: 'fixed'
@@ -101,7 +100,7 @@ export default {
             let closestIndex = null;
             let minDistance = Infinity;
             
-            // CORRECCIÓN: Usamos el centro del CONTENEDOR de scroll, no de la ventana
+            //Usamos el centro del CONTENEDOR de scroll, no de la ventana
             const containerRect = container.getBoundingClientRect();
             const containerCenterY = containerRect.top + container.clientHeight / 2;
 
