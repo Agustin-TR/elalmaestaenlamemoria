@@ -5,65 +5,95 @@
 
             <h3 class="modal-title">{{ content.title }}</h3>
 
-                <h6 class="modal-tienda">Tienda: {{ content.tienda }}</h6>
-                <h5 class="modal-alias">
-                    Alias: {{ content.alias }}
-                   <i class="bi bi-copy ms-2" style="cursor: pointer;" @click="copiarAlias(content.alias)"
-                        title="Copiar alias"></i>
-                </h5>
-                <transition name="fade">
-                    <span v-if="mensajeVisible" class="floating-msg">
-                        <i class="bi bi-check-circle-fill text-success"></i> Copiado
-                    </span>
-                </transition>
+            <!--Contenedor de Contenido con Scroll -->
+            <div class="modal-scrollable-content">
 
-                <h6 class="modal-name">Nombre: {{ content.nombre }}</h6>
+                <div class="modal-content-wrapper">
 
-                </br>
-                <p class="modal-valor">{{ content.valor }}</p>
-                <p class="modal-info">{{ content.info }}</p>
-            
+                    <!-- Bloque de Datos de la Tienda y Alias (Solo versión digital) -->
+                    <div v-if="versionKey === 'printed'" class="payment-details-block mb-4">
+                        <h6 class="detail-label">Tienda/Producto:</h6>
+                        <p class="detail-text bold">{{ content.tienda }}</p>
 
-            <div class="d-flex justify-content-center mt-3 mb-2">
-                <!-- Mercado Pago -->
+                        <h6 class="detail-label mt-3">Importe total:</h6>
+                        <p class="detail-text price">{{ content.valor }}</p>
+
+                        <div class="alias-container">
+                            <h6 class="detail-label">Alias de Mercado Pago:</h6>
+                            <p class="detail-text alias-code">
+                                {{ content.alias }}
+                                <i class="bi bi-copy ms-2 copy-icon" @click="copiarAlias(content.alias)"
+                                    title="Copiar alias"></i>
+                            </p>
+                        </div>
+                        <h6 class="detail-label mt-2">Titular de la cuenta:</h6>
+                        <p class="detail-text">{{ content.nombre }}</p>
+                    </div>
+
+                    <!-- Mensaje de información importante -->
+                    <div class="info-block">
+                        <p class="modal-info">{{ content.info }}</p>
+                        <p class="modal-transferencia mt-3">{{ content.transferencia }}</p>
+                    </div>
+
+                </div>
+            </div>
+            <!-- Fin del Contenedor de Contenido con Scroll -->
+
+            <!-- Mensaje de copiado -->
+            <transition name="fade">
+                <span v-if="mensajeVisible" class="floating-msg">
+                    <i class="bi bi-check-circle-fill"></i> Copiado
+                </span>
+            </transition>
+
+            <!-- Bloque de Botones -->
+            <div class="d-flex justify-content-center gap-3 mt-4 mb-3 button-group">
+                <!-- Botón Mercado Pago -->
                 <div class="mp-button-container" v-if="content.alias">
                     <button class="btn-mp" @click="goToMp(content.alias)">
                         <img :src="getMpLogoPath()" alt="Mercado Pago" class="mp-icon" />
                     </button>
                 </div>
+
+                <!-- Botón Ir a Confirmación 
+                <div class="center-button-container">
+                    <button class="btn-precompra btn-comentar" @click="goToConfirmation">
+                        Ir al formulario
+                    </button>
+                </div>-->
             </div>
 
         </div>
-
     </div>
 </template>
 
 <script>
-
 export default {
     name: 'PaymentModal',
-    //Recibimos la clave del padre
     props: {
         versionKey: {
             type: String,
             required: true,
-            validator: (value) => ['digital', 'printed'].includes(value) // Opcional
+            validator: (value) => ['digital', 'printed'].includes(value)
         }
     },
     data() {
         return {
             paymentInfo: {
-                digital: {
+                printed: {
                     title: '🛒 Ya casi es tuyo',
                     alias: 'agustin.t.rojas',
                     tienda: 'El alma está en la memoria',
                     nombre: 'Agustin Tomas Rojas',
-                    valor: 'El valor del libro es de: $30.000',
-                    info: 'El pago se realiza mediante Mercado Pago. Luego de abonar en la app, te va a redirigir a una pantalla de confirmación para que completes tus datos y poder coordinar el envío del libro.',
+                    valor: '$30.000 ARS',
+                    info: 'El pago se realiza mediante transferencia con Mercado Pago. Una vez abonado, serás redirigido a una pantalla de confirmación para que completes tus datos de contacto.',
+                    transferencia: 'También podes transferir y hablarme directamente por las redes sociales para coordinar el envío. (Por favor, recordá enviar el comprobante)'
                 },
-                printed: {
-                    title: '📦 Pre-compra Versión Impresa',
-                    info: 'La pre-compra te asegura una edición limitada. Te contactaremos por email para coordinar el método de pago, el costo exacto del envío internacional y la fecha de entrega. ¡Gracias por tu interés!'
+                digital: {
+                    title: '📦 Solicitud de compra (Digital)',
+                    info: 'Lo sentimos, esta versión no se encuentra disponible ¡Gracias por tu interés! Te recomiendo que consigas la versión impresa',
+                    //transferencia: 'Hacé click en "Ir al formulario" para completar tus datos de contacto y coordinar la pre-compra.'
                 }
             },
             mensajeVisible: false,
@@ -71,35 +101,59 @@ export default {
         };
     },
     computed: {
-        //selecciona el contenido según la clave
+        // selecciona el contenido según la clave
         content() {
             return this.paymentInfo[this.versionKey];
         },
     },
     methods: {
+        goToConfirmation() {
+            this.$emit('close');
+            if (this.$router) {
+                this.$router.push('/confirmacion');
+            } else {
+                console.warn('Vue Router no está disponible para la redirección. Emitir evento "confirmation-requested"');
+                this.$emit('confirmation-requested');
+            }
+        },
         async copiarAlias(texto) {
             if (!texto) return;
 
+            // API del Clipboard con fallback para compatibilidad
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                try {
+                    await navigator.clipboard.writeText(texto);
+                    this.mensajeVisible = true;
+                } catch (err) {
+                    console.error('Error al copiar (API):', err);
+                    this.copyFallback(texto);
+                }
+            } else {
+                this.copyFallback(texto);
+            }
+
+            setTimeout(() => { this.mensajeVisible = false; }, 1500);
+        },
+        copyFallback(texto) {
+            const textarea = document.createElement('textarea');
+            textarea.value = texto;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = 0;
+            document.body.appendChild(textarea);
+            textarea.select();
             try {
-                await navigator.clipboard.writeText(texto);
-
+                // Usar execCommand es menos seguro y obsoleto, pero funciona como fallback en algunos iframes
+                document.execCommand('copy');
                 this.mensajeVisible = true;
-
-                setTimeout(() => {
-                    this.mensajeVisible = false;
-                }, 1500);
-
-            } catch (err) {
-                console.error('Error al copiar', err);
+            } catch (e) {
+                console.error('Error al copiar (fallback):', e);
+            } finally {
+                document.body.removeChild(textarea);
             }
         },
         async goToMp(alias) {
-            await this.copiarAlias(alias);
-
-            setTimeout(() => {
-                //redireccionamiento
-                window.open('https://mpago.li/2jL8GFk', '_blank');
-            }, 300);
+            // Redirección al link de Mercado Pago
+            window.open('https://mpago.li/2jL8GFk', '_blank');
         },
         getMpLogoPath() {
             const imagePath = 'img/mercado-pago.png';
@@ -111,7 +165,7 @@ export default {
 </script>
 
 <style scoped>
-/*POP UP*/
+/* POP UP BASE */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -123,32 +177,39 @@ export default {
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    transition: opacity 0.3s ease;
 }
 
 .modal-container {
     background-color: #fff;
-    padding: 1.5rem;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.4);
+    padding: 2rem;
+    border-radius: 10px;
+    width: 95%;
+    max-width: 550px;
     position: relative;
     animation: slide-in 0.3s ease-out;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+
+/* Contenedor de contenido scrollable */
+.modal-scrollable-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+    margin-right: -5px;
 }
 
 .modal-close {
     position: absolute;
-    top: 10px;
+    top: 12px;
     right: 15px;
     border: none;
-    font-size: 2rem;
+    font-size: 1.8rem;
     cursor: pointer;
-    color: #333;
-    line-height: 1;
-    padding: 0;
-    transition: color 0.2s ease;
+    color: #777;
     background: none;
+    transition: color 0.2s ease;
 }
 
 .modal-close:hover {
@@ -157,193 +218,110 @@ export default {
 
 .modal-title {
     color: #005f6a;
-    font-size: 1.6rem;
-    margin-bottom: 1rem;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 0.5rem;
-}
-
-.modal-info {
-    font-size: 0.9rem;
-    line-height: 1.5;
-    color: #555;
-    margin-bottom: 0rem;
-}
-
-
-/* Animación para el modal */
-@keyframes slide-in {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-
-/* Enviar datos */
-.center-button-container {
-    text-align: center;
-}
-
-.btn-enviar-datos {
-    color: #fff;
-    padding: 0.95rem 1.3rem;
-    font-size: 0.9rem;
-    border-radius: 8px;
-    background-color: #005f6a;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-}
-
-.btn-enviar-datos:hover {
-    background-color: #003f48;
-}
-
-
-/*FORMULARIO*/
-.contact-form-container {
-    width: 100%;
-    max-width: 600px;
-    padding: 1rem;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    border: 1px solid #005f6a;
-}
-
-.contact-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.form-title {
     font-size: 1.8rem;
-    color: #005f6a;
-    margin-bottom: 0.5rem;
-    text-align: center;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    border-bottom: 3px solid #005f6a;
+    padding-bottom: 0.75rem;
+    text-align: left;
 }
 
-.form-title2 {
-    font-size: 1.5rem;
-    color: #005f6a;
-    margin-bottom: 0.5rem;
-    text-align: center;
+/* CONTENEDORES DE INFORMACIÓN */
+.payment-details-block {
+    background-color: #f4f8f9;
+    border-radius: 8px;
+    padding: 1.5rem;
+    border: 1px solid #070707;
 }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
+.detail-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 0.2rem;
+    text-transform: uppercase;
 }
 
-.form-group label {
+.detail-text {
+    font-size: 1.2rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
     color: #333;
-    font-size: 0.95rem;
+    margin-bottom: 0.8rem;
 }
 
-.form-group input,
-.form-group textarea {
-    padding: 0.8rem 1rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 1rem;
-    transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-    border-color: #005f6a;
-    box-shadow: 0 0 0 3px rgba(0, 95, 106, 0.2);
-    outline: none;
-}
-
-.form-group textarea {
-    resize: vertical;
-}
-
-.btn-submit {
-    background-color: #005f6a;
-    color: #fff;
-    border: none;
-    padding: 0.6rem 1rem;
-    font-size: 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.submission-message {
-    padding: 1rem;
-    margin-top: 1rem;
-    border-radius: 6px;
-    background-color: #e6ffe6;
+.detail-text.bold {
+    font-weight: 700;
     color: #005f6a;
-    font-weight: bold;
-    text-align: center;
-    border: 1px solid #005f6a;
 }
 
+.detail-text.price {
+    font-size: 1.1rem;
+    color: #495057;
+    font-weight: 750;
+}
 
-/*COPIADO*/
-/* Contenedor necesario para que el 'absolute' funcione respecto al icono */
-.icon-container {
-    position: relative;
+/* Alias */
+.alias-code {
     display: inline-block;
-    margin-left: 10px;
+    font-size: 1.1rem;
+    text-align: left;
 }
 
-.click-icon {
+.copy-icon {
     cursor: pointer;
+    color: #005f6a;
+    font-size: 1rem;
+    margin-left: 0.5rem;
     transition: color 0.2s;
 }
 
-.click-icon:hover {
-    color: #0d6efd;
+.copy-icon:hover {
+    color: #009ee3;
 }
 
-.floating-msg {
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #090909;
-    color: #f9f9f9;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 14px;
-    white-space: nowrap;
-    pointer-events: none;
-    margin-bottom: 5px;
+
+/* Bloque de Información General */
+.info-block {
+    padding: 1rem 0;
 }
 
-.fade-enter-active,
-.fade-leave-active {
-    transition: all 0.5s ease;
+.modal-info {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 0;
 }
 
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-    transform: translate(-50%, 10px);
-    /* Empieza de abajo */
+.modal-transferencia {
+    font-size: 0.9rem;
+    color: #777;
+    font-style: italic;
+    text-align: center;
 }
 
-.fade-enter-to,
-.fade-leave-from {
-    opacity: 1;
-    transform: translate(-50%, 0);
-    /* Termina en su posición original */
+/* BOTONES */
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
 }
 
+.btn-comentar {
+    color: #fff;
+    padding: 0.9rem 1.2rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    background-color: #005f6a;
+    box-shadow: 0 4px 10px rgba(0, 95, 106, 0.4);
+    border: none;
+    outline: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-comentar:hover {
+    background-color: #003f48;
+}
 
 
 /* BOTON MERCADO PAGO */
@@ -352,24 +330,101 @@ export default {
 }
 
 .btn-mp {
-    padding: 0.1rem 0.1rem;
-    max-width: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: #ffffff;
-    border: 1px solid black;
+    border: 1px solid #00000030;
     border-radius: 8px;
+    padding: 0.1rem 0.1rem;
+    max-width: 150px;
     cursor: pointer;
     transition: background 0.3s ease;
 }
 
 .btn-mp:hover {
-    background: #979797;
+    background: #f0f0f0;
 }
 
 .mp-icon {
     width: 100%;
     height: auto;
+    display: block;
+}
+
+/* Mensaje Flotante de Copiado */
+.floating-msg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1001;
+    transform: translate(-50%, -50px);
+    background-color: #00a651;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.floating-msg i {
+    color: #fff;
+    font-size: 1.1rem;
+    margin-right: 5px;
+}
+
+/* Transiciones */
+.fade-enter-active,
+.fade-leave-active {
+    transition: all 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+    transform: translate(-50%, 0);
+}
+
+.fade-enter-to,
+.fade-leave-from {
+    opacity: 1;
+    transform: translate(-50%, -50px);
+}
+
+/* REGLAS DE RESPONSIVIDAD PARA MÓVILES */
+@media (max-width: 600px) {
+    .modal-container {
+        padding: 1.25rem;
+        max-height: 85vh;
+    }
+
+    .modal-title {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .payment-details-block {
+        padding: 1rem;
+    }
+
+    .detail-text {
+        font-size: 1.1rem;
+    }
+
+    .alias-code {
+        font-size: 1.1rem;
+    }
+
+    .button-group {
+        margin-top: 1.25rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .btn-comentar {
+        font-size: 0.9rem;
+        padding: 0.7rem 1rem;
+    }
 }
 </style>

@@ -32,6 +32,11 @@
       <h2>Colaboradores</h2>
       <ul>
         <li>
+          <h3>Autor</h3>
+        </li>
+        <li>Agustin Rojas</li>
+        <br>
+        <li>
           <h3>Diseño y edición</h3>
         </li>
         <li>Paula KemPfert</li>
@@ -43,10 +48,6 @@
           <p>{{ f.nombre }}</p>
         </div>
 
-        <li>
-          <h3>Autor</h3>
-        </li>
-        <li>Agustin Rojas</li>
       </ul>
     </div>
   </div>

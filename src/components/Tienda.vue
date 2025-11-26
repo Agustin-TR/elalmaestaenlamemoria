@@ -9,7 +9,7 @@
           <img src='/img/libro.jpg' alt="libro" />
         </div>
         <p>Edición limitada en papel reciclado, con sobrecubierta ilustrada. Envío internacional disponible.</p>
-        <button class="btn-precompra" @click="goToPayment('digital')">Quiero el mío</button>
+        <button class="btn-compra" @click="goToPayment('printed')">Quiero el mío</button>
       </div>
 
       <div class="version">
@@ -17,8 +17,8 @@
         <div class="foto-libro">
           <img src='/img/libro.jpg' alt="libro" />
         </div>
-        <p>Edición limitada en papel reciclado, con sobrecubierta ilustrada. Envío internacional disponible.</p>
-        <button class="btn-precompra" @click="goToPayment('digital')">Quiero el mío</button>
+        <p>Próximamente</p>
+        <button class="btn-compra" @click="goToPayment('digital')">Quiero el mío</button>
       </div>
     </div>
   </section>
@@ -35,7 +35,7 @@
 
     <!-- Botón de contacto -->
     <div class="center-button-container m-5">
-      <button class="btn-precompra btn-comentar" @click="showForm = !showForm">
+      <button class="btn-compra btn-comentar" @click="showForm = !showForm">
         {{ showForm ? 'Ocultar Formulario' : 'Dejá tu comentario' }}
       </button>
     </div>
@@ -83,6 +83,8 @@
         <p class="comentario-texto">{{ comentario.comentario }}</p>
       </div>
     </div>
+
+    <button class="btn-compra mb-5" @click="goToPayment('printed')">Quiero el mío</button>
 
   </section>
 </template>
@@ -209,7 +211,7 @@ export default {
   margin-bottom: 1.5rem;
 }
 
-.btn-precompra {
+.btn-compra {
   background-color: #005f6a;
   color: #fff;
   border: none;
@@ -220,7 +222,7 @@ export default {
   transition: background-color 0.3s ease;
 }
 
-.btn-precompra:hover {
+.btn-compra:hover {
   background-color: #003f48;
 }
 
