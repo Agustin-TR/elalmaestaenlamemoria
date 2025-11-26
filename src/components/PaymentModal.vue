@@ -5,40 +5,32 @@
 
             <h3 class="modal-title">{{ content.title }}</h3>
 
-            <!--Contenedor de Contenido con Scroll -->
-            <div class="modal-scrollable-content">
+            <div class="modal-content-wrapper">
+                <div v-if="versionKey === 'printed'" class="payment-details-block">
+                    <h6 class="detail-label">Tienda/Producto:</h6>
+                    <p class="detail-text bold">{{ content.tienda }}</p>
 
-                <div class="modal-content-wrapper">
+                    <h6 class="detail-label mt-3">Importe total:</h6>
+                    <p class="detail-text price">{{ content.valor }}</p>
 
-                    <!-- Bloque de Datos de la Tienda y Alias (Solo versión digital) -->
-                    <div v-if="versionKey === 'printed'" class="payment-details-block mb-4">
-                        <h6 class="detail-label">Tienda/Producto:</h6>
-                        <p class="detail-text bold">{{ content.tienda }}</p>
-
-                        <h6 class="detail-label mt-3">Importe total:</h6>
-                        <p class="detail-text price">{{ content.valor }}</p>
-
-                        <div class="alias-container">
-                            <h6 class="detail-label">Alias de Mercado Pago:</h6>
-                            <p class="detail-text alias-code">
-                                {{ content.alias }}
-                                <i class="bi bi-copy ms-2 copy-icon" @click="copiarAlias(content.alias)"
-                                    title="Copiar alias"></i>
-                            </p>
-                        </div>
-                        <h6 class="detail-label mt-2">Titular de la cuenta:</h6>
-                        <p class="detail-text">{{ content.nombre }}</p>
+                    <div class="alias-container">
+                        <h6 class="detail-label">Alias de Mercado Pago:</h6>
+                        <p class="detail-text alias-code">
+                            {{ content.alias }}
+                            <i class="bi bi-copy ms-2 copy-icon" @click="copiarAlias(content.alias)"
+                                title="Copiar alias"></i>
+                        </p>
                     </div>
+                    <h6 class="detail-label mt-2">Titular de la cuenta:</h6>
+                    <p class="detail-text">{{ content.nombre }}</p>
+                </div>
 
-                    <!-- Mensaje de información importante -->
-                    <div class="info-block">
-                        <p class="modal-info">{{ content.info }}</p>
-                        <p class="modal-transferencia mt-3">{{ content.transferencia }}</p>
-                    </div>
-
+                <!-- Mensaje de información importante -->
+                <div class="info-block">
+                    <p class="modal-info">{{ content.info }}</p>
+                    <p class="modal-transferencia mt-3">{{ content.transferencia }}</p>
                 </div>
             </div>
-            <!-- Fin del Contenedor de Contenido con Scroll -->
 
             <!-- Mensaje de copiado -->
             <transition name="fade">
@@ -48,7 +40,7 @@
             </transition>
 
             <!-- Bloque de Botones -->
-            <div class="d-flex justify-content-center gap-3 mt-4 mb-3 button-group">
+            <div class="d-flex justify-content-center mb-3 button-group">
                 <!-- Botón Mercado Pago -->
                 <div class="mp-button-container" v-if="content.alias">
                     <button class="btn-mp" @click="goToMp(content.alias)">
@@ -85,7 +77,7 @@ export default {
                     title: '🛒 Ya casi es tuyo',
                     alias: 'agustin.t.rojas',
                     tienda: 'El alma está en la memoria',
-                    nombre: 'Agustin Tomas Rojas',
+                    nombre: 'Agustín Tomas Rojas',
                     valor: '$30.000 ARS',
                     info: 'El pago se realiza mediante transferencia con Mercado Pago. Una vez abonado, serás redirigido a una pantalla de confirmación para que completes tus datos de contacto.',
                     transferencia: 'También podes transferir y hablarme directamente por las redes sociales para coordinar el envío. (Por favor, recordá enviar el comprobante)'
@@ -93,7 +85,6 @@ export default {
                 digital: {
                     title: '📦 Solicitud de compra (Digital)',
                     info: 'Lo sentimos, esta versión no se encuentra disponible ¡Gracias por tu interés! Te recomiendo que consigas la versión impresa',
-                    //transferencia: 'Hacé click en "Ir al formulario" para completar tus datos de contacto y coordinar la pre-compra.'
                 }
             },
             mensajeVisible: false,
@@ -107,7 +98,7 @@ export default {
         },
     },
     methods: {
-        goToConfirmation() {
+        /*goToConfirmation() {
             this.$emit('close');
             if (this.$router) {
                 this.$router.push('/confirmacion');
@@ -115,45 +106,29 @@ export default {
                 console.warn('Vue Router no está disponible para la redirección. Emitir evento "confirmation-requested"');
                 this.$emit('confirmation-requested');
             }
-        },
+        },*/
         async copiarAlias(texto) {
             if (!texto) return;
 
-            // API del Clipboard con fallback para compatibilidad
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                try {
-                    await navigator.clipboard.writeText(texto);
-                    this.mensajeVisible = true;
-                } catch (err) {
-                    console.error('Error al copiar (API):', err);
-                    this.copyFallback(texto);
-                }
-            } else {
-                this.copyFallback(texto);
-            }
-
-            setTimeout(() => { this.mensajeVisible = false; }, 1500);
-        },
-        copyFallback(texto) {
-            const textarea = document.createElement('textarea');
-            textarea.value = texto;
-            textarea.style.position = 'fixed';
-            textarea.style.opacity = 0;
-            document.body.appendChild(textarea);
-            textarea.select();
             try {
-                // Usar execCommand es menos seguro y obsoleto, pero funciona como fallback en algunos iframes
-                document.execCommand('copy');
+                await navigator.clipboard.writeText(texto);
+
                 this.mensajeVisible = true;
-            } catch (e) {
-                console.error('Error al copiar (fallback):', e);
-            } finally {
-                document.body.removeChild(textarea);
+
+                setTimeout(() => {
+                    this.mensajeVisible = false;
+                }, 1500);
+
+            } catch (err) {
+                console.error('Error al copiar', err);
             }
         },
         async goToMp(alias) {
-            // Redirección al link de Mercado Pago
+            await this.copiarAlias(alias);
+            
+            setTimeout(() => {
             window.open('https://mpago.li/2jL8GFk', '_blank');
+            }, 300);
         },
         getMpLogoPath() {
             const imagePath = 'img/mercado-pago.png';
@@ -195,7 +170,6 @@ export default {
 /* Contenedor de contenido scrollable */
 .modal-scrollable-content {
     flex-grow: 1;
-    overflow-y: auto;
     padding-right: 5px;
     margin-right: -5px;
 }
@@ -303,8 +277,8 @@ export default {
 .button-group {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
     justify-content: center;
+    margin: 0vw;
 }
 
 .btn-comentar {
@@ -396,8 +370,8 @@ export default {
 /* REGLAS DE RESPONSIVIDAD PARA MÓVILES */
 @media (max-width: 600px) {
     .modal-container {
-        padding: 1.25rem;
-        max-height: 85vh;
+        padding: 1.2rem;
+        max-height: 80vh;
     }
 
     .modal-title {
@@ -418,7 +392,6 @@ export default {
     }
 
     .button-group {
-        margin-top: 1.25rem !important;
         margin-bottom: 0.5rem !important;
     }
 
