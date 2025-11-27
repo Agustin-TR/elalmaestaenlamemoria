@@ -373,4 +373,35 @@ p {
     pointer-events: all;
 }
 
+/*BARRA SCROLL COMPU*/
+@media (min-width: 1024px) {
+    
+    .scroll-container {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(115, 103, 103, 0.5) rgba(0, 0, 0, 0.3);
+    }
+
+    /* Habilitamos la barra en WebKit */
+    .scroll-container::-webkit-scrollbar {
+        display: block; 
+        width: 15px;
+    }
+
+    .scroll-container::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.3);
+    }
+
+    /*el scroll */
+    .scroll-container::-webkit-scrollbar-thumb {
+        background-color: rgba(115, 103, 103, 0.5);
+        border-radius: 6px;
+        border: 4px solid transparent;
+        background-clip: content-box;
+    }
+
+    .scroll-container::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(115, 103, 103, 0.9);
+    }
+}
+
 </style>

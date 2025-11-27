@@ -39,7 +39,7 @@
         <li>
           <h3>Diseño y edición</h3>
         </li>
-        <li>Paula KemPfert</li>
+        <li>Paula Kempfert</li>
         <br>
         <li>
           <h3>Fotografía</h3>

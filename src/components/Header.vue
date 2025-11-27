@@ -67,17 +67,12 @@ const props = defineProps({
 .floating-tabs {
  display: flex;
  gap: 0.5rem;
- /* Usamos 'justify-content: center' para mantener la alineación general */
  justify-content: center; 
  align-items: center;
  width: 100%;
 }
 
 .floating-tabs .tab {
- /* Esta es la clave: 
-  flex: 1 1 auto; -> Crece (1), se encoge (1), base automática.
-  Esto fuerza a los 3 elementos a ocupar 1/3 del espacio cada uno.
- */
  flex: 1 1 auto; 
  min-width: 0;
  max-width: 100%;
@@ -86,7 +81,7 @@ const props = defineProps({
  font-weight: bold;
  font-size: clamp(1.1rem, 2vw, 1.3rem);
  text-align: center;
- color: #ffffffa3;
+ color: #f5f5f5ba;
  text-decoration: none;
  background-color: rgba(0, 0, 0, 0.25);
  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
@@ -95,9 +90,6 @@ const props = defineProps({
  -webkit-backdrop-filter: blur(0.5rem);
  backdrop-filter: blur(0.5rem);
 }
-
-/* Eliminamos las reglas tab-central y tab-lateral */
-
 
 /* --- ESTILOS DE ESTADO --- */
 
@@ -121,13 +113,13 @@ const props = defineProps({
  }
 
  .floating-tabs .tab {
-  padding: 0.3rem 0.5rem; /* Ajuste para móvil */
+  padding: 0.3rem 0.5rem;
   font-size: clamp(1.0rem, 2.5vw, 1.1rem);
  }
 }
 
 
-/*Secciones animadas (Manteniendo estilos originales)*/
+/*Secciones animadas*/
 .pantalla {
  position: absolute;
  top: 0;
