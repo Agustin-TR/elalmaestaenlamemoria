@@ -15,7 +15,7 @@
               <h2>{{ item.title }}</h2>
             </div>
           </li>
-          
+
           <li class="scroll-to-top-item" @click="scrollToTop">
             <div class="item-content">
               <h2><i class="bi bi-arrow-up"></i></h2>
@@ -46,7 +46,7 @@ export default {
     name: "Inicio",
     data() {
         return {
-            itemsData: dataPoemas, 
+            itemsData: dataPoemas,
             activeItemIndex: null,
             detalle: {
                 isVisible: false,
@@ -55,16 +55,16 @@ export default {
             },
             itemRefs: [],
             scrollHandler: null, 
-            globalClickHandler: null, 
+            globalClickHandler: null,
             BASE_URL: import.meta.env.BASE_URL,
         };
     },
+
     computed: {
         backgroundStyle() {
             if (this.activeItemIndex !== null) {
                 const rawBgUrl = this.itemsData[this.activeItemIndex].bg;
                 const bgUrl = this.getImagePath(rawBgUrl);
-                // Usamos el ID del contenedor para asegurar que el fondo se aplica
                 return { 
                     backgroundImage: `url(${bgUrl})`,
                     backgroundSize: 'cover',
@@ -75,38 +75,69 @@ export default {
             return {};
         }
     },
+
     methods: {
+
+        /* ======================================================
+         *   PRELOAD DE IMÁGENES (IMPLEMENTACIÓN COMPLETA)
+         * ====================================================== */
+
         getImagePath(imagePath) {
             const cleanedPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
             return this.BASE_URL + cleanedPath;
         },
-        
-        setItemRef(el, index) {
-            // Limpia el array itemRefs al principio, solo si hay datos.
-            if (index === 0) {
-                 this.itemRefs = new Array(this.itemsData.length).fill(null);
+
+        preloadImagesInRange(start, end) {
+            const total = this.itemsData.length;
+
+            const s = Math.max(0, start);
+            const e = Math.min(end, total - 1);
+
+            for (let i = s; i <= e; i++) {
+                const raw = this.itemsData[i].bg;
+                const url = this.getImagePath(raw);
+
+                const img = new Image();
+                img.src = url; // Esto lo mete en caché automáticamente
             }
-            if (el) {
-                this.itemRefs[index] = el;
+        },
+
+        progressivePreload(index) {
+            if (index === null) return;
+            
+            // Precarga anticipada: actual ±2
+            const before = 2;
+            const after = 2;
+
+            const start = index - before;
+            const end = index + after;
+
+            this.preloadImagesInRange(start, end);
+        },
+
+        /* ======================================================
+         *   SISTEMA DE ITEMS + SCROLL
+         * ====================================================== */
+
+        setItemRef(el, index) {
+            if (el && !this.itemRefs.includes(el)) {
+                this.itemRefs.push(el);
             }
         },
 
         updateActiveItem() {
             const container = this.$refs.scrollContainer;
-            // Solo considerar refs que son elementos DOM
             const items = this.itemRefs.filter(Boolean); 
             if (!container || items.length === 0) return;
 
             let closestIndex = null;
             let minDistance = Infinity;
-            
-            //Usamos el centro del CONTENEDOR de scroll, no de la ventana
+
             const containerRect = container.getBoundingClientRect();
             const containerCenterY = containerRect.top + container.clientHeight / 2;
 
             items.forEach((itemEl, i) => {
                 const rect = itemEl.getBoundingClientRect();
-                // Distancia entre el centro del item y el centro del contenedor
                 const distance = Math.abs(rect.top + rect.height / 2 - containerCenterY);
 
                 if (distance < minDistance) {
@@ -117,12 +148,14 @@ export default {
 
             if (closestIndex !== this.activeItemIndex) {
                 this.activeItemIndex = closestIndex;
-                this.detalle.isVisible = false; 
+                this.detalle.isVisible = false;
+
+                // 🔥 PRELOAD PROGRESIVO
+                this.progressivePreload(closestIndex);
             }
         },
 
         handleScroll() {
-            // Cancelar el detalle al hacer scroll
             this.detalle.isVisible = false; 
 
             if (!this.scrollHandler) {
@@ -137,23 +170,20 @@ export default {
             const itemEl = event.currentTarget;
             const itemData = this.itemsData[itemIndex];
 
-            //Desplazar el item clickeado al centro si no es el activo
             if (itemIndex !== this.activeItemIndex) {
                  this.scrollToItem(itemEl);
-                 // Oculta el detalle por si acaso se estaba mostrando otro
                  this.detalle.isVisible = false;
-                 return; // Esperar a que termine el scroll y se active el item
+                 return;
             }
             
-            //Si es el activo, muestra/oculta el detalle
             const rect = itemEl.getBoundingClientRect();
             const newText = itemData.detalle.replace(/\\n/g, '\n');
             
             if (this.detalle.isVisible && this.detalle.text === newText) {
-                this.detalle.isVisible = false; // Ocultar
+                this.detalle.isVisible = false;
             } else {
                 this.detalle.text = newText;
-                this.detalle.top = `${rect.bottom + 15}px`; // Un poco más de espacio
+                this.detalle.top = `${rect.bottom + 15}px`;
                 this.detalle.isVisible = true; 
             }
         },
@@ -188,26 +218,24 @@ export default {
             
             const itemOffsetTop = container.scrollTop + (itemRect.top - containerRect.top);
             
-            // Centrar: itemOffsetTop - (mitad del contenedor) + (mitad del item)
-            const target = Math.max(0, Math.round(itemOffsetTop - (container.clientHeight / 2) + (itemEl.clientHeight / 2)));
+            const target = Math.max(
+                0,
+                Math.round(itemOffsetTop - (container.clientHeight / 2) + (itemEl.clientHeight / 2))
+            );
             
             container.scrollTo({ top: target, behavior: 'smooth' });
         },
 
         handleGlobalClick(event) {
-            // Exclusiones
             if (event.target.closest('#preloader')) return;
             if (event.target.closest('a, button, input, textarea, select')) return;
             if (event.target.closest('#detalle')) return;
 
-            // Si se hizo click en el item activo, ignorar (el handleItemClick lo gestiona)
             const clickedItem = event.target.closest('#itemList li');
             if (clickedItem && this.itemRefs[this.activeItemIndex] === clickedItem) return; 
             
-            // Ocultar el detalle si estaba visible y no se hace click sobre él
             this.detalle.isVisible = false;
 
-            // Lógica de scroll
             const activeItemEl = this.itemRefs[this.activeItemIndex] || this.findClosestToCenter();
             let nextItem = null;
             
@@ -225,6 +253,7 @@ export default {
                 if (first) this.scrollToItem(first);
             }
         },
+
         scrollToTop() {
             this.$refs.scrollContainer?.scrollTo({
                 top: 0,
@@ -235,15 +264,16 @@ export default {
     },
 
     mounted() {
-        // Asegúrate de que el contenedor de scroll exista antes de añadir el listener
         this.$refs.scrollContainer?.addEventListener('scroll', this.handleScroll, { passive: true });
         
         this.globalClickHandler = this.handleGlobalClick.bind(this);
         document.addEventListener('click', this.globalClickHandler);
 
-        // Inicializar tras el render para obtener posiciones
         nextTick(() => {
-             this.updateActiveItem();
+            this.updateActiveItem();
+
+            //PRELOAD INICIAL: primeras 3 imágenes
+            this.preloadImagesInRange(0, 2);
         });
     },
 
@@ -305,7 +335,7 @@ ul#itemList {
     margin: 0;
     width: 100%;
     max-width: 1000px;
-    padding: 50vh 5vw 30vh 5vw; /*top - right - bottom - left*/
+    padding: 45vh 5vw 30vh 5vw; /*top - right - bottom - left*/
 }
 
 ul#itemList li.item-activo {
@@ -361,7 +391,7 @@ ul#itemList li.scroll-to-top-item h2 {
     box-shadow: 0 5px 20px rgba(0,0,0,0.4);
     white-space: pre-line;
     opacity: 0; /*inicial*/
-    transition: opacity 0.4s ease, top 0.3s ease;
+    transition: opacity 0.4s ease, transform 0.3s ease;
     pointer-events: none;
 }
 

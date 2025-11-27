@@ -7,7 +7,7 @@ export const dataComentarios = [
     {
         id: 2,
         nombreUsuario: 'Martín L.',
-        comentario: 'La edición impresa es de una calidad excepcional. La forma en que se complementan las letras y las imágenes crea una experiencia inmersiva única. Un must-have.'
+        comentario: 'La impresión es de una calidad excepcional. La forma en que se complementan las letras y las imágenes crea una experiencia inmersiva única. Un must-have.'
     },
     {
         id: 3,
