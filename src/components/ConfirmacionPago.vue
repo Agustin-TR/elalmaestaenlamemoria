@@ -1,12 +1,11 @@
 <template>
-    <!-- La nueva página que el usuario ve después de pagar -->
     <section class="pantalla confirmacion-section">
         <div class="contact-form-container">
 
             <h2 class="form-title">¡Gracias por tu compra!</h2>
 
             <p class="info-text mb-4">
-                Si ya abonaste, completá tus datos a continuación. A la brevedad me voy a estar comunicando con vos
+                A continuación, completá tus datos y a la brevedad me voy a estar comunicando con vos
                 para coordinar el envío de tu copia de: <br>
                 <strong>"El alma está en la memoria"</strong>.
             </p>
@@ -118,12 +117,12 @@ export default {
 .contact-form-container {
     width: 100%;
     max-width: 500px;
-    padding: 2rem;
+    padding: 1rem;
     background-color: #fff;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     border-top: 5px solid #005f6a;
-    margin-top: 60px; 
+    margin-top: 50px; 
 }
 
 .contact-form {
@@ -133,7 +132,7 @@ export default {
 }
 
 .form-title {
-    font-size: 2rem;
+    font-size: 1.6rem;
     color: #005f6a;
     margin-bottom: 1rem;
     text-align: center;
@@ -154,7 +153,7 @@ export default {
 
 .form-group input {
     padding: 0.8rem 1rem;
-    border: 1px solid #ccc;
+    border: 1px solid #9c9c9c;
     border-radius: 6px;
     font-size: 1rem;
     transition: border-color 0.3s, box-shadow 0.3s;

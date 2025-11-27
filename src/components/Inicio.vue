@@ -79,7 +79,7 @@ export default {
     methods: {
 
         /* ======================================================
-         *   PRELOAD DE IMÁGENES (IMPLEMENTACIÓN COMPLETA)
+         *   PRELOAD DE IMÁGENES
          * ====================================================== */
 
         getImagePath(imagePath) {
@@ -105,9 +105,9 @@ export default {
         progressivePreload(index) {
             if (index === null) return;
             
-            // Precarga anticipada: actual ±2
-            const before = 2;
-            const after = 2;
+            // Precarga anticipada
+            const before = 1;
+            const after = 3;
 
             const start = index - before;
             const end = index + after;
@@ -150,7 +150,7 @@ export default {
                 this.activeItemIndex = closestIndex;
                 this.detalle.isVisible = false;
 
-                // 🔥 PRELOAD PROGRESIVO
+                //PRELOAD PROGRESIVO
                 this.progressivePreload(closestIndex);
             }
         },
@@ -307,10 +307,10 @@ export default {
 /* ========= SCROLL CONTAINER ========= */
 
 .scroll-container {
-    position: absolute; /* Usamos absolute si el padre es #content-container */
+    position: absolute;
     inset: 0; 
     overflow-y: scroll;
-    padding: 0; /* saco el padding y lo ponemos en list-wrapper/ul */
+    padding: 0;
     z-index: 0;
 }
 
@@ -322,7 +322,7 @@ export default {
 /* ========= ITEM LIST ========= */
 
 .list-wrapper {
-    /* Esto ayuda a centrar verticalmente la lista en el scroll-container */
+    /* centrar verticalmente */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -335,7 +335,7 @@ ul#itemList {
     margin: 0;
     width: 100%;
     max-width: 1000px;
-    padding: 45vh 5vw 30vh 5vw; /*top - right - bottom - left*/
+    padding: 40vh 5vw 30vh 5vw; /*top - right - bottom - left*/
 }
 
 ul#itemList li.item-activo {
@@ -355,7 +355,7 @@ ul#itemList li {
     transition: color 0.3s ease, filter 0.4s ease;
     filter: blur(1.5px);
     cursor: default;
-    pointer-events: none; /* No permite clicks a menos que esté activo */
+    pointer-events: none;
 }
 
 /*Volver Arriba*/

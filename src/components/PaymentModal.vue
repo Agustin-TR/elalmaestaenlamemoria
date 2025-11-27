@@ -1,7 +1,9 @@
 <template>
     <div class="modal-overlay" @click.self="$emit('close')">
-        <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalInfo">
-            <button type="button" class="modal-close bi bi-x-circle" @click="$emit('close')" aria-label="Cerrar"></button>
+        <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="modalTitle"
+            aria-describedby="modalInfo">
+            <button type="button" class="modal-close bi bi-x-circle" @click="$emit('close')"
+                aria-label="Cerrar"></button>
 
             <h3 id="modalTitle" class="modal-title">{{ content.title }}</h3>
 
@@ -15,10 +17,12 @@
 
                     <div class="alias-container">
                         <h6 class="detail-label">Alias de Mercado Pago:</h6>
-                            <p class="detail-text alias-code">
+                        <p class="detail-text alias-code">
                             {{ content.alias }}
-                            <i class="bi bi-copy ms-2 copy-icon" @click="copiarAlias(content.alias)"
-                                tabindex="0" role="button" @keydown.enter.prevent="copiarAlias(content.alias)" @keydown.space.prevent="copiarAlias(content.alias)" title="Copiar alias" aria-label="Copiar alias"></i>
+                            <i class="bi bi-copy ms-2 copy-icon" @click="copiarAlias(content.alias)" tabindex="0"
+                                role="button" @keydown.enter.prevent="copiarAlias(content.alias)"
+                                @keydown.space.prevent="copiarAlias(content.alias)" title="Copiar alias"
+                                aria-label="Copiar alias"></i>
                         </p>
                     </div>
                     <h6 class="detail-label">Titular de la cuenta:</h6>
@@ -40,7 +44,7 @@
             </div>
 
             <!-- Mensaje de copiado -->
-                <transition name="fade">
+            <transition name="fade">
                 <span v-if="mensajeVisible" class="floating-msg" role="status" aria-live="polite">
                     <i class="bi bi-check-circle-fill"></i> Copiado
                 </span>
@@ -69,7 +73,7 @@ export default {
                     tienda: 'El alma está en la memoria',
                     nombre: 'Agustín Tomas Rojas',
                     valor: '$30.000 ARS',
-                    info: 'El pago se realiza mediante transferencia con Mercado Pago. Una vez abonado, serás redirigido a una pantalla de confirmación para que completes tus datos de contacto.',
+                    info: 'El pago se realiza mediante link de pago de Mercado Pago. Una vez abonado, serás redirigido a una pantalla de confirmación para que completes tus datos de contacto.',
                     transferencia: 'También podes transferir y hablarme directamente por las redes sociales para coordinar el envío. (Por favor, recordá enviar el comprobante)'
                 },
                 digital: {
@@ -97,13 +101,13 @@ export default {
                 focusables[0].focus();
             }
             document.addEventListener('keydown', this._handleKeydown);
-        } catch (e) {}
+        } catch (e) { }
     },
     beforeUnmount() {
         try {
             if (this._prevFocusedEl && this._prevFocusedEl.focus) this._prevFocusedEl.focus();
             document.removeEventListener('keydown', this._handleKeydown);
-        } catch (e) {}
+        } catch (e) { }
     },
     methods: {
         async copiarAlias(texto) {
@@ -124,9 +128,9 @@ export default {
         },
         async goToMp(alias) {
             await this.copiarAlias(alias);
-            
+
             setTimeout(() => {
-            window.open('https://mpago.li/2jL8GFk', '_blank');
+                window.open('https://mpago.li/2jL8GFk', '_blank');
             }, 300);
         },
         getMpLogoPath() {
