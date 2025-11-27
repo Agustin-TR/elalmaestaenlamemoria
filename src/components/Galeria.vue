@@ -1,5 +1,5 @@
 <template>
-  <!-- Agregamos ref="galeriaRoot" para acceder a este elemento desde JS -->
+  <!--ref para acceder a este elemento desde JS -->
   <div class="galeria-wrapper" ref="galeriaRoot"> 
     <!-- Sección galeria -->
     <section class="pantalla section-galeria" id="galeria">
@@ -8,7 +8,7 @@
         <div class="foto" v-for="item in galeriaItems" :key="item.id">
           
           <div class="foto-imagen">
-            <img :src="item.src" :alt="item.poema" />
+            <img :src="item.src" :alt="item.poema" loading="lazy"/>
             
             <a :href="item.instaLink" 
                target="_blank" 

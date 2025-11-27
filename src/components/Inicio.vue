@@ -137,7 +137,7 @@ export default {
             const itemEl = event.currentTarget;
             const itemData = this.itemsData[itemIndex];
 
-            // 1. Desplazar el item clickeado al centro si no es el activo
+            //Desplazar el item clickeado al centro si no es el activo
             if (itemIndex !== this.activeItemIndex) {
                  this.scrollToItem(itemEl);
                  // Oculta el detalle por si acaso se estaba mostrando otro
@@ -145,7 +145,7 @@ export default {
                  return; // Esperar a que termine el scroll y se active el item
             }
             
-            // 2. Si es el activo, muestra/oculta el detalle
+            //Si es el activo, muestra/oculta el detalle
             const rect = itemEl.getBoundingClientRect();
             const newText = itemData.detalle.replace(/\\n/g, '\n');
             
@@ -158,7 +158,6 @@ export default {
             }
         },
         
-        // ... (findClosestToCenter y scrollToItem están bien, no los alteramos)
         findClosestToCenter() {
             const container = this.$refs.scrollContainer;
             const items = this.itemRefs.filter(Boolean);
@@ -199,7 +198,6 @@ export default {
             // Exclusiones
             if (event.target.closest('#preloader')) return;
             if (event.target.closest('a, button, input, textarea, select')) return;
-            // Si se hace click en el overlay #detalle, no hacer nada
             if (event.target.closest('#detalle')) return;
 
             // Si se hizo click en el item activo, ignorar (el handleItemClick lo gestiona)
@@ -238,7 +236,7 @@ export default {
 
     mounted() {
         // Asegúrate de que el contenedor de scroll exista antes de añadir el listener
-        this.$refs.scrollContainer?.addEventListener('scroll', this.handleScroll);
+        this.$refs.scrollContainer?.addEventListener('scroll', this.handleScroll, { passive: true });
         
         this.globalClickHandler = this.handleGlobalClick.bind(this);
         document.addEventListener('click', this.globalClickHandler);

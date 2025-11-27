@@ -1,34 +1,34 @@
 <template>
     <div class="modal-overlay" @click.self="$emit('close')">
-        <div class="modal-container">
-            <button class="modal-close bi bi-x-circle" @click="$emit('close')"></button>
+        <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalInfo">
+            <button type="button" class="modal-close bi bi-x-circle" @click="$emit('close')" aria-label="Cerrar"></button>
 
-            <h3 class="modal-title">{{ content.title }}</h3>
+            <h3 id="modalTitle" class="modal-title">{{ content.title }}</h3>
 
-            <div class="modal-content-wrapper">
+            <div class="modal-content-wrapper modal-scrollable-content">
                 <div v-if="versionKey === 'printed'" class="payment-details-block">
                     <h6 class="detail-label">Tienda/Producto:</h6>
                     <p class="detail-text bold">{{ content.tienda }}</p>
 
-                    <h6 class="detail-label mt-3">Importe total:</h6>
+                    <h6 class="detail-label">Importe total:</h6>
                     <p class="detail-text price">{{ content.valor }}</p>
 
                     <div class="alias-container">
                         <h6 class="detail-label">Alias de Mercado Pago:</h6>
-                        <p class="detail-text alias-code">
+                            <p class="detail-text alias-code">
                             {{ content.alias }}
                             <i class="bi bi-copy ms-2 copy-icon" @click="copiarAlias(content.alias)"
-                                title="Copiar alias"></i>
+                                tabindex="0" role="button" @keydown.enter.prevent="copiarAlias(content.alias)" @keydown.space.prevent="copiarAlias(content.alias)" title="Copiar alias" aria-label="Copiar alias"></i>
                         </p>
                     </div>
-                    <h6 class="detail-label mt-2">Titular de la cuenta:</h6>
+                    <h6 class="detail-label">Titular de la cuenta:</h6>
                     <p class="detail-text">{{ content.nombre }}</p>
                 </div>
 
                 <!-- Mensaje de información importante -->
-                <div class="info-block">
+                <div id="modalInfo" class="info-block">
                     <p class="modal-info">{{ content.info }}</p>
-                    <p class="modal-transferencia mt-3">{{ content.transferencia }}</p>
+                    <p class="modal-transferencia m-2">{{ content.transferencia }}</p>
                 </div>
 
                 <!-- Botón Mercado Pago -->
@@ -40,8 +40,8 @@
             </div>
 
             <!-- Mensaje de copiado -->
-            <transition name="fade">
-                <span v-if="mensajeVisible" class="floating-msg">
+                <transition name="fade">
+                <span v-if="mensajeVisible" class="floating-msg" role="status" aria-live="polite">
                     <i class="bi bi-check-circle-fill"></i> Copiado
                 </span>
             </transition>
@@ -78,6 +78,7 @@ export default {
                 }
             },
             mensajeVisible: false,
+            _prevFocusedEl: null,
             BASE_URL: import.meta.env.BASE_URL,
         };
     },
@@ -86,6 +87,23 @@ export default {
         content() {
             return this.paymentInfo[this.versionKey];
         },
+    },
+    mounted() {
+        // Accessibility: trap focus inside modal and handle Escape
+        try {
+            this._prevFocusedEl = document.activeElement;
+            const focusables = this._getFocusableElements();
+            if (focusables && focusables.length) {
+                focusables[0].focus();
+            }
+            document.addEventListener('keydown', this._handleKeydown);
+        } catch (e) {}
+    },
+    beforeUnmount() {
+        try {
+            if (this._prevFocusedEl && this._prevFocusedEl.focus) this._prevFocusedEl.focus();
+            document.removeEventListener('keydown', this._handleKeydown);
+        } catch (e) {}
     },
     methods: {
         async copiarAlias(texto) {
@@ -116,6 +134,34 @@ export default {
             const cleanedPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
             return this.BASE_URL + cleanedPath;
         },
+        // --- Accessibility helpers ---
+        _getFocusableElements() {
+            const modal = this.$el.querySelector('.modal-container');
+            if (!modal) return [];
+            return Array.from(modal.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'))
+                .filter(el => el.offsetParent !== null);
+        },
+        _handleKeydown(e) {
+            if (e.key === 'Escape') {
+                this.$emit('close');
+                return;
+            }
+
+            if (e.key === 'Tab') {
+                const focusables = this._getFocusableElements();
+                if (focusables.length === 0) return;
+                const first = focusables[0];
+                const last = focusables[focusables.length - 1];
+
+                if (e.shiftKey && document.activeElement === first) {
+                    e.preventDefault();
+                    last.focus();
+                } else if (!e.shiftKey && document.activeElement === last) {
+                    e.preventDefault();
+                    first.focus();
+                }
+            }
+        },
     }
 };
 </script>
@@ -145,12 +191,13 @@ export default {
     animation: slide-in 0.3s ease-out;
     display: flex;
     flex-direction: column;
-    max-height: 90vh;
+    max-height: 100vh;
 }
 
 /* Contenedor de contenido scrollable */
 .modal-scrollable-content {
     flex-grow: 1;
+    overflow-y: auto;
     padding-right: 5px;
     margin-right: -5px;
 }
@@ -177,21 +224,21 @@ export default {
     font-weight: 700;
     margin-bottom: 1.5rem;
     border-bottom: 3px solid #005f6a;
-    padding-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
     text-align: left;
 }
 
 /* CONTENEDORES DE INFORMACIÓN */
 .payment-details-block {
-    background-color: #f4f8f9;
+    background-color: #ffffff;
     border-radius: 8px;
     padding: 1.5rem;
     border: 1px solid #070707;
 }
 
 .detail-label {
-    font-size: 0.9rem;
-    font-weight: 500;
+    font-size: 0.8rem;
+    font-weight: 700;
     color: #555;
     margin-bottom: 0.2rem;
     text-transform: uppercase;
@@ -346,7 +393,7 @@ export default {
 @media (max-width: 600px) {
     .modal-container {
         padding: 1.2rem;
-        max-height: 80vh;
+        max-height: 90vh;
     }
 
     .modal-title {
@@ -355,15 +402,15 @@ export default {
     }
 
     .payment-details-block {
-        padding: 1rem;
+        padding: 0.8rem;
     }
 
     .detail-text {
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
 
     .alias-code {
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
 
     .button-group {

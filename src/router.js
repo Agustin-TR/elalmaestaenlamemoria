@@ -8,16 +8,17 @@ import ConfirmacionPago from "./components/ConfirmacionPago.vue"
 
 const routes = [
     /* ----- definición de la ruta raíz ---- */
-    { path: '/', component: Inicio  },
+     { path: '/', redirect: '/inicio' },
     
     /* ---- definición de las rutas activas ---- */
+    { path: '/inicio', component: Inicio },
     { path: '/galeria', component: Galeria  },
     { path: '/header', component: Header  },
     { path: '/tienda', component: Tienda  },
-     { path: '/confirmacion', component: ConfirmacionPago, name: 'confirmacion' }, 
+    { path: '/confirmacion', component: ConfirmacionPago, name: 'confirmacion' }, 
 
     /* ------ definición del comportamiento del rutear para rutas no existentes ----- */
-    { path: '/:pathmatch(.*)*', redirect: '/' }
+    { path: '/:pathmatch(.*)*', redirect: '/inicio' }
 ]
 
 const router = createRouter({

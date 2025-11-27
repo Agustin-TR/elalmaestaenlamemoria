@@ -88,7 +88,7 @@ export default {
                     setTimeout(() => {
                         if (this.submissionSuccess) {
                             //Redirigir a inicio después del éxito
-                            this.$router.push('/');
+                            this.$router.push('/inicio');
                         }
                     }, 5000);
                 });

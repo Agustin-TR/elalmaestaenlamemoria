@@ -1,7 +1,5 @@
 <script setup>
-// Nota: En <script setup>, no es necesario importar defineProps o defineEmits.
 
-// Define las props que esperas del componente padre
 const props = defineProps({
  seccionActiva: {
   type: String,
@@ -9,30 +7,41 @@ const props = defineProps({
  }
 });
 
-// Define el evento que emitirás al componente padre
-const emit = defineEmits(['cambiar-seccion']);
-
-const cambiarSeccion = (targetId) => {
- // Notifica al padre qué sección fue clickeada
- emit('cambiar-seccion', targetId);
-};
 </script>
 
 <template>
 <header id="floating-header">
- <nav class="floating-tabs">
-    <a href="#" class="tab" :class="{ 'activo': props.seccionActiva === 'galeria' }" @click.prevent="cambiarSeccion('galeria')" data-section="galeria">
-   GALERIA
-  </a>
-  
-  <a href="#" class="tab" :class="{ 'activo': props.seccionActiva === 'inicio' }" @click.prevent="cambiarSeccion('inicio')" data-section="inicio">
-   INICIO
-  </a>
-  
-  <a href="#" class="tab" :class="{ 'activo': props.seccionActiva === 'tienda' }" @click.prevent="cambiarSeccion('tienda')" data-section="tienda">
-   TIENDA
-  </a>
- </nav>
+ <nav class="floating-tabs" role="tablist" aria-label="Navegación principal">
+      <router-link
+         to="/galeria"
+         class="tab"
+         :class="{ 'activo': props.seccionActiva === 'galeria' }"
+         role="tab"
+         :aria-current="props.seccionActiva === 'galeria' ? 'page' : null"
+      >
+         GALERIA
+      </router-link>
+
+      <router-link
+         to="/inicio"
+         class="tab"
+         :class="{ 'activo': props.seccionActiva === 'inicio' }"
+         role="tab"
+         :aria-current="props.seccionActiva === 'inicio' ? 'page' : null"
+      >
+         INICIO
+      </router-link>
+
+      <router-link
+         to="/tienda"
+         class="tab"
+         :class="{ 'activo': props.seccionActiva === 'tienda' }"
+         role="tab"
+         :aria-current="props.seccionActiva === 'tienda' ? 'page' : null"
+      >
+         TIENDA
+      </router-link>
+   </nav>
 </header>
 </template>
 

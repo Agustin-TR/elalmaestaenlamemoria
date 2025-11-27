@@ -123,7 +123,7 @@ export default {
             }
 
             const inicio = Date.now();
-            const tiempoMinimo = 5000; // ms
+            const tiempoMinimo = 3000; // ms
             const mostrarContenido = () => {
                 const main = document.getElementById("main-content");
                 document.body.style.overflow = "auto";
