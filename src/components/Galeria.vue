@@ -40,6 +40,7 @@
           <h3>Diseño y edición</h3>
         </li>
         <li>Paula Kempfert</li>
+        <li>Renata Fain</li>
         <br>
         <li>
           <h3>Fotografía</h3>

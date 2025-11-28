@@ -25,9 +25,9 @@ export const dataFotografos = [
     },
     { 
         id: 5, 
-        nombre: 'Franco Campanella', 
-        instaHandle: '@catalina3', 
-        instaLink: 'https://www.instagram.com/francocampanellaa' 
+        nombre: 'Agustín Rojas', 
+        instaHandle: '@agustinrojas_7', 
+        instaLink: 'https://www.instagram.com/agustinrojas_7' 
     },
     { 
         id: 6, 

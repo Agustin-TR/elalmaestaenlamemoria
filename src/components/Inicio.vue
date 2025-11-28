@@ -1,42 +1,30 @@
 <template>
-  <div id="content-container" :style="backgroundStyle">
-    <div class="scroll-container" ref="scrollContainer" @scroll="handleScroll">
+    <div id="content-container" :style="backgroundStyle">
+        <div class="scroll-container" ref="scrollContainer" @scroll="handleScroll">
 
-      <div class="list-wrapper">
-        <ul id="itemList">
-          <li 
-            v-for="(item, index) in itemsData" 
-            :key="item.id" 
-            :ref="el => setItemRef(el, index)"
-            :class="{ 'item-activo': index === activeItemIndex }" 
-            @click="handleItemClick($event, index)"
-          >
-            <div class="item-content">
-              <h2>{{ item.title }}</h2>
+            <div class="list-wrapper">
+                <ul id="itemList">
+                    <li v-for="(item, index) in itemsData" :key="item.id" :ref="el => setItemRef(el)"
+                        :class="{ 'item-activo': index === activeItemIndex }" @click="handleItemClick($event, index)">
+                        <div class="item-content">
+                            <h2>{{ item.title }}</h2>
+                        </div>
+                    </li>
+
+                    <li class="scroll-to-top-item" @click="scrollToTop">
+                        <div class="item-content">
+                            <h2><i class="bi bi-arrow-up"></i></h2>
+                        </div>
+                    </li>
+                </ul>
             </div>
-          </li>
+        </div>
 
-          <li class="scroll-to-top-item" @click="scrollToTop">
-            <div class="item-content">
-              <h2><i class="bi bi-arrow-up"></i></h2>
-            </div>
-          </li>
-        </ul>
-      </div>
-
-      <div class="padding-bottom-spacer"></div>
+        <div id="detalle" v-if="detalle.text" :style="{ top: detalle.top, opacity: detalle.isVisible ? 1 : 0 }">
+            <p>{{ detalle.text }}</p>
+        </div>
     </div>
-
-    <div 
-      id="detalle" 
-      v-if="detalle.text" 
-      :style="{ top: detalle.top, opacity: detalle.isVisible ? 1 : 0 }"
-    >
-      <p>{{ detalle.text }}</p>
-    </div>
-  </div>
 </template>
-
 
 <script>
 import { dataPoemas } from '@/data/poemas.js';
@@ -54,23 +42,28 @@ export default {
                 top: '0px',
             },
             itemRefs: [],
-            scrollHandler: null, 
+            scrollHandler: null,
             globalClickHandler: null,
             BASE_URL: import.meta.env.BASE_URL,
+
+            // Optimización: estado para el fondo actual y cola de preload
+            currentBgUrl: null,
+            preloadQueue: [],        // cola de URLs a precargar
+            isProcessingQueue: false,
+            imageCache: null,        // Set para URLs ya precargadas
+            destroyed: false,
         };
     },
 
     computed: {
         backgroundStyle() {
-            if (this.activeItemIndex !== null) {
-                const rawBgUrl = this.itemsData[this.activeItemIndex].bg;
-                const bgUrl = this.getImagePath(rawBgUrl);
-                return { 
-                    backgroundImage: `url(${bgUrl})`,
+            if (this.currentBgUrl) {
+                return {
+                    backgroundImage: `url(${this.currentBgUrl})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundAttachment: 'fixed'
-                }; 
+                };
             }
             return {};
         }
@@ -79,7 +72,7 @@ export default {
     methods: {
 
         /* ======================================================
-         *   PRELOAD DE IMÁGENES
+         *   RUTINAS AUXILIARES
          * ====================================================== */
 
         getImagePath(imagePath) {
@@ -87,39 +80,131 @@ export default {
             return this.BASE_URL + cleanedPath;
         },
 
-        preloadImagesInRange(start, end) {
-            const total = this.itemsData.length;
+        /* ======================================================
+         *   CARGA INTELIGENTE DEL FONDO (DECODIFICAR ANTES)
+         * ====================================================== */
 
-            const s = Math.max(0, start);
-            const e = Math.min(end, total - 1);
+        async loadAndSetBackground(index) {
+            if (index == null) return;
+            if (index < 0 || index >= this.itemsData.length) return;
 
-            for (let i = s; i <= e; i++) {
-                const raw = this.itemsData[i].bg;
-                const url = this.getImagePath(raw);
+            const rawBg = this.itemsData[index].bg;
+            const url = this.getImagePath(rawBg);
 
+            // Si ya está en cache interno, asignar rápido
+            if (this.imageCache.has(url)) {
+                this.currentBgUrl = url;
+                return;
+            }
+
+            try {
                 const img = new Image();
-                img.src = url; // Esto lo mete en caché automáticamente
+                img.src = url;
+
+                // decode puede no existir en navegadores antiguos; hacemos fallback
+                const decodePromise = img.decode
+                    ? img.decode()
+                    : new Promise((resolve) => {
+                        img.onload = resolve;
+                        img.onerror = resolve; // si falla, resolvemos igualmente
+                    });
+
+                await decodePromise;
+
+                // Guardamos en cache y aplicamos fondo solo si el componente sigue vivo
+                if (!this.destroyed) {
+                    this.imageCache.add(url);
+                    this.currentBgUrl = url;
+                }
+            } catch (e) {
+                // Si algo falla, aplicamos igual para no bloquear UX
+                if (!this.destroyed) {
+                    this.imageCache.add(url);
+                    this.currentBgUrl = url;
+                }
             }
         },
 
-        progressivePreload(index) {
-            if (index === null) return;
-            
-            // Precarga anticipada
-            const before = 1;
-            const after = 3;
+        /* ======================================================
+         *   PRELOAD EN COLA (SERIAL) PARA NO SATURAR
+         * ====================================================== */
 
-            const start = index - before;
-            const end = index + after;
+        enqueuePreload(url) {
+            if (!url) return;
+            if (this.imageCache.has(url)) return; // ya cargada
+            if (this.preloadQueue.includes(url)) return; // ya en cola
 
-            this.preloadImagesInRange(start, end);
+            this.preloadQueue.push(url);
+
+            // arrancar procesador si está detenido
+            if (!this.isProcessingQueue) {
+                this.processPreloadQueue();
+            }
+        },
+
+        async processPreloadQueue() {
+            if (this.isProcessingQueue) return;
+            this.isProcessingQueue = true;
+
+            while (this.preloadQueue.length && !this.destroyed) {
+                const url = this.preloadQueue.shift();
+                if (!url) continue;
+                if (this.imageCache.has(url)) continue;
+
+                try {
+                    const img = new Image();
+                    img.src = url;
+
+                    const decodePromise = img.decode
+                        ? img.decode()
+                        : new Promise((resolve) => {
+                            img.onload = resolve;
+                            img.onerror = resolve;
+                        });
+
+                    // Esperamos la decodificación para aliviar el trabajo del renderer
+                    await decodePromise;
+
+                    if (!this.destroyed) {
+                        this.imageCache.add(url);
+                    }
+                } catch (e) {
+                    // Ignorar errores y continuar con la siguiente imagen
+                    if (!this.destroyed) {
+                        this.imageCache.add(url); // marcar como intentada
+                    }
+                }
+
+                // pequeña espera opcional para bajar presión si fuera necesario (0ms por defecto)
+                // await new Promise(r => setTimeout(r, 0));
+            }
+
+            this.isProcessingQueue = false;
         },
 
         /* ======================================================
-         *   SISTEMA DE ITEMS + SCROLL
+         *   Precarga ligera: anterior, actual, siguiente
          * ====================================================== */
 
-        setItemRef(el, index) {
+        smartNeighborsPreload(index) {
+            if (index == null) return;
+            const total = this.itemsData.length;
+
+            const indices = [index - 1, index, index + 1];
+            indices.forEach(i => {
+                if (i >= 0 && i < total) {
+                    const raw = this.itemsData[i].bg;
+                    const url = this.getImagePath(raw);
+                    this.enqueuePreload(url);
+                }
+            });
+        },
+
+        /* ======================================================
+         *   SISTEMA DE ITEMS + SCROLL (sin tocar tu lógica)
+         * ====================================================== */
+
+        setItemRef(el) {
             if (el && !this.itemRefs.includes(el)) {
                 this.itemRefs.push(el);
             }
@@ -127,7 +212,7 @@ export default {
 
         updateActiveItem() {
             const container = this.$refs.scrollContainer;
-            const items = this.itemRefs.filter(Boolean); 
+            const items = this.itemRefs.filter(Boolean);
             if (!container || items.length === 0) return;
 
             let closestIndex = null;
@@ -150,13 +235,16 @@ export default {
                 this.activeItemIndex = closestIndex;
                 this.detalle.isVisible = false;
 
-                //PRELOAD PROGRESIVO
-                this.progressivePreload(closestIndex);
+                // 1) Carga segura del fondo (decodifica antes de aplicar)
+                this.loadAndSetBackground(closestIndex);
+
+                // 2) Precarga escalonada y serializada de vecinos
+                this.smartNeighborsPreload(closestIndex);
             }
         },
 
         handleScroll() {
-            this.detalle.isVisible = false; 
+            this.detalle.isVisible = false;
 
             if (!this.scrollHandler) {
                 this.scrollHandler = requestAnimationFrame(() => {
@@ -171,23 +259,23 @@ export default {
             const itemData = this.itemsData[itemIndex];
 
             if (itemIndex !== this.activeItemIndex) {
-                 this.scrollToItem(itemEl);
-                 this.detalle.isVisible = false;
-                 return;
+                this.scrollToItem(itemEl);
+                this.detalle.isVisible = false;
+                return;
             }
-            
+
             const rect = itemEl.getBoundingClientRect();
             const newText = itemData.detalle.replace(/\\n/g, '\n');
-            
+
             if (this.detalle.isVisible && this.detalle.text === newText) {
                 this.detalle.isVisible = false;
             } else {
                 this.detalle.text = newText;
                 this.detalle.top = `${rect.bottom + 15}px`;
-                this.detalle.isVisible = true; 
+                this.detalle.isVisible = true;
             }
         },
-        
+
         findClosestToCenter() {
             const container = this.$refs.scrollContainer;
             const items = this.itemRefs.filter(Boolean);
@@ -197,13 +285,13 @@ export default {
             const centerY = containerRect.top + container.clientHeight / 2;
             let closestIndex = null;
             let minDistance = Infinity;
-            
+
             items.forEach((item, index) => {
                 const r = item.getBoundingClientRect();
                 const d = Math.abs((r.top + r.height / 2) - centerY);
-                if (d < minDistance) { 
-                    minDistance = d; 
-                    closestIndex = index; 
+                if (d < minDistance) {
+                    minDistance = d;
+                    closestIndex = index;
                 }
             });
             return items[closestIndex] || null;
@@ -215,14 +303,14 @@ export default {
 
             const containerRect = container.getBoundingClientRect();
             const itemRect = itemEl.getBoundingClientRect();
-            
+
             const itemOffsetTop = container.scrollTop + (itemRect.top - containerRect.top);
-            
+
             const target = Math.max(
                 0,
                 Math.round(itemOffsetTop - (container.clientHeight / 2) + (itemEl.clientHeight / 2))
             );
-            
+
             container.scrollTo({ top: target, behavior: 'smooth' });
         },
 
@@ -232,13 +320,13 @@ export default {
             if (event.target.closest('#detalle')) return;
 
             const clickedItem = event.target.closest('#itemList li');
-            if (clickedItem && this.itemRefs[this.activeItemIndex] === clickedItem) return; 
-            
+            if (clickedItem && this.itemRefs[this.activeItemIndex] === clickedItem) return;
+
             this.detalle.isVisible = false;
 
             const activeItemEl = this.itemRefs[this.activeItemIndex] || this.findClosestToCenter();
             let nextItem = null;
-            
+
             if (activeItemEl) {
                 let currentIndex = this.itemRefs.indexOf(activeItemEl);
                 if (currentIndex !== -1 && currentIndex < this.itemRefs.length - 1) {
@@ -259,44 +347,54 @@ export default {
                 top: 0,
                 behavior: 'smooth'
             });
-            this.detalle.isVisible = false; 
+            this.detalle.isVisible = false;
         },
     },
 
     mounted() {
+        // Inicializamos cache no reactiva
+        this.imageCache = new Set();
+        this.destroyed = false;
+
         this.$refs.scrollContainer?.addEventListener('scroll', this.handleScroll, { passive: true });
-        
+
         this.globalClickHandler = this.handleGlobalClick.bind(this);
         document.addEventListener('click', this.globalClickHandler);
 
         nextTick(() => {
             this.updateActiveItem();
 
-            //PRELOAD INICIAL: primeras 3 imágenes
-            this.preloadImagesInRange(0, 2);
+            // Carga inicial: fondo seguro para el item que quedó activo + vecinos
+            // (esto es ligero y evita la previa descarga masiva)
+            this.loadAndSetBackground(this.activeItemIndex);
+            this.smartNeighborsPreload(this.activeItemIndex);
         });
     },
 
     beforeUnmount() {
+        this.destroyed = true;
         this.$refs.scrollContainer?.removeEventListener('scroll', this.handleScroll);
         document.removeEventListener('click', this.globalClickHandler);
         if (this.scrollHandler) {
             cancelAnimationFrame(this.scrollHandler);
+            this.scrollHandler = null;
         }
+
+        // limpiar cola
+        this.preloadQueue = [];
     },
 };
 </script>
 
-
 <style scoped>
-
 /* ========= INICIO ========= */
 
 #content-container {
     position: relative;
     width: 100%;
     height: 100vh;
-    overflow: hidden; /* Mantiene el scroll dentro de .scroll-container */
+    overflow: hidden;
+    /* Mantiene el scroll dentro de .scroll-container */
     background-color: black;
     background-size: cover;
     background-position: center;
@@ -308,7 +406,7 @@ export default {
 
 .scroll-container {
     position: absolute;
-    inset: 0; 
+    inset: 0;
     overflow-y: scroll;
     padding: 0;
     z-index: 0;
@@ -335,7 +433,8 @@ ul#itemList {
     margin: 0;
     width: 100%;
     max-width: 1000px;
-    padding: 40vh 5vw 30vh 5vw; /*top - right - bottom - left*/
+    padding: 40vh 5vw 30vh 5vw;
+    /*top - right - bottom - left*/
 }
 
 ul#itemList li.item-activo {
@@ -388,9 +487,10 @@ ul#itemList li.scroll-to-top-item h2 {
     max-width: 100vw;
     width: 70vw;
     z-index: 10;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
     white-space: pre-line;
-    opacity: 0; /*inicial*/
+    opacity: 0;
+    /*inicial*/
     transition: opacity 0.4s ease, transform 0.3s ease;
     pointer-events: none;
 }
@@ -405,7 +505,7 @@ p {
 
 /*BARRA SCROLL COMPU*/
 @media (min-width: 1024px) {
-    
+
     .scroll-container {
         scrollbar-width: thin;
         scrollbar-color: rgba(115, 103, 103, 0.5) rgba(0, 0, 0, 0.3);
@@ -413,7 +513,7 @@ p {
 
     /* Habilitamos la barra en WebKit */
     .scroll-container::-webkit-scrollbar {
-        display: block; 
+        display: block;
         width: 15px;
     }
 
@@ -433,5 +533,4 @@ p {
         background-color: rgba(115, 103, 103, 0.9);
     }
 }
-
 </style>
