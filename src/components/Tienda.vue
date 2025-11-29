@@ -235,7 +235,6 @@ export default {
   min-height: 80vh;
   padding: 5rem 2rem;
   display: flex;
-  /* centrar el título, botón y formulario */
   flex-direction: column;
   align-items: center;
 }
@@ -264,7 +263,7 @@ export default {
 .contact-form-container {
   width: 100%;
   max-width: 600px;
-  padding: 2rem;
+  padding: 1.5rem;
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -274,20 +273,18 @@ export default {
 .contact-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .form-title {
   font-size: 1.8rem;
   color: #005f6a;
-  margin-bottom: 0.5rem;
   text-align: center;
 }
 
 .form-title2 {
   font-size: 1.5rem;
   color: #005f6a;
-  margin-bottom: 0.5rem;
   text-align: center;
 }
 
@@ -306,7 +303,7 @@ export default {
 .form-group input,
 .form-group textarea {
   padding: 0.8rem 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid #21252996;
   border-radius: 6px;
   font-size: 1rem;
   transition: border-color 0.3s, box-shadow 0.3s;
