@@ -45,6 +45,10 @@ export default {
         handleCambiarSeccion(targetId) {
             this.$router.push({ path: `/${targetId}` });
         },
+        setVhVar() {
+            // Calcula el alto real del viewport y lo guarda en --vh
+            document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+        }
     },
     computed: {
         animacionDireccion() {
@@ -76,7 +80,13 @@ export default {
     mounted() {
         // Al montar, inicializamos la ruta previa con la ruta actual para que no anime.
         this.previousRoutePath = this.$route.path;
+        // Setea la variable --vh para móviles
+        this.setVhVar();
+        window.addEventListener('resize', this.setVhVar);
     },
+    beforeUnmount() {
+        window.removeEventListener('resize', this.setVhVar);
+    }
 };
 </script>
 
@@ -85,34 +95,51 @@ export default {
     ESTILOS GLOBALES Y DE TRANSICIÓN
     ========================================================
 */
-html {
-    height: 100%;
-}
 
-body {
+html, body {
     margin: 0;
     padding: 0;
-    width: 100%;
+    width: 100vw;
+    min-height: 100vh;
     height: 100%;
-    overflow: hidden;
+    box-sizing: border-box;
+    /* Para evitar saltos de scroll en móviles */
+    overscroll-behavior: none;
+}
+
+/* Variable para altura real del viewport */
+:root {
+    --vh: 1vh;
 }
 
 .main-app-container {
-    width: 100%;
-    height: 100%;
-    overflow: hidden; /* Evita el scroll global */
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    min-height: calc(var(--vh, 1vh) * 100);
+    height: calc(var(--vh, 1vh) * 100);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Oculta el contenido principal por defecto. El Preloader lo pondrá en opacity: 1 al terminar. */
 #main-content {
     opacity: 0;
     transition: opacity 1s ease-out;
+    width: 100vw;
+    min-height: calc(var(--vh, 1vh) * 100);
+    height: calc(var(--vh, 1vh) * 100);
+    display: flex;
+    flex-direction: column;
 }
 
 /* Contenedor principal de las vistas. Ocupa toda la pantalla. */
 .content-container {
     position: relative;
-    width: 100%;
+    width: 100vw;
+    flex-grow: 1;
+    min-height: 0;
     height: 100%;
     overflow: hidden;
 }
@@ -122,7 +149,8 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 100vw;
+    min-height: calc(var(--vh, 1vh) * 100);
     height: 100%;
     overflow-y: auto;
 }
@@ -138,13 +166,13 @@ body {
 /* Estado inicial de la nueva vista (entra) */
 .slide-up-enter-from {
     transform: translateY(100vh);
-    /* entra desde abajo */
+    /* La nueva entra desde abajo */
 }
 
 /* Estado final de la vista vieja (sale) */
 .slide-up-leave-to {
     transform: translateY(-100vh);
-    /* sale por arriba */
+    /* La vieja sale por arriba */
 }
 
 /* ------------------------------------------------- */
@@ -158,13 +186,13 @@ body {
 /* Estado inicial de la nueva vista (entra) */
 .slide-down-enter-from {
     transform: translateY(-100vh);
-    /*entra desde arriba */
+    /* La nueva entra desde arriba */
 }
 
 /* Estado final de la vista vieja (sale) */
 .slide-down-leave-to {
     transform: translateY(100vh);
-    /* sale por abajo */
+    /* La vieja sale por abajo */
 }
 
 /* Asegura que los estados finales y de reposo no tengan transformaciones */
