@@ -45,10 +45,6 @@ export default {
         handleCambiarSeccion(targetId) {
             this.$router.push({ path: `/${targetId}` });
         },
-        setVhVar() {
-            // Calcula el alto real del viewport y lo guarda en --vh
-            document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
-        }
     },
     computed: {
         animacionDireccion() {
@@ -80,13 +76,7 @@ export default {
     mounted() {
         // Al montar, inicializamos la ruta previa con la ruta actual para que no anime.
         this.previousRoutePath = this.$route.path;
-        // Setea la variable --vh para móviles
-        this.setVhVar();
-        window.addEventListener('resize', this.setVhVar);
     },
-    beforeUnmount() {
-        window.removeEventListener('resize', this.setVhVar);
-    }
 };
 </script>
 
@@ -95,52 +85,42 @@ export default {
     ESTILOS GLOBALES Y DE TRANSICIÓN
     ========================================================
 */
+html,
+body{ 
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
 
-html, body {
+.main-app-container,
+.content-container,
+.router-view-wrapper {
     margin: 0;
     padding: 0;
     width: 100vw;
     min-height: 100vh;
-    height: 100%;
-    box-sizing: border-box;
-    /* Para evitar saltos de scroll en móviles */
-    overscroll-behavior: none;
+    overflow: hidden; /* Evita el scroll global */
 }
 
-/* Variable para altura real del viewport */
-:root {
-    --vh: 1vh;
-}
-
-.main-app-container {
-    margin: 0;
-    padding: 0;
-    width: 100vw;
-    min-height: calc(var(--vh, 1vh) * 100);
-    height: calc(var(--vh, 1vh) * 100);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+@supports (-webkit-touch-callout: none) {
+  .main-app-container,
+  .content-container,
+  .router-view-wrapper {
+    min-height: -webkit-fill-available; /* ocupa todo el alto real en iOS Safari */
+  }
 }
 
 /* Oculta el contenido principal por defecto. El Preloader lo pondrá en opacity: 1 al terminar. */
 #main-content {
     opacity: 0;
     transition: opacity 1s ease-out;
-    width: 100vw;
-    min-height: calc(var(--vh, 1vh) * 100);
-    height: calc(var(--vh, 1vh) * 100);
-    display: flex;
-    flex-direction: column;
 }
 
 /* Contenedor principal de las vistas. Ocupa toda la pantalla. */
 .content-container {
     position: relative;
     width: 100vw;
-    flex-grow: 1;
-    min-height: 0;
-    height: 100%;
+    height: 100vh;
     overflow: hidden;
 }
 
@@ -149,8 +129,7 @@ html, body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
-    min-height: calc(var(--vh, 1vh) * 100);
+    width: 100%;
     height: 100%;
     overflow-y: auto;
 }
