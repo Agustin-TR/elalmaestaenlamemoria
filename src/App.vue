@@ -85,13 +85,21 @@ export default {
     ESTILOS GLOBALES Y DE TRANSICIÓN
     ========================================================
 */
-html,
-body,
-.main-app-container {
+html {
+    height: 100%;
+}
+
+body {
     margin: 0;
     padding: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.main-app-container {
+    width: 100%;
+    height: 100%;
     overflow: hidden; /* Evita el scroll global */
 }
 
@@ -104,8 +112,8 @@ body,
 /* Contenedor principal de las vistas. Ocupa toda la pantalla. */
 .content-container {
     position: relative;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
 }
 
@@ -130,13 +138,13 @@ body,
 /* Estado inicial de la nueva vista (entra) */
 .slide-up-enter-from {
     transform: translateY(100vh);
-    /* La nueva entra desde abajo */
+    /* entra desde abajo */
 }
 
 /* Estado final de la vista vieja (sale) */
 .slide-up-leave-to {
     transform: translateY(-100vh);
-    /* La vieja sale por arriba */
+    /* sale por arriba */
 }
 
 /* ------------------------------------------------- */
@@ -150,13 +158,13 @@ body,
 /* Estado inicial de la nueva vista (entra) */
 .slide-down-enter-from {
     transform: translateY(-100vh);
-    /* La nueva entra desde arriba */
+    /*entra desde arriba */
 }
 
 /* Estado final de la vista vieja (sale) */
 .slide-down-leave-to {
     transform: translateY(100vh);
-    /* La vieja sale por abajo */
+    /* sale por abajo */
 }
 
 /* Asegura que los estados finales y de reposo no tengan transformaciones */

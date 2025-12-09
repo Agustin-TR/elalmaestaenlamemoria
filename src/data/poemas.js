@@ -76,7 +76,7 @@ export const dataPoemas = [
   { id: 38, title: 'Sueños plantados en un frasco', fotografoId: 5 ,
     bg: 'img/flor-ventana.webp', detalle: '[...] Un fragmento de primavera\n se impregna en la melancolía\n de la flor que posa petrificada\n sobre la mesa imperturbable\n descansando junto a la ventana [...] ' },
   { id: 39, title: 'Estrella gastada, deseo fugaz', fotografoId: '' ,
-    bg: 'img/foto5', detalle: '[...] No creo en los milagros\n sí en que se pueda cambiar [...]' },
+    bg: 'img/foto15.jpg', detalle: '[...] No creo en los milagros\n sí en que se pueda cambiar [...]' },
   { id: 40, title: 'El inicio y el final', fotografoId: '' ,
     bg: 'img/La-misma-forma-dos-veces.webp', detalle: '[...] Tu mirada ese día...' },
 ];
