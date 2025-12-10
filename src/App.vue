@@ -76,7 +76,19 @@ export default {
     mounted() {
         // Al montar, inicializamos la ruta previa con la ruta actual para que no anime.
         this.previousRoutePath = this.$route.path;
+
+        // ==== FIX PANTALLA COMPLETA REAL ====
+        const actualizarVH = () => {
+            document.documentElement.style.setProperty(
+                '--vh',
+                `${window.innerHeight * 0.01}px`
+            );
+        };
+
+        actualizarVH();
+        window.addEventListener('resize', actualizarVH);
     },
+    
 };
 </script>
 
@@ -98,7 +110,8 @@ body{
     margin: 0;
     padding: 0;
     width: 100vw;
-    min-height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
+    min-height: calc(var(--vh, 1vh) * 100);
     overflow: hidden; /* Evita el scroll global */
 }
 

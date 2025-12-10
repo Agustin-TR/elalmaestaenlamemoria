@@ -84,7 +84,7 @@
       </div>
     </div>
 
-    <button class="btn-compra mb-5" @click="goToPayment('printed')">Quiero el mío</button>
+    <button class="btn-compra m-4" @click="goToPayment('printed')">Quiero el mío</button>
 
   </section>
 </template>
