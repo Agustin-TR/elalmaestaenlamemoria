@@ -1,20 +1,21 @@
 <template>
+  <Preloader />
 
-    <Preloader />
-
-    <div class="main-app-container" id="main-content">
-        <Header :seccion-activa="$route.path.substring(1)" @cambiar-seccion="handleCambiarSeccion" />
-        <div class="content-container">
-            <RouterView v-slot="{ Component }">
-                <Transition :name="animacionDireccion">
-                    <div :key="$route.path" class="router-view-wrapper">
-                        <component :is="Component" />
-                    </div>
-                </Transition>
-            </RouterView>
-        </div>
+  <div class="main-app-container" id="main-content">
+    <Header
+      :seccion-activa="$route.path.substring(1)"
+      @cambiar-seccion="handleCambiarSeccion"
+    />
+    <div class="content-container">
+      <RouterView v-slot="{ Component }">
+        <Transition :name="animacionDireccion">
+          <div :key="$route.path" class="router-view-wrapper">
+            <component :is="Component" />
+          </div>
+        </Transition>
+      </RouterView>
     </div>
-    
+  </div>
 </template>
 
 <script>
@@ -24,176 +25,145 @@ import Preloader from './components/Preloader.vue';
 const ordenRutas = ["/galeria", "/inicio", "/tienda"];
 
 export default {
-    name: "App",
-    components: {
-        Header,
-        Preloader
+  name: "App",
+  components: {
+    Header,
+    Preloader
+  },
+  data() {
+    return {
+      ordenRutas: ordenRutas,
+      previousRoutePath: null,
+    };
+  },
+  watch: {
+    '$route'(to, from) {
+      this.previousRoutePath = from.path;
+    }
+  },
+  methods: {
+    handleCambiarSeccion(targetId) {
+      this.$router.push({ path: `/${targetId}` });
     },
-    data() {
-        return {
-            ordenRutas: ordenRutas,
-            previousRoutePath: null,
-        };
+  },
+  computed: {
+    animacionDireccion() {
+      const currentPath = this.$route.path;
+      const previousPath = this.previousRoutePath;
+
+      if (!previousPath) return 'no-animation';
+
+      const indexActual = this.ordenRutas.indexOf(currentPath);
+      const indexPrevio = this.ordenRutas.indexOf(previousPath);
+
+      if (indexActual === -1 || indexPrevio === -1) return 'no-animation';
+
+      if (indexActual > indexPrevio) return 'slide-up';
+      if (indexActual < indexPrevio) return 'slide-down';
+
+      return 'no-animation';
     },
-    watch: {
-        '$route'(to, from) {
-            this.previousRoutePath = from.path;
-        }
-    },
-    methods: {
-        // Función que maneja la navegación desde el componente Header.
-        handleCambiarSeccion(targetId) {
-            this.$router.push({ path: `/${targetId}` });
-        },
-    },
-    computed: {
-        animacionDireccion() {
-            const currentPath = this.$route.path;
-            const previousPath = this.previousRoutePath; //watcher
+  },
+  mounted() {
+    // altura real en móviles (Safari incluido)
+    const actualizarVH = () => {
+      document.documentElement.style.setProperty(
+        '--vh',
+        `${window.innerHeight * 0.01}px`
+      );
+    };
 
-            if (!previousPath) {
-                return 'no-animation';
-            }
+    actualizarVH();
+    window.addEventListener('resize', actualizarVH);
 
-            const indexActual = this.ordenRutas.indexOf(currentPath);
-            // Aseguramos que la ruta anterior esté en nuestro orden definido.
-            const indexPrevio = this.ordenRutas.indexOf(previousPath);
-
-            if (indexActual === -1 || indexPrevio === -1) {
-                 return 'no-animation';
-            }
-            
-            if (indexActual > indexPrevio) {
-                return 'slide-up';
-            }
-            else if (indexActual < indexPrevio) {
-                return 'slide-down';
-            }
-
-            return 'no-animation'; // Si los índices son iguales o no hay cambio.
-        },
-    },
-    mounted() {
-        // Al montar, inicializamos la ruta previa con la ruta actual para que no anime.
-        this.previousRoutePath = this.$route.path;
-
-        // ==== FIX PANTALLA COMPLETA REAL ====
-        const actualizarVH = () => {
-            document.documentElement.style.setProperty(
-                '--vh',
-                `${window.innerHeight * 0.01}px`
-            );
-        };
-
-        actualizarVH();
-        window.addEventListener('resize', actualizarVH);
-    },
-    
+    // Inicializamos ruta previa
+    this.previousRoutePath = this.$route.path;
+  },
 };
 </script>
 
-<style>
-/* ========================================================
-    ESTILOS GLOBALES Y DE TRANSICIÓN
-    ========================================================
-*/
+<style scoped>
 html,
-body{ 
+body {
   margin: 0;
   padding: 0;
   height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 
 .main-app-container,
 .content-container,
 .router-view-wrapper {
-    margin: 0;
-    padding: 0;
-    width: 100vw;
-    height: calc(var(--vh, 1vh) * 100);
-    min-height: calc(var(--vh, 1vh) * 100);
-    overflow: hidden; /* Evita el scroll global */
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: calc(var(--vh, 1vh) * 100);
+  min-height: calc(var(--vh, 1vh) * 100);
+  overflow: hidden;
 }
 
 @supports (-webkit-touch-callout: none) {
   .main-app-container,
   .content-container,
   .router-view-wrapper {
-    min-height: -webkit-fill-available; /* ocupa todo el alto real en iOS Safari */
+    min-height: -webkit-fill-available; /* Safari iOS */
   }
 }
 
-/* Oculta el contenido principal por defecto. El Preloader lo pondrá en opacity: 1 al terminar. */
 #main-content {
-    opacity: 0;
-    transition: opacity 1s ease-out;
+  opacity: 0;
+  transition: opacity 1s ease-out;
 }
 
-/* Contenedor principal de las vistas. Ocupa toda la pantalla. */
 .content-container {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
-/* Wrapper de cada vista del router. Es absoluto para que las transiciones funcionen. */
 .router-view-wrapper {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* scroll suave en iOS */
 }
 
-/* ------------------------------------------------ */
-/* --- CLASES DE TRANSICIÓN DE SLIDE UP (Subiendo) --- */
-/* ------------------------------------------------ */
+/* --- Transiciones Slide Up --- */
 .slide-up-enter-active,
 .slide-up-leave-active {
-    transition: transform 0.8s ease-in-out;
+  transition: transform 0.8s ease-in-out;
 }
-
-/* Estado inicial de la nueva vista (entra) */
 .slide-up-enter-from {
-    transform: translateY(100vh);
-    /* La nueva entra desde abajo */
+  transform: translateY(100vh);
 }
-
-/* Estado final de la vista vieja (sale) */
 .slide-up-leave-to {
-    transform: translateY(-100vh);
-    /* La vieja sale por arriba */
+  transform: translateY(-100vh);
 }
 
-/* ------------------------------------------------- */
-/* --- CLASES DE TRANSICIÓN DE SLIDE DOWN (Bajando) --- */
-/* ------------------------------------------------- */
+/* --- Transiciones Slide Down --- */
 .slide-down-enter-active,
 .slide-down-leave-active {
-    transition: transform 0.8s ease-in-out;
+  transition: transform 0.8s ease-in-out;
 }
-
-/* Estado inicial de la nueva vista (entra) */
 .slide-down-enter-from {
-    transform: translateY(-100vh);
-    /* La nueva entra desde arriba */
+  transform: translateY(-100vh);
 }
-
-/* Estado final de la vista vieja (sale) */
 .slide-down-leave-to {
-    transform: translateY(100vh);
-    /* La vieja sale por abajo */
+  transform: translateY(100vh);
 }
 
-/* Asegura que los estados finales y de reposo no tengan transformaciones */
+/* Estados finales */
 .slide-up-enter-to,
 .slide-up-leave-from,
 .slide-down-enter-to,
 .slide-down-leave-from,
 .no-animation-enter-to,
 .no-animation-leave-from {
-    transform: translateY(0);
+  transform: translateY(0);
 }
 </style>

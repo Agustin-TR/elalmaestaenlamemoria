@@ -84,7 +84,7 @@
       </div>
     </div>
 
-    <button class="btn-compra m-4" @click="goToPayment('printed')">Quiero el mío</button>
+    <button class="btn-compra mt-4 mb-5" @click="goToPayment('printed')">Quiero el mío</button>
 
   </section>
 </template>
@@ -153,7 +153,7 @@ export default {
 </script>
 
 <style scoped>
-/* ========= TIENDA (Estilos originales) ========= */
+/* ========= TIENDA ========= */
 
 .info-titulo {
   font-size: 2.5rem;
@@ -227,7 +227,7 @@ export default {
 }
 
 /* ======================================= */
-/* ESTILOS DE COMENTARIOS Y NUEVO FORMULARIO */
+/* ESTILOS DE COMENTARIOS Y FORMULARIO */
 /* ======================================= */
 
 .section-comentarios {
@@ -353,7 +353,7 @@ export default {
   width: 100%;
 }
 
-/* Media Query para forzar 4 columnas en escritorio */
+/* forzar 4 columnas en escritorio */
 @media (min-width: 1200px) {
   .comentarios-grid {
     grid-template-columns: repeat(4, 1fr);

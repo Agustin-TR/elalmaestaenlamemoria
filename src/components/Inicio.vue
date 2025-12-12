@@ -46,7 +46,7 @@ export default {
             globalClickHandler: null,
             BASE_URL: import.meta.env.BASE_URL,
 
-            // Optimización: estado para el fondo actual y cola de preload
+            // estado para el fondo actual y cola de preload
             currentBgUrl: null,
             preloadQueue: [],        // cola de URLs a precargar
             isProcessingQueue: false,
@@ -81,7 +81,7 @@ export default {
         },
 
         /* ======================================================
-         *   CARGA INTELIGENTE DEL FONDO (DECODIFICAR ANTES)
+         *   CARGA INTELIGENTE DEL FONDO
          * ====================================================== */
 
         async loadAndSetBackground(index) {
@@ -174,9 +174,6 @@ export default {
                         this.imageCache.add(url); // marcar como intentada
                     }
                 }
-
-                // pequeña espera opcional para bajar presión si fuera necesario (0ms por defecto)
-                // await new Promise(r => setTimeout(r, 0));
             }
 
             this.isProcessingQueue = false;
@@ -201,7 +198,7 @@ export default {
         },
 
         /* ======================================================
-         *   SISTEMA DE ITEMS + SCROLL (sin tocar tu lógica)
+         *   SISTEMA DE ITEMS + SCROLL
          * ====================================================== */
 
         setItemRef(el) {
@@ -235,10 +232,10 @@ export default {
                 this.activeItemIndex = closestIndex;
                 this.detalle.isVisible = false;
 
-                // 1) Carga segura del fondo (decodifica antes de aplicar)
+                // Carga segura del fondo (decodifica antes de aplicar)
                 this.loadAndSetBackground(closestIndex);
 
-                // 2) Precarga escalonada y serializada de vecinos
+                // Precarga escalonada y serializada de vecinos
                 this.smartNeighborsPreload(closestIndex);
             }
         },

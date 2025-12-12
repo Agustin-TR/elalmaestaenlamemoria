@@ -1,5 +1,5 @@
 <template>
-    <!-- Preloader (igual que el HTML original) -->
+    <!-- Preloader -->
     <div class="preloader" id="preloader" v-if="preloaderVisible" :class="{ 'slide-up': slideUpActive }"
         ref="preloaderEl">
         <div class="text-container">
@@ -87,7 +87,7 @@ export default {
             // Marcamos que se mostró en sessionStorage
             sessionStorage.setItem("preloaderShown", "true");
 
-            // Aseguramos la transición del elemento preloader (igual que en original)
+            // Aseguramos la transición del elemento preloader
             const preloader = this.$refs.preloaderEl;
             if (preloader) {
                 preloader.style.transition = `transform ${SLIDE_UP_TIME}s ease-in-out`;
@@ -136,8 +136,8 @@ export default {
                 setTimeout(mostrarContenido, restante + 1000);
             };
 
-            // Cargamos solo las primeras 5 imágenes para el preloader
-            const primeras = imagenes.slice(0, 5);
+            // Cargamos solo las primeras 2 imágenes para el preloader
+            const primeras = imagenes.slice(0, 2);
             let cargadas = 0;
 
             primeras.forEach((src) => {
@@ -152,7 +152,7 @@ export default {
             });
 
             // Cargamos el resto en segundo plano sin bloquear
-            const restantes = imagenes.slice(5);
+            const restantes = imagenes.slice(2);
             restantes.forEach((src) => {
                 const img = new Image();
                 img.src = src;

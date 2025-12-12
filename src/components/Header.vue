@@ -54,14 +54,16 @@ const props = defineProps({
 #floating-header {
  position: fixed;
  top: 1.5rem;
- left: 50%;
  width: 70%;
- transform: translateX(-50%);
  z-index: 50;
  padding: 0 1rem;
  max-width: 1200px;
  min-width: 300px;
  box-sizing: border-box;
+ margin: 0 auto; /* centra automáticamente */
+ left: 0;
+ right: 0;
+ transform: none;
 }
 
 .floating-tabs {
