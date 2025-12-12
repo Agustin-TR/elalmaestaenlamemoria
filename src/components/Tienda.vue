@@ -12,14 +12,6 @@
         <button class="btn-compra" @click="goToPayment('printed')">Quiero el mío</button>
       </div>
 
-      <div class="version">
-        <h3>Versión digital</h3>
-        <div class="foto-libro">
-          <img src='/img/libro.jpg' alt="libro" />
-        </div>
-        <p>¡Próximamente! Mientras tanto podes disfrutar de la versión impresa</p>
-        <button class="btn-compra" @click="goToPayment('digital')">Quiero el mío</button>
-      </div>
     </div>
   </section>
 

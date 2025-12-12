@@ -55,12 +55,12 @@ const props = defineProps({
  position: fixed;
  top: 1.5rem;
  width: 70%;
- z-index: 20;
+ z-index: 10;
  padding: 0 1rem;
  max-width: 1200px;
  min-width: 300px;
  box-sizing: border-box;
- margin: 0 auto; /* centra automáticamente */
+ margin: 0 auto;
  left: 0;
  right: 0;
  transform: none;
@@ -74,29 +74,30 @@ const props = defineProps({
  width: 100%;
 }
 
-.floating-tabs .tab {
- flex: 1 1 auto; 
- min-width: 0;
- max-width: 100%;
- padding: 0.3rem 2.2rem;
- font-family: 'Cinzel', serif;
- font-weight: bold;
- font-size: clamp(1.1rem, 2vw, 1.3rem);
- text-align: center;
- color: #f5f5f5ba;
- text-decoration: none;
- background-color: rgba(0, 0, 0, 0.25);
- box-shadow: 0 2px 8px rgba(0,0,0,0.35);
- transition: background-color 0.25s ease, transform 0.25s ease;
- overflow: hidden;
- -webkit-backdrop-filter: blur(0.5rem);
- backdrop-filter: blur(0.5rem);
-}
+ .floating-tabs .tab {
+  flex: 1 1 auto; 
+  min-width: 0;
+  max-width: 100%;
+  padding: 0.3rem 2.2rem;
+  font-family: 'Cinzel', serif;
+  font-weight: bold;
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  text-align: center;
+  color: #f5f5f5ba;
+  text-decoration: none;
+  background-color: rgba(0, 0, 0, 0.25);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  transition: background-color 0.25s ease, transform 0.25s ease;
+  overflow: hidden;
+  -webkit-backdrop-filter: blur(0.5rem);
+  backdrop-filter: blur(0.5rem);
+ }
+
 
 /* --- ESTILOS DE ESTADO --- */
 
 .floating-tabs .tab.activo {
- background-color: rgba(0,0,0,0.3);
+ background-color: rgba(0,0,0,0.45);
  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
  color: #fff;
 }

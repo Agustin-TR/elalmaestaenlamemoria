@@ -88,7 +88,7 @@ export default {
 
 <style>
 /* ========================================================
-  ESTILOS GLOBALES Y ESTRUCTURA (FIX ALTURA MÓVIL)
+  ESTILOS GLOBALES Y ESTRUCTURA
   ========================================================
 */
 html,
@@ -97,7 +97,7 @@ body{
  padding: 0;
  width: 100%;
  height: 100%;
- overflow: hidden; /* Crucial para evitar el scroll y el "rebote" de la página completa */
+ overflow: hidden;
 }
 
 /* Contenedores que definen el ALTO de la aplicación */
@@ -109,7 +109,7 @@ body{
   width: 100vw;
   overflow: hidden; /* Evita el scroll global */
     
-    /* Altura dinámica moderna (100dvh)*/
+    /* Altura dinámica moderna*/
     height: 100dvh; 
     min-height: 100dvh;
 
