@@ -15,11 +15,13 @@
     </div>
   </section>
 
-  <PaymentModal 
-    v-if="showModal && modalKey" 
-    :version-key="modalKey" 
-    @close="closeModal" 
-  />
+  <teleport to="body">
+    <PaymentModal 
+      v-if="showModal && modalKey" 
+      :version-key="modalKey" 
+      @close="closeModal" 
+    />
+  </teleport>
 
   <!-- Sección Comentarios y Formulario -->
   <section class="pantalla section-comentarios" id="comentarios">

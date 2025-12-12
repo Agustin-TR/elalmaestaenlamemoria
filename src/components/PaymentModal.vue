@@ -1,57 +1,59 @@
 <template>
-    <div class="modal-overlay" @click.self="$emit('close')">
-        <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="modalTitle"
-            aria-describedby="modalInfo">
-            <button type="button" class="modal-close bi bi-x-circle" @click="$emit('close')"
-                aria-label="Cerrar"></button>
+    <transition name="modal-scale-fade">
+        <div class="modal-overlay" @click.self="$emit('close')">
+            <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="modalTitle"
+                aria-describedby="modalInfo">
+                <button type="button" class="modal-close bi bi-x-circle" @click="$emit('close')"
+                    aria-label="Cerrar"></button>
 
-            <h3 id="modalTitle" class="modal-title">{{ content.title }}</h3>
+                <h3 id="modalTitle" class="modal-title">{{ content.title }}</h3>
 
-            <div class="modal-content-wrapper modal-scrollable-content">
-                <div v-if="versionKey === 'printed'" class="payment-details-block">
-                    <h6 class="detail-label">Tienda/Producto:</h6>
-                    <p class="detail-text bold">{{ content.tienda }}</p>
+                <div class="modal-content-wrapper modal-scrollable-content">
+                    <div v-if="versionKey === 'printed'" class="payment-details-block">
+                        <h6 class="detail-label">Tienda/Producto:</h6>
+                        <p class="detail-text bold">{{ content.tienda }}</p>
 
-                    <h6 class="detail-label">Importe total:</h6>
-                    <p class="detail-text price">{{ content.valor }}</p>
+                        <h6 class="detail-label">Importe total:</h6>
+                        <p class="detail-text price">{{ content.valor }}</p>
 
-                    <div class="alias-container">
-                        <h6 class="detail-label">Alias de Mercado Pago:</h6>
-                        <p class="detail-text alias-code">
-                            {{ content.alias }}
-                            <i class="bi bi-copy ms-2 copy-icon" @click="copiarAlias(content.alias)" tabindex="0"
-                                role="button" @keydown.enter.prevent="copiarAlias(content.alias)"
-                                @keydown.space.prevent="copiarAlias(content.alias)" title="Copiar alias"
-                                aria-label="Copiar alias"></i>
-                        </p>
+                        <div class="alias-container">
+                            <h6 class="detail-label">Alias de Mercado Pago:</h6>
+                            <p class="detail-text alias-code">
+                                {{ content.alias }}
+                                <i class="bi bi-copy ms-2 copy-icon" @click="copiarAlias(content.alias)" tabindex="0"
+                                    role="button" @keydown.enter.prevent="copiarAlias(content.alias)"
+                                    @keydown.space.prevent="copiarAlias(content.alias)" title="Copiar alias"
+                                    aria-label="Copiar alias"></i>
+                            </p>
+                        </div>
+                        <h6 class="detail-label">Titular de la cuenta:</h6>
+                        <p class="detail-text">{{ content.nombre }}</p>
                     </div>
-                    <h6 class="detail-label">Titular de la cuenta:</h6>
-                    <p class="detail-text">{{ content.nombre }}</p>
+
+                    <!-- Mensaje de información importante -->
+                    <div id="modalInfo" class="info-block">
+                        <p class="modal-info">{{ content.info }}</p>
+                        <p class="modal-transferencia m-2">{{ content.transferencia }}</p>
+                    </div>
+
+                    <!-- Botón Mercado Pago -->
+                    <div class="mp-button-container d-flex justify-content-center mb-3" v-if="content.alias">
+                        <button class="btn-mp" @click="goToMp(content.alias)">
+                            <img :src="getMpLogoPath()" alt="Mercado Pago" class="mp-icon" />
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Mensaje de información importante -->
-                <div id="modalInfo" class="info-block">
-                    <p class="modal-info">{{ content.info }}</p>
-                    <p class="modal-transferencia m-2">{{ content.transferencia }}</p>
-                </div>
+                <!-- Mensaje de copiado -->
+                <transition name="fade">
+                    <span v-if="mensajeVisible" class="floating-msg" role="status" aria-live="polite">
+                        <i class="bi bi-check-circle-fill"></i> Copiado
+                    </span>
+                </transition>
 
-                <!-- Botón Mercado Pago -->
-                <div class="mp-button-container d-flex justify-content-center mb-3" v-if="content.alias">
-                    <button class="btn-mp" @click="goToMp(content.alias)">
-                        <img :src="getMpLogoPath()" alt="Mercado Pago" class="mp-icon" />
-                    </button>
-                </div>
             </div>
-
-            <!-- Mensaje de copiado -->
-            <transition name="fade">
-                <span v-if="mensajeVisible" class="floating-msg" role="status" aria-live="polite">
-                    <i class="bi bi-check-circle-fill"></i> Copiado
-                </span>
-            </transition>
-
         </div>
-    </div>
+    </transition>
 </template>
 
 <script>
@@ -375,18 +377,33 @@ export default {
     margin-right: 5px;
 }
 
-/* Transiciones */
+
+/* Transición modal: escala y fade */
+.modal-scale-fade-enter-active,
+.modal-scale-fade-leave-active {
+    transition: opacity 0.35s cubic-bezier(.4,0,.2,1), transform 0.35s cubic-bezier(.4,0,.2,1);
+}
+.modal-scale-fade-enter-from,
+.modal-scale-fade-leave-to {
+    opacity: 0;
+    transform: scale(0.92);
+}
+.modal-scale-fade-enter-to,
+.modal-scale-fade-leave-from {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Transición para el mensaje flotante de copiado */
 .fade-enter-active,
 .fade-leave-active {
     transition: all 0.3s ease;
 }
-
 .fade-enter-from,
 .fade-leave-to {
     opacity: 0;
     transform: translate(-50%, 0);
 }
-
 .fade-enter-to,
 .fade-leave-from {
     opacity: 1;
