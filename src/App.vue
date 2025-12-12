@@ -2,10 +2,7 @@
   <Preloader />
 
   <div class="main-app-container" id="main-content">
-    <Header
-      :seccion-activa="$route.path.substring(1)"
-      @cambiar-seccion="handleCambiarSeccion"
-    />
+    <Header :seccion-activa="$route.path.substring(1)" @cambiar-seccion="handleCambiarSeccion" />
     <div class="content-container">
       <RouterView v-slot="{ Component }">
         <Transition :name="animacionDireccion">
@@ -45,70 +42,89 @@ export default {
     handleCambiarSeccion(targetId) {
       this.$router.push({ path: `/${targetId}` });
     },
+    actualizarVH() {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
   },
   computed: {
     animacionDireccion() {
       const currentPath = this.$route.path;
       const previousPath = this.previousRoutePath;
 
-      if (!previousPath) return 'no-animation';
+      if (!previousPath) {
+        return 'no-animation';
+      }
 
       const indexActual = this.ordenRutas.indexOf(currentPath);
       const indexPrevio = this.ordenRutas.indexOf(previousPath);
 
-      if (indexActual === -1 || indexPrevio === -1) return 'no-animation';
-
-      if (indexActual > indexPrevio) return 'slide-up';
-      if (indexActual < indexPrevio) return 'slide-down';
+      if (indexActual === -1 || indexPrevio === -1) {
+        return 'no-animation';
+      }
+     
+      if (indexActual > indexPrevio) {
+        return 'slide-up';
+      }
+      else if (indexActual < indexPrevio) {
+        return 'slide-down';
+      }
 
       return 'no-animation';
     },
   },
   mounted() {
-    // altura real en móviles (Safari incluido)
-    const actualizarVH = () => {
-      document.documentElement.style.setProperty(
-        '--vh',
-        `${window.innerHeight * 0.01}px`
-      );
-    };
-
-    actualizarVH();
-    window.addEventListener('resize', actualizarVH);
-
-    // Inicializamos ruta previa
     this.previousRoutePath = this.$route.path;
+
+    // ==== PANTALLA COMPLETA REAL ====
+    this.actualizarVH();
+    window.addEventListener('resize', this.actualizarVH);
   },
+  unmounted() {
+    window.removeEventListener('resize', this.actualizarVH);
+  }
 };
 </script>
 
-<style scoped>
+<style>
+/* ========================================================
+  ESTILOS GLOBALES Y ESTRUCTURA (FIX ALTURA MÓVIL)
+  ========================================================
+*/
 html,
-body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
+body{
+ margin: 0;
+ padding: 0;
+ width: 100%;
+ height: 100%;
+ overflow: hidden; /* Crucial para evitar el scroll y el "rebote" de la página completa */
 }
 
+/* Contenedores que definen el ALTO de la aplicación */
 .main-app-container,
 .content-container,
 .router-view-wrapper {
   margin: 0;
   padding: 0;
-  width: 100%;
-  height: calc(var(--vh, 1vh) * 100);
-  min-height: calc(var(--vh, 1vh) * 100);
-  overflow: hidden;
+  width: 100vw;
+  overflow: hidden; /* Evita el scroll global */
+    
+    /* Altura dinámica moderna (100dvh)*/
+    height: 100dvh; 
+    min-height: 100dvh;
+
+    /* Fallback del cálculo JS (--vh) */
+    height: calc(var(--vh, 1vh) * 100);
+    min-height: calc(var(--vh, 1vh) * 100);
 }
 
+/* FIX ESPECÍFICO DE SAFARI iOS/WebKit: */
 @supports (-webkit-touch-callout: none) {
-  .main-app-container,
-  .content-container,
-  .router-view-wrapper {
-    min-height: -webkit-fill-available; /* Safari iOS */
-  }
+    .main-app-container,
+    .content-container,
+    .router-view-wrapper {
+        min-height: -webkit-fill-available; /* Ocupa el alto real en iOS Safari */
+    }
 }
 
 #main-content {
@@ -116,48 +132,71 @@ body {
   transition: opacity 1s ease-out;
 }
 
+/* Contenedor principal de las vistas. */
 .content-container {
   position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
 }
 
+/* Wrapper de cada vista del router. Es el ÚNICO elemento con scroll vertical. */
 .router-view-wrapper {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch; /* scroll suave en iOS */
+  /* Hereda el alto corregido */
+  overflow-y: auto; 
+    /* Mejora la sensación de scroll en iOS */
+    -webkit-overflow-scrolling: touch; 
 }
 
-/* --- Transiciones Slide Up --- */
+
+/* ------------------------------------------------ */
+/* --- CLASES DE TRANSICIÓN DE SLIDE UP (Subiendo) --- */
+/* ------------------------------------------------ */
 .slide-up-enter-active,
 .slide-up-leave-active {
   transition: transform 0.8s ease-in-out;
-}
-.slide-up-enter-from {
-  transform: translateY(100vh);
-}
-.slide-up-leave-to {
-  transform: translateY(-100vh);
+    position: absolute; /* Agregado para que las transiciones de Vue funcionen correctamente */
+    width: 100%;
+    height: 100%;
 }
 
-/* --- Transiciones Slide Down --- */
+/* Estado inicial de la nueva vista (entra) */
+.slide-up-enter-from {
+  transform: translateY(100vh);
+  /* La nueva entra desde abajo */
+}
+
+/* Estado final de la vista vieja (sale) */
+.slide-up-leave-to {
+  transform: translateY(-100vh);
+  /* La vieja sale por arriba */
+}
+
+/* ------------------------------------------------- */
+/* --- CLASES DE TRANSICIÓN DE SLIDE DOWN (Bajando) --- */
+/* ------------------------------------------------- */
 .slide-down-enter-active,
 .slide-down-leave-active {
   transition: transform 0.8s ease-in-out;
-}
-.slide-down-enter-from {
-  transform: translateY(-100vh);
-}
-.slide-down-leave-to {
-  transform: translateY(100vh);
+    position: absolute;
+    width: 100%;
+    height: 100%;
 }
 
-/* Estados finales */
+/* Estado inicial de la nueva vista (entra) */
+.slide-down-enter-from {
+  transform: translateY(-100vh);
+  /* La nueva entra desde arriba */
+}
+
+/* Estado final de la vista vieja (sale) */
+.slide-down-leave-to {
+  transform: translateY(100vh);
+  /* La vieja sale por abajo */
+}
+
+/* Asegura que los estados finales y de reposo no tengan transformaciones */
 .slide-up-enter-to,
 .slide-up-leave-from,
 .slide-down-enter-to,

@@ -31,8 +31,8 @@ export const dataFotografos = [
     },
     { 
         id: 6, 
-        nombre: 'Franco Campanella', 
-        instaHandle: '@ag.ph', 
-        instaLink: 'https://www.instagram.com/francocampanellaa'  
+        nombre: 'Santiago Massimino', 
+        instaHandle: '@santimassi', 
+        instaLink: 'https://www.instagram.com/santimassi'
     },
 ];

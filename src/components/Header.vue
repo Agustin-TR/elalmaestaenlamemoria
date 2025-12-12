@@ -55,7 +55,7 @@ const props = defineProps({
  position: fixed;
  top: 1.5rem;
  width: 70%;
- z-index: 50;
+ z-index: 20;
  padding: 0 1rem;
  max-width: 1200px;
  min-width: 300px;
