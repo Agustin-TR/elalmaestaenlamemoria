@@ -9,19 +9,11 @@
           <img src='/img/libro.jpg' alt="libro" />
         </div>
         <p>Edición limitada en papel reciclado, con sobrecubierta ilustrada. Envío internacional disponible.</p>
-        <button class="btn-compra" @click="goToPayment('printed')">Quiero el mío</button>
+        <button class="btn-compra" @click="comprar">Quiero el mío</button>
       </div>
 
     </div>
   </section>
-
-  <teleport to="body">
-    <PaymentModal 
-      v-if="showModal && modalKey" 
-      :version-key="modalKey" 
-      @close="closeModal" 
-    />
-  </teleport>
 
   <!-- Sección Comentarios y Formulario -->
   <section class="pantalla section-comentarios" id="comentarios">
@@ -78,20 +70,17 @@
       </div>
     </div>
 
-    <button class="btn-compra mt-4 mb-5" @click="goToPayment('printed')">Quiero el mío</button>
+    <button class="btn-compra mt-4 mb-5" @click="comprar">Quiero el mío</button>
 
   </section>
 </template>
 
 <script>
 import { dataComentarios } from '@/data/comentarios.js';
-import PaymentModal from '@/components/PaymentModal.vue';
 
 export default {
   name: 'Tienda',
-  components: {
-    PaymentModal,
-  },
+  inject: ['openPaymentModal'],
   data() {
     return {
       comentarios: dataComentarios,
@@ -134,14 +123,9 @@ export default {
           this.submissionMessage = 'No se pudo conectar con el servidor. Verificá tu conexión.';
         });
     },
-    goToPayment(versionKey) {
-      this.modalKey = versionKey;
-      this.showModal = true;
-    },
-    closeModal() {
-      this.showModal = false;
-      this.modalKey = null;
-    },
+    comprar() {
+      this.openPaymentModal('printed');
+    }
   },
 };
 </script>
@@ -209,7 +193,7 @@ export default {
   background-color: #005f6a;
   color: #fff;
   border: none;
-  padding: 0.6rem 1.8rem;
+  padding: 0.8rem 1.8rem;
   font-size: 1.2rem;
   border-radius: 6px;
   cursor: pointer;
@@ -217,6 +201,7 @@ export default {
 }
 
 .btn-compra:hover {
+  transform: scale(1.1);
   background-color: #003f48;
 }
 

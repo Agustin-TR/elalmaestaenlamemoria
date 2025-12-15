@@ -17,11 +17,23 @@
       </RouterView>
     </div>
   </div>
+
+  <!-- MODAL GLOBAL -->
+  <teleport to="body">
+    <PaymentModal
+      v-if="showPaymentModal && paymentKey"
+      :version-key="paymentKey"
+      @close="closePaymentModal"
+    />
+  </teleport>
+
 </template>
 
+
 <script>
-import Header from './components/Header.vue';
-import Preloader from './components/Preloader.vue';
+import Header from '@/components/Header.vue';
+import Preloader from '@/components/Preloader.vue';
+import PaymentModal from '@/components/PaymentModal.vue';
 
 const ordenRutas = ["/galeria", "/inicio", "/tienda"];
 
@@ -29,12 +41,20 @@ export default {
   name: "App",
   components: {
     Header,
-    Preloader
+    Preloader,
+    PaymentModal,
   },
   data() {
     return {
       ordenRutas,
-      previousRoutePath: null
+      previousRoutePath: null,
+      showPaymentModal: false,
+      paymentKey: null,
+    };
+  },
+  provide() {
+    return {
+      openPaymentModal: this.openPaymentModal
     };
   },
   watch: {
@@ -45,6 +65,14 @@ export default {
   methods: {
     handleCambiarSeccion(targetId) {
       this.$router.push({ path: `/${targetId}` });
+    },
+    openPaymentModal(versionKey) {
+      this.paymentKey = versionKey;
+      this.showPaymentModal = true;
+    },
+    closePaymentModal() {
+      this.showPaymentModal = false;
+      this.paymentKey = null;
     }
   },
   computed: {
@@ -60,10 +88,12 @@ export default {
     }
   },
   mounted() {
-    this.previousRoutePath = this.$route.path;
-  }
+  this.previousRoutePath = this.$route.path;
+  },
+  
 };
 </script>
+
 
 <style>
 
@@ -72,24 +102,20 @@ body {
   margin: 0;
   padding: 0;
   width: 100%;
-  min-height: 100%;
-  overflow-x: hidden;
-}
-
-#app {
-  width: 100%;
-  min-height: 100vh;
+  height: 100%;
+  overflow: hidden;
 }
 
 /* ===============================
    CONTENEDOR RAÍZ
 =============================== */
+
 .main-app-container {
-  display: flex;
-  flex-direction: column;
+  position: fixed;
+  inset: 0;
   width: 100%;
-  min-height: 100vh;
-  /* Respetar muescas/notches en móviles modernos */
+  height: calc(var(--vh, 1vh) * 100);
+  overflow: hidden;
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -97,16 +123,18 @@ body {
 /* ===============================
    CONTENEDOR DE RUTAS
 =============================== */
+
 .content-container {
   position: relative;
-  flex: 1;
   width: 100%;
+  height: 100%;
   overflow: hidden;
 }
 
 /* ===============================
    ROUTER VIEW
 =============================== */
+
 .router-view-wrapper {
   position: absolute;
   inset: 0;
@@ -114,44 +142,46 @@ body {
   height: 100%;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  will-change: transform;
 }
 
 /* ===============================
-   TRANSICIONES (CSS Optimizado)
+   TRANSICIONES
 =============================== */
+
 .slide-up-enter-active,
 .slide-up-leave-active,
 .slide-down-enter-active,
 .slide-down-leave-active {
-  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s ease-in-out;
 }
 
-/* Slide Up: La nueva sube, la vieja sube */
 .slide-up-enter-from {
-  transform: translate3d(0, 100%, 0);
+  transform: translateY(100%);
 }
+
 .slide-up-leave-to {
-  transform: translate3d(0, -100%, 0);
+  transform: translateY(-100%);
 }
 
-/* Slide Down: La nueva baja, la vieja baja */
 .slide-down-enter-from {
-  transform: translate3d(0, -100%, 0);
+  transform: translateY(-100%);
 }
+
 .slide-down-leave-to {
-  transform: translate3d(0, 100%, 0);
+  transform: translateY(100%);
 }
 
-/* Estado final común */
 .slide-up-enter-to,
-.slide-down-enter-to {
-  transform: translate3d(0, 0, 0);
+.slide-up-leave-from,
+.slide-down-enter-to,
+.slide-down-leave-from,
+.no-animation-enter-to,
+.no-animation-leave-from {
+  transform: translateY(0);
 }
 
-/* Sin animación */
-.no-animation-enter-active,
-.no-animation-leave-active {
-  transition: none;
-}
 </style>

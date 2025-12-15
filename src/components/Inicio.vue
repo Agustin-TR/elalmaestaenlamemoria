@@ -24,6 +24,10 @@
                         <div class="item-content">
                             <h2><i class="bi bi-arrow-up"></i></h2>
                         </div>
+
+                        <button class="btn-compra" @click.stop="comprar">
+                            Quiero el mío
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -41,6 +45,7 @@ import { nextTick } from 'vue';
 
 export default {
     name: "Inicio",
+    inject: ['openPaymentModal'],
     data() {
         return {
             itemsData: dataPoemas,
@@ -345,6 +350,9 @@ export default {
             });
             this.detalle.isVisible = false;
         },
+        comprar() {
+            this.openPaymentModal('printed');
+        }
     },
 
     mounted() {
@@ -482,12 +490,28 @@ ul#itemList li.scroll-to-top-item {
     color: #f5f5f5;
     transition: color 0.3s ease;
     filter: none;
-    margin: 8rem 0;
+    margin: 4rem 0;
 }
 
 ul#itemList li.scroll-to-top-item h2 {
     font-size: 5rem;
     line-height: 1;
+}
+
+/* BOTÓN COMPRA GLOBAL */
+.btn-compra {
+    background-color: #005f6a;
+    color: white;
+    border: 1px solid white;
+    padding: 0.8rem 1.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 2rem;
+    transition: transform 0.3s ease;
+}
+.btn-compra:hover {
+    transform: scale(1.1);
+    background-color: #003f48;
 }
 
 /* ========= DETALLE ========= */

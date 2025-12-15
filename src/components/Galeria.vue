@@ -52,6 +52,14 @@
       </ul>
     </div>
   </div>
+
+  <div class="btn-compra-wrapper">
+    <button class="btn-compra" @click="comprar">
+      Quiero el mío
+    </button>
+  </div>
+
+
 </template>
 
 <script>
@@ -60,6 +68,7 @@ import { dataFotografos } from '@/data/fotografos';
 
 export default {
     name: "Galeria",
+    inject: ['openPaymentModal'],
     data() {
         return {
             poemas: dataPoemas, 
@@ -74,6 +83,9 @@ export default {
         this.setupTouchInteraction();
     },
     methods: {
+       comprar() {
+      this.openPaymentModal('printed');
+      },
         // método para prefijar la ruta base a la ruta de la imagen.
         // Esto transforma 'img/casa.JPG' en '/elalmaestaenlamemoria/img/casa.JPG'
         getImagePath(imagePath) {
@@ -331,7 +343,6 @@ export default {
   max-width: 80%;
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 22vh;
 }
 
 .creditos h2 {
@@ -353,5 +364,36 @@ export default {
   font-size: 1.1rem;
   line-height: 1.6;
 }
+
+/* ========= BOTÓN COMPRA GALERÍA ========= */
+
+.btn-compra-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 4rem 0;
+  width: 100%;
+}
+
+.btn-compra {
+  background-color: #005f6a;
+  color: #fff;
+  border: none;
+  padding: 0.8rem 2.4rem;
+  font-size: 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-compra:hover {
+  background-color: #003f48;
+  transform: scale(1.1);
+}
+
+.btn-compra:active {
+  transform: translateY(0);
+}
+
 
 </style>

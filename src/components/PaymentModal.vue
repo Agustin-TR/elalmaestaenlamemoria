@@ -199,8 +199,6 @@ export default {
 .modal-scrollable-content {
     flex-grow: 1;
     overflow-y: auto;
-    padding-right: 5px;
-    margin-right: -5px;
 }
 
 .modal-close {
@@ -323,7 +321,10 @@ export default {
 
 /* BOTON MERCADO PAGO */
 .mp-button-container {
-    display: inline-block;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 1rem;
 }
 
 .btn-mp {
@@ -331,7 +332,7 @@ export default {
     align-items: center;
     justify-content: center;
     background: #ffffff;
-    border: 1px solid #00000030;
+    border: 2px solid #00000030;
     border-radius: 8px;
     padding: 0.1rem 0.1rem;
     max-width: 150px;
