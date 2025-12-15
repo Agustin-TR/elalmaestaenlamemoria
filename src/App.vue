@@ -99,20 +99,22 @@ body {
 }
 
 /* ===============================
-   CONTENEDOR RAÍZ DE LA APP
-   =============================== */
+   CONTENEDOR RAÍZ
+=============================== */
 
 .main-app-container {
   position: fixed;
   inset: 0;
   width: 100%;
-  height: 100%;
+  height: calc(var(--vh, 1vh) * 100);
   overflow: hidden;
- }
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
 
 /* ===============================
    CONTENEDOR DE RUTAS
-   =============================== */
+=============================== */
 
 .content-container {
   position: relative;
@@ -122,8 +124,8 @@ body {
 }
 
 /* ===============================
-   WRAPPER DEL ROUTER VIEW
-   =============================== */
+   ROUTER VIEW
+=============================== */
 
 .router-view-wrapper {
   position: absolute;
@@ -131,12 +133,12 @@ body {
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch; /* Suavidad en móviles */
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ===============================
    TRANSICIONES
-   =============================== */
+=============================== */
 
 .slide-up-enter-active,
 .slide-up-leave-active,
@@ -149,7 +151,6 @@ body {
   transition: transform 0.8s ease-in-out;
 }
 
-/* Slide hacia arriba */
 .slide-up-enter-from {
   transform: translateY(100%);
 }
@@ -158,7 +159,6 @@ body {
   transform: translateY(-100%);
 }
 
-/* Slide hacia abajo */
 .slide-down-enter-from {
   transform: translateY(-100%);
 }
@@ -167,7 +167,6 @@ body {
   transform: translateY(100%);
 }
 
-/* Estado neutro */
 .slide-up-enter-to,
 .slide-up-leave-from,
 .slide-down-enter-to,
