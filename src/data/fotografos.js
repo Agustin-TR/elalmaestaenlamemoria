@@ -13,7 +13,7 @@ export const dataFotografos = [
     },
     { 
         id: 3, 
-        nombre: 'Luana', 
+        nombre: 'Luana Gandolfo', 
         instaHandle: '@', 
         instaLink: ' ' 
     },

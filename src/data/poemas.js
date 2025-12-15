@@ -1,6 +1,6 @@
 export const dataPoemas = [
   { id: 1, title: 'Escrituras efímeras infinitas', fotografoId: 3,
-    bg: 'img/casa.JPG', detalle: 'Premoniciones de seda\n visten mi cuerpo de pasado\n es decir\n mi carne pretérita\n está cubierta de futuro [...]' },
+    bg: 'img/escrituras-efimeras-infinitas.webp', detalle: 'Premoniciones de seda\n visten mi cuerpo de pasado\n es decir\n mi carne pretérita\n está cubierta de futuro [...]' },
   { id: 2, title: '¿Qué te dice tu hoja en blanco?', fotografoId: 2, 
     bg: 'img/Que-te-dice-tu-hoja-en-blanco.webp', detalle: '[...] Ese es el instante\n en el que uno entiende\n lo que significa que la nada\n te devuelva la mirada [...]' },
   { id: 3, title: 'La misma forma dos veces', fotografoId: 1, 
