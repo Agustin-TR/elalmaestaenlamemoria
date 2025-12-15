@@ -65,10 +65,21 @@ export default {
     }
   },
   mounted() {
-    this.previousRoutePath = this.$route.path;
-    this.actualizarVH();
-    window.addEventListener('resize', this.actualizarVH);
-  },
+  this.previousRoutePath = this.$route.path;
+
+  const setVH = () => {
+    document.documentElement.style.setProperty(
+      '--vh',
+      `${window.visualViewport?.height
+        ? window.visualViewport.height * 0.01
+        : window.innerHeight * 0.01}px`
+    );
+  };
+
+  setVH();
+  window.addEventListener('resize', setVH);
+}
+,
   unmounted() {
     window.removeEventListener('resize', this.actualizarVH);
   }
@@ -77,7 +88,7 @@ export default {
 
 
 <style>
-  
+
 html,
 body {
   margin: 0;

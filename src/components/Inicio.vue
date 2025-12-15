@@ -389,13 +389,12 @@ export default {
 #content-container {
     position: relative;
     width: 100%;
-    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
     overflow: hidden;
-    /* Mantiene el scroll dentro de .scroll-container */
     background-color: black;
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
+    background-attachment: scroll;
     transition: background-image 0.4s linear;
 }
 
