@@ -95,34 +95,43 @@ body {
   padding: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 /* ===============================
-   CONTENEDORES DE ALTURA
+   CONTENEDOR RAÍZ DE LA APP
    =============================== */
 
-.main-app-container,
-.content-container,
-.router-view-wrapper {
-  margin: 0;
-  padding: 0;
-  width: 100vw;
+.main-app-container {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-  height: calc(var(--vh, 1vh) * 100);
-  min-height: calc(var(--vh, 1vh) * 100);
+ }
+
+/* ===============================
+   CONTENEDOR DE RUTAS
+   =============================== */
+
+.content-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 /* ===============================
-   CONTENEDOR DE SCROLL
+   WRAPPER DEL ROUTER VIEW
    =============================== */
 
 .router-view-wrapper {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
+  height: 100%;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  -webkit-overflow-scrolling: touch; /* Suavidad en móviles */
 }
 
 /* ===============================
@@ -130,13 +139,17 @@ body {
    =============================== */
 
 .slide-up-enter-active,
-.slide-up-leave-active {
-  transition: transform 0.8s ease-in-out;
+.slide-up-leave-active,
+.slide-down-enter-active,
+.slide-down-leave-active {
   position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
+  transition: transform 0.8s ease-in-out;
 }
 
+/* Slide hacia arriba */
 .slide-up-enter-from {
   transform: translateY(100%);
 }
@@ -145,14 +158,7 @@ body {
   transform: translateY(-100%);
 }
 
-.slide-down-enter-active,
-.slide-down-leave-active {
-  transition: transform 0.8s ease-in-out;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
-
+/* Slide hacia abajo */
 .slide-down-enter-from {
   transform: translateY(-100%);
 }
@@ -161,6 +167,7 @@ body {
   transform: translateY(100%);
 }
 
+/* Estado neutro */
 .slide-up-enter-to,
 .slide-up-leave-from,
 .slide-down-enter-to,

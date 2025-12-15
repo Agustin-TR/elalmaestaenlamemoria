@@ -387,15 +387,12 @@ export default {
 /* ========= INICIO ========= */
 
 #content-container {
-    position: relative;
-    width: 100%;
-    height: calc(var(--vh, 1vh) * 100);
-    overflow: hidden;
-    background-color: black;
-    background-size: cover;
-    background-position: center;
-    background-attachment: scroll;
-    transition: background-image 0.4s linear;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: black;
 }
 
 /* ========= SCROLL CONTAINER ========= */
