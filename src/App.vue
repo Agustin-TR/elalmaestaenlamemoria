@@ -2,7 +2,11 @@
   <Preloader />
 
   <div class="main-app-container" id="main-content">
-    <Header :seccion-activa="$route.path.substring(1)" @cambiar-seccion="handleCambiarSeccion" />
+    <Header
+      :seccion-activa="$route.path.substring(1)"
+      @cambiar-seccion="handleCambiarSeccion"
+    />
+
     <div class="content-container">
       <RouterView v-slot="{ Component }">
         <Transition :name="animacionDireccion">
@@ -14,6 +18,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import Header from './components/Header.vue';
@@ -29,8 +34,8 @@ export default {
   },
   data() {
     return {
-      ordenRutas: ordenRutas,
-      previousRoutePath: null,
+      ordenRutas,
+      previousRoutePath: null
     };
   },
   watch: {
@@ -49,34 +54,18 @@ export default {
   },
   computed: {
     animacionDireccion() {
-      const currentPath = this.$route.path;
-      const previousPath = this.previousRoutePath;
+      if (!this.previousRoutePath) return 'no-animation';
 
-      if (!previousPath) {
-        return 'no-animation';
-      }
+      const actual = this.ordenRutas.indexOf(this.$route.path);
+      const previo = this.ordenRutas.indexOf(this.previousRoutePath);
 
-      const indexActual = this.ordenRutas.indexOf(currentPath);
-      const indexPrevio = this.ordenRutas.indexOf(previousPath);
+      if (actual === -1 || previo === -1) return 'no-animation';
 
-      if (indexActual === -1 || indexPrevio === -1) {
-        return 'no-animation';
-      }
-     
-      if (indexActual > indexPrevio) {
-        return 'slide-up';
-      }
-      else if (indexActual < indexPrevio) {
-        return 'slide-down';
-      }
-
-      return 'no-animation';
-    },
+      return actual > previo ? 'slide-up' : 'slide-down';
+    }
   },
   mounted() {
     this.previousRoutePath = this.$route.path;
-
-    // ==== PANTALLA COMPLETA REAL ====
     this.actualizarVH();
     window.addEventListener('resize', this.actualizarVH);
   },
@@ -86,117 +75,82 @@ export default {
 };
 </script>
 
+
 <style>
-/* ========================================================
-  ESTILOS GLOBALES Y ESTRUCTURA
-  ========================================================
-*/
+  
 html,
-body{
- margin: 0;
- padding: 0;
- width: 100%;
- height: 100%;
- overflow: hidden;
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
-/* Contenedores que definen el ALTO de la aplicación */
+/* ===============================
+   CONTENEDORES DE ALTURA
+   =============================== */
+
 .main-app-container,
 .content-container,
 .router-view-wrapper {
   margin: 0;
   padding: 0;
   width: 100vw;
-  overflow: hidden; /* Evita el scroll global */
-    
-    /* Altura dinámica moderna*/
-    height: 100dvh; 
-    min-height: 100dvh;
-
-    /* Fallback del cálculo JS (--vh) */
-    height: calc(var(--vh, 1vh) * 100);
-    min-height: calc(var(--vh, 1vh) * 100);
+  overflow: hidden;
+  height: calc(var(--vh, 1vh) * 100);
+  min-height: calc(var(--vh, 1vh) * 100);
 }
 
-/* FIX ESPECÍFICO DE SAFARI iOS/WebKit: */
-@supports (-webkit-touch-callout: none) {
-    .main-app-container,
-    .content-container,
-    .router-view-wrapper {
-        min-height: -webkit-fill-available; /* Ocupa el alto real en iOS Safari */
-    }
-}
+/* ===============================
+   CONTENEDOR DE SCROLL
+   =============================== */
 
-#main-content {
-  opacity: 0;
-  transition: opacity 1s ease-out;
-}
-
-/* Contenedor principal de las vistas. */
-.content-container {
-  position: relative;
-}
-
-/* Wrapper de cada vista del router. Es el ÚNICO elemento con scroll vertical. */
 .router-view-wrapper {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  /* Hereda el alto corregido */
-  overflow-y: auto; 
-    /* Mejora la sensación de scroll en iOS */
-    -webkit-overflow-scrolling: touch; 
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
+/* ===============================
+   TRANSICIONES
+   =============================== */
 
-/* ------------------------------------------------ */
-/* --- CLASES DE TRANSICIÓN DE SLIDE UP (Subiendo) --- */
-/* ------------------------------------------------ */
 .slide-up-enter-active,
 .slide-up-leave-active {
   transition: transform 0.8s ease-in-out;
-    position: absolute; /* Agregado para que las transiciones de Vue funcionen correctamente */
-    width: 100%;
-    height: 100%;
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
-/* Estado inicial de la nueva vista (entra) */
 .slide-up-enter-from {
-  transform: translateY(100vh);
-  /* La nueva entra desde abajo */
+  transform: translateY(100%);
 }
 
-/* Estado final de la vista vieja (sale) */
 .slide-up-leave-to {
-  transform: translateY(-100vh);
-  /* La vieja sale por arriba */
+  transform: translateY(-100%);
 }
 
-/* ------------------------------------------------- */
-/* --- CLASES DE TRANSICIÓN DE SLIDE DOWN (Bajando) --- */
-/* ------------------------------------------------- */
 .slide-down-enter-active,
 .slide-down-leave-active {
   transition: transform 0.8s ease-in-out;
-    position: absolute;
-    width: 100%;
-    height: 100%;
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
-/* Estado inicial de la nueva vista (entra) */
 .slide-down-enter-from {
-  transform: translateY(-100vh);
-  /* La nueva entra desde arriba */
+  transform: translateY(-100%);
 }
 
-/* Estado final de la vista vieja (sale) */
 .slide-down-leave-to {
-  transform: translateY(100vh);
-  /* La vieja sale por abajo */
+  transform: translateY(100%);
 }
 
-/* Asegura que los estados finales y de reposo no tengan transformaciones */
 .slide-up-enter-to,
 .slide-up-leave-from,
 .slide-down-enter-to,
@@ -205,4 +159,5 @@ body{
 .no-animation-leave-from {
   transform: translateY(0);
 }
+
 </style>
