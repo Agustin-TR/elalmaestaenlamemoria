@@ -19,7 +19,6 @@
   </div>
 </template>
 
-
 <script>
 import Header from './components/Header.vue';
 import Preloader from './components/Preloader.vue';
@@ -46,10 +45,6 @@ export default {
   methods: {
     handleCambiarSeccion(targetId) {
       this.$router.push({ path: `/${targetId}` });
-    },
-    actualizarVH() {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
     }
   },
   computed: {
@@ -65,27 +60,10 @@ export default {
     }
   },
   mounted() {
-  this.previousRoutePath = this.$route.path;
-
-  const setVH = () => {
-    document.documentElement.style.setProperty(
-      '--vh',
-      `${window.visualViewport?.height
-        ? window.visualViewport.height * 0.01
-        : window.innerHeight * 0.01}px`
-    );
-  };
-
-  setVH();
-  window.addEventListener('resize', setVH);
-}
-,
-  unmounted() {
-    window.removeEventListener('resize', this.actualizarVH);
+    this.previousRoutePath = this.$route.path;
   }
 };
 </script>
-
 
 <style>
 
@@ -94,20 +72,24 @@ body {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100%;
-  overflow: hidden;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+#app {
+  width: 100%;
+  min-height: 100vh;
 }
 
 /* ===============================
    CONTENEDOR RAÍZ
 =============================== */
-
 .main-app-container {
-  position: fixed;
-  inset: 0;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  height: calc(var(--vh, 1vh) * 100);
-  overflow: hidden;
+  min-height: 100vh;
+  /* Respetar muescas/notches en móviles modernos */
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -115,18 +97,16 @@ body {
 /* ===============================
    CONTENEDOR DE RUTAS
 =============================== */
-
 .content-container {
   position: relative;
+  flex: 1;
   width: 100%;
-  height: 100%;
   overflow: hidden;
 }
 
 /* ===============================
    ROUTER VIEW
 =============================== */
-
 .router-view-wrapper {
   position: absolute;
   inset: 0;
@@ -134,46 +114,44 @@ body {
   height: 100%;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  will-change: transform;
 }
 
 /* ===============================
-   TRANSICIONES
+   TRANSICIONES (CSS Optimizado)
 =============================== */
-
 .slide-up-enter-active,
 .slide-up-leave-active,
 .slide-down-enter-active,
 .slide-down-leave-active {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  transition: transform 0.8s ease-in-out;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Slide Up: La nueva sube, la vieja sube */
 .slide-up-enter-from {
-  transform: translateY(100%);
+  transform: translate3d(0, 100%, 0);
 }
-
 .slide-up-leave-to {
-  transform: translateY(-100%);
+  transform: translate3d(0, -100%, 0);
 }
 
+/* Slide Down: La nueva baja, la vieja baja */
 .slide-down-enter-from {
-  transform: translateY(-100%);
+  transform: translate3d(0, -100%, 0);
 }
-
 .slide-down-leave-to {
-  transform: translateY(100%);
+  transform: translate3d(0, 100%, 0);
 }
 
+/* Estado final común */
 .slide-up-enter-to,
-.slide-up-leave-from,
-.slide-down-enter-to,
-.slide-down-leave-from,
-.no-animation-enter-to,
-.no-animation-leave-from {
-  transform: translateY(0);
+.slide-down-enter-to {
+  transform: translate3d(0, 0, 0);
 }
 
+/* Sin animación */
+.no-animation-enter-active,
+.no-animation-leave-active {
+  transition: none;
+}
 </style>

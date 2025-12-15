@@ -1,59 +1,54 @@
 <template>
-    <transition name="modal-scale-fade">
-        <div class="modal-overlay" @click.self="$emit('close')">
-            <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="modalTitle"
-                aria-describedby="modalInfo">
-                <button type="button" class="modal-close bi bi-x-circle" @click="$emit('close')"
-                    aria-label="Cerrar"></button>
+  <transition name="modal-wrapper">
+    <div class="modal-overlay" @click.self="$emit('close')">
+      
+      <div class="modal-container" role="dialog" aria-modal="true">
+        <button type="button" class="modal-close bi bi-x-circle" @click="$emit('close')"></button>
 
-                <h3 id="modalTitle" class="modal-title">{{ content.title }}</h3>
+        <h3 class="modal-title">{{ content.title }}</h3>
 
-                <div class="modal-content-wrapper modal-scrollable-content">
-                    <div v-if="versionKey === 'printed'" class="payment-details-block">
-                        <h6 class="detail-label">Tienda/Producto:</h6>
-                        <p class="detail-text bold">{{ content.tienda }}</p>
+        <div class="modal-content-wrapper modal-scrollable-content">
+          <div v-if="versionKey === 'printed'" class="payment-details-block">
+            <h6 class="detail-label">Producto:</h6>
+            <p class="detail-text bold">{{ content.tienda }}</p>
 
-                        <h6 class="detail-label">Importe total:</h6>
-                        <p class="detail-text price">{{ content.valor }}</p>
+            <h6 class="detail-label">Importe total:</h6>
+            <p class="detail-text price">{{ content.valor }}</p>
 
-                        <div class="alias-container">
-                            <h6 class="detail-label">Alias de Mercado Pago:</h6>
-                            <p class="detail-text alias-code">
-                                {{ content.alias }}
-                                <i class="bi bi-copy ms-2 copy-icon" @click="copiarAlias(content.alias)" tabindex="0"
-                                    role="button" @keydown.enter.prevent="copiarAlias(content.alias)"
-                                    @keydown.space.prevent="copiarAlias(content.alias)" title="Copiar alias"
-                                    aria-label="Copiar alias"></i>
-                            </p>
-                        </div>
-                        <h6 class="detail-label">Titular de la cuenta:</h6>
-                        <p class="detail-text">{{ content.nombre }}</p>
-                    </div>
-
-                    <!-- Mensaje de información importante -->
-                    <div id="modalInfo" class="info-block">
-                        <p class="modal-info">{{ content.info }}</p>
-                        <p class="modal-transferencia m-2">{{ content.transferencia }}</p>
-                    </div>
-
-                    <!-- Botón Mercado Pago -->
-                    <div class="mp-button-container d-flex justify-content-center mb-3" v-if="content.alias">
-                        <button class="btn-mp" @click="goToMp(content.alias)">
-                            <img :src="getMpLogoPath()" alt="Mercado Pago" class="mp-icon" />
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Mensaje de copiado -->
-                <transition name="fade">
-                    <span v-if="mensajeVisible" class="floating-msg" role="status" aria-live="polite">
-                        <i class="bi bi-check-circle-fill"></i> Copiado
-                    </span>
-                </transition>
+            <div class="alias-container">
+              <h6 class="detail-label">Alias Mercado Pago:</h6>
+              <p class="detail-text alias-code">
+                {{ content.alias }}
+                <i class="bi bi-copy ms-2 copy-icon" @click="copiarAlias(content.alias)" role="button"></i>
+              </p>
+            </div>
+            <div>
+                <h6 class="detail-label">Titular de la cuenta:</h6>
+                <p class="detail-text">{{ content.nombre }}</p>
 
             </div>
+          </div>
+
+          <div class="info-block">
+            <p class="modal-info">{{ content.info }}</p>
+            <p class="modal-transferencia">{{ content.transferencia }}</p>
+          </div>
+
+          <div class="mp-button-container" v-if="content.alias">
+            <button class="btn-mp" @click="goToMp(content.alias)">
+              <img :src="getMpLogoPath()" alt="Mercado Pago" class="mp-icon" />
+            </button>
+          </div>
         </div>
-    </transition>
+
+        <transition name="toast">
+          <span v-if="mensajeVisible" class="floating-toast">
+            <i class="bi bi-check-circle-fill"></i> ¡Copiado!
+          </span>
+        </transition>
+      </div>
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -354,50 +349,71 @@ export default {
     display: block;
 }
 
-/* Mensaje Flotante de Copiado */
-.floating-msg {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    z-index: 1001;
-    transform: translate(-50%, -50px);
-    background-color: #00a651;
-    color: #fff;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    white-space: nowrap;
-    pointer-events: none;
-}
-
-.floating-msg i {
-    color: #fff;
-    font-size: 1.1rem;
-    margin-right: 5px;
-}
-
 
 /* Transición modal: escala y fade */
-.modal-scale-fade-enter-active,
-.modal-scale-fade-leave-active {
-    transition: opacity 0.35s cubic-bezier(.4,0,.2,1), transform 0.35s cubic-bezier(.4,0,.2,1);
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px); /* Efecto moderno de desenfoque */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
 }
-.modal-scale-fade-enter-from,
-.modal-scale-fade-leave-to {
-    opacity: 0;
-    transform: scale(0.92);
+
+.modal-container {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
-.modal-scale-fade-enter-to,
-.modal-scale-fade-leave-from {
-    opacity: 1;
-    transform: scale(1);
+
+/* --- ANIMACIÓN PROFESIONAL --- */
+.modal-wrapper-enter-active, .modal-wrapper-leave-active {
+  transition: opacity 0.4s ease;
 }
+
+.modal-wrapper-enter-active .modal-container {
+  animation: modal-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-wrapper-leave-active .modal-container {
+  animation: modal-in 0.3s reverse ease-in;
+}
+
+@keyframes modal-in {
+  0% { transform: scale(0.9) translateY(20px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.modal-wrapper-enter-from, .modal-wrapper-leave-to {
+  opacity: 0;
+}
+
+/* Toast de copiado */
+.floating-toast {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #00a651;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+}
+
+.toast-enter-active, .toast-leave-active { transition: all 0.3s; }
+.toast-enter-from, .toast-leave-to { opacity: 0; transform: translate(-50%, 10px); }
 
 /* Transición para el mensaje flotante de copiado */
 .fade-enter-active,
 .fade-leave-active {
-    transition: all 0.3s ease;
+    transition: all 0.4s ease;
 }
 .fade-enter-from,
 .fade-leave-to {

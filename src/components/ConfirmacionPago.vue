@@ -69,7 +69,7 @@ export default {
             })
                 .then(response => {
                     if (response.ok) {
-                        this.submissionMessage = '¡Datos de compra enviados! Revisa tu email, te contactaremos a la brevedad.';
+                        this.submissionMessage = '¡Datos de compra enviados! Revisá tu email, te contactaremos a la brevedad.';
                         this.submissionSuccess = true;
                         this.formName = '';
                         this.formEmail = '';

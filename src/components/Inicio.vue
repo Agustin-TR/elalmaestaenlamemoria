@@ -1,7 +1,16 @@
 <template>
-    <div id="content-container" :style="backgroundStyle">
-        <div class="scroll-container" ref="scrollContainer" @scroll="handleScroll">
+    <div id="content-container">
+        
+        <transition name="bg-fade">
+            <div 
+                v-if="currentBgUrl" 
+                :key="currentBgUrl"
+                class="background-layer" 
+                :style="backgroundStyle"
+            ></div>
+        </transition>
 
+        <div class="scroll-container" ref="scrollContainer" @scroll="handleScroll">
             <div class="list-wrapper">
                 <ul id="itemList">
                     <li v-for="(item, index) in itemsData" :key="item.id" :ref="el => setItemRef(el)"
@@ -71,18 +80,14 @@ export default {
 
     methods: {
 
-        /* ======================================================
-         *   RUTINAS AUXILIARES
-         * ====================================================== */
+        /* RUTINAS AUXILIARES */
 
         getImagePath(imagePath) {
             const cleanedPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
             return this.BASE_URL + cleanedPath;
         },
 
-        /* ======================================================
-         *   CARGA INTELIGENTE DEL FONDO
-         * ====================================================== */
+        /* CARGA INTELIGENTE DEL FONDO */
 
         async loadAndSetBackground(index) {
             if (index == null) return;
@@ -125,9 +130,7 @@ export default {
             }
         },
 
-        /* ======================================================
-         *   PRELOAD EN COLA (SERIAL) PARA NO SATURAR
-         * ====================================================== */
+        /* PRELOAD EN COLA (SERIAL) PARA NO SATURAR */
 
         enqueuePreload(url) {
             if (!url) return;
@@ -179,9 +182,7 @@ export default {
             this.isProcessingQueue = false;
         },
 
-        /* ======================================================
-         *   Precarga ligera: anterior, actual, siguiente
-         * ====================================================== */
+        /* Precarga ligera: anterior, actual, siguiente */
 
         smartNeighborsPreload(index) {
             if (index == null) return;
@@ -197,9 +198,7 @@ export default {
             });
         },
 
-        /* ======================================================
-         *   SISTEMA DE ITEMS + SCROLL
-         * ====================================================== */
+        /* SISTEMA DE ITEMS + SCROLL */
 
         setItemRef(el) {
             if (el && !this.itemRefs.includes(el)) {
@@ -362,7 +361,6 @@ export default {
             this.updateActiveItem();
 
             // Carga inicial: fondo seguro para el item que quedó activo + vecinos
-            // (esto es ligero y evita la previa descarga masiva)
             this.loadAndSetBackground(this.activeItemIndex);
             this.smartNeighborsPreload(this.activeItemIndex);
         });
@@ -395,6 +393,34 @@ export default {
   background-color: black;
 }
 
+/* ========= BACKGROUND LAYER & TRANSITION ========= */
+
+.background-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Definición de la transición "bg-fade" */
+.bg-fade-enter-active,
+.bg-fade-leave-active {
+    transition: opacity 1s ease-in-out;
+}
+
+.bg-fade-enter-from,
+.bg-fade-leave-to {
+    opacity: 0;
+}
+
+/* IMPORTANTE: Posicionamiento absoluto para que se superpongan durante el fade */
+.bg-fade-enter-active {
+    position: absolute; 
+}
+
+
 /* ========= SCROLL CONTAINER ========= */
 
 .scroll-container {
@@ -402,7 +428,7 @@ export default {
     inset: 0;
     overflow-y: scroll;
     padding: 0;
-    z-index: 0;
+    z-index: 1; /* Encima del fondo */
 }
 
 /* Para navegadores WebKit (Chrome, Safari) */
@@ -413,7 +439,6 @@ export default {
 /* ========= ITEM LIST ========= */
 
 .list-wrapper {
-    /* centrar verticalmente */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -426,7 +451,7 @@ ul#itemList {
     margin: 0;
     width: 100%;
     max-width: 1000px;
-    padding: 40vh 5vw 30vh 5vw;
+    padding: 40vh 5vw 10vh 5vw;
     /*top - right - bottom - left*/
 }
 
