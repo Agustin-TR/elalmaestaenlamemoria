@@ -2,7 +2,10 @@
   <Preloader />
 
   <div class="main-app-container">
-    <Header :seccion-activa="$route.path.substring(1)" @cambiar-seccion="handleCambiarSeccion" />
+    <Header
+      :seccion-activa="$route.path.substring(1)"
+      @cambiar-seccion="handleCambiarSeccion"
+    />
 
     <div class="content-container">
       <RouterView v-slot="{ Component }">
@@ -19,7 +22,11 @@
   </div>
 
   <teleport to="body">
-    <PaymentModal v-if="showPaymentModal && paymentKey" :version-key="paymentKey" @close="closePaymentModal" />
+    <PaymentModal
+      v-if="showPaymentModal && paymentKey"
+      :version-key="paymentKey"
+      @close="closePaymentModal"
+    />
   </teleport>
 </template>
 
@@ -83,23 +90,6 @@ export default {
 
   mounted() {
     this.previousRoutePath = this.$route.path;
-
-    const setViewportHeight = () => {
-      const vh = window.visualViewport
-        ? window.visualViewport.height * 0.01
-        : window.innerHeight * 0.01;
-
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-    };
-
-    setViewportHeight();
-
-    window.visualViewport?.addEventListener('resize', setViewportHeight);
-    window.addEventListener('resize', setViewportHeight);
-  },
-  beforeUnmount() {
-    window.visualViewport?.removeEventListener('resize', this.setViewportHeight);
-    window.removeEventListener('resize', this.setViewportHeight);
   }
 };
 </script>
@@ -118,7 +108,6 @@ body {
 .main-app-container {
   position: fixed;
   inset: 0;
-  height: calc(var(--vh, 1vh) * 100);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -156,21 +145,11 @@ body {
   transition: transform 0.8s ease-in-out;
 }
 
-.slide-up-enter-from {
-  transform: translateY(100%);
-}
+.slide-up-enter-from { transform: translateY(100%); }
+.slide-up-leave-to { transform: translateY(-100%); }
 
-.slide-up-leave-to {
-  transform: translateY(-100%);
-}
-
-.slide-down-enter-from {
-  transform: translateY(-100%);
-}
-
-.slide-down-leave-to {
-  transform: translateY(100%);
-}
+.slide-down-enter-from { transform: translateY(-100%); }
+.slide-down-leave-to { transform: translateY(100%); }
 
 .slide-up-enter-to,
 .slide-up-leave-from,
