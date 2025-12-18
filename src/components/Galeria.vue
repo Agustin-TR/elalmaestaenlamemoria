@@ -1,33 +1,43 @@
 <template>
-  <!--ref para acceder a este elemento desde JS -->
-  <div class="galeria-wrapper" ref="galeriaRoot"> 
-    <!-- Sección galeria -->
+  <!-- Root -->
+  <div class="galeria-wrapper" ref="galeriaRoot">
+
+    <!-- GALERÍA -->
     <section class="pantalla section-galeria" id="galeria">
       <div class="galeria-grid">
-        
-        <div class="foto" v-for="item in galeriaItems" :key="item.id">
-          
+
+        <div
+          class="foto"
+          v-for="item in galeriaItems"
+          :key="item.id"
+        >
           <div class="foto-imagen">
-            <img :src="item.src" :alt="item.poema" loading="lazy"/>
-            
-            <a :href="item.instaLink" 
-               target="_blank" 
-               rel="noopener" 
-               class="overlay-link">
+            <img
+              :src="item.src"
+              :alt="item.poema"
+              loading="lazy"
+            />
+
+            <a
+              :href="item.instaLink"
+              target="_blank"
+              rel="noopener"
+              class="overlay-link"
+            >
               <span>{{ item.instaHandle }}</span>
             </a>
           </div>
-          
+
           <div class="foto-texto">
             <p class="poema">{{ item.poema }}</p>
             <p class="fotografo">{{ item.fotografo }}</p>
           </div>
         </div>
-        
+
       </div>
     </section>
 
-    <!-- Créditos -->
+    <!-- CRÉDITOS -->
     <div class="creditos">
       <h2>Colaboradores</h2>
       <ul>
@@ -48,146 +58,151 @@
         <div v-for="f in fotografos" :key="f.id">
           <p>{{ f.nombre }}</p>
         </div>
-
       </ul>
     </div>
+
+    <!-- BOTÓN COMPRA -->
+    <div class="btn-compra-wrapper">
+      <button class="btn-compra" @click="comprar">
+        Quiero el mío
+      </button>
+    </div>
+
   </div>
-
-  <div class="btn-compra-wrapper">
-    <button class="btn-compra" @click="comprar">
-      Quiero el mío
-    </button>
-  </div>
-
-
 </template>
 
 <script>
-import { dataPoemas } from '@/data/poemas.js';
-import { dataFotografos } from '@/data/fotografos';
+import { dataPoemas } from '@/data/poemas.js'
+import { dataFotografos } from '@/data/fotografos'
 
 export default {
-    name: "Galeria",
-    inject: ['openPaymentModal'],
-    data() {
+  name: 'Galeria',
+  inject: ['openPaymentModal'],
+
+  data() {
+    return {
+      poemas: dataPoemas,
+      fotografos: dataFotografos,
+      BASE_URL: import.meta.env.BASE_URL,
+
+      activeContainer: null,
+      tapTimeout: null,
+      outsideClickHandler: null
+    }
+  },
+
+  mounted() {
+    this.setupTouchInteraction()
+  },
+
+  beforeUnmount() {
+    if (this.outsideClickHandler) {
+      document.removeEventListener('click', this.outsideClickHandler)
+    }
+  },
+
+  methods: {
+    comprar() {
+      this.openPaymentModal('printed')
+    },
+
+    getImagePath(imagePath) {
+      const cleaned = imagePath.startsWith('/')
+        ? imagePath.slice(1)
+        : imagePath
+
+      return this.BASE_URL + cleaned
+    },
+
+    crearFotografosMap() {
+      return this.fotografos.reduce((map, f) => {
+        map[f.id] = f
+        return map
+      }, {})
+    },
+
+    setupTouchInteraction() {
+      const root = this.$refs.galeriaRoot
+      if (!root) return
+
+      const isTouchDevice =
+        window.matchMedia('(hover: none)').matches ||
+        'ontouchstart' in window
+
+      if (!isTouchDevice) return
+
+      const fotos = root.querySelectorAll('.foto')
+
+      fotos.forEach(container => {
+        const link = container.querySelector('.overlay-link')
+        if (!link) return
+
+        container.addEventListener('click', e => {
+          e.preventDefault()
+
+          if (this.activeContainer !== container) {
+            this.clearActive()
+
+            container.classList.add('activo')
+            this.activeContainer = container
+
+            this.tapTimeout = setTimeout(() => {
+              this.clearActive()
+            }, 2500)
+          } else {
+            this.clearActive()
+            window.open(link.href, '_blank')
+          }
+        })
+      })
+
+      this.outsideClickHandler = e => {
+        if (
+          this.activeContainer &&
+          !e.target.closest('.foto')
+        ) {
+          this.clearActive()
+        }
+      }
+
+      document.addEventListener('click', this.outsideClickHandler)
+    },
+
+    clearActive() {
+      if (this.activeContainer) {
+        this.activeContainer.classList.remove('activo')
+        this.activeContainer = null
+      }
+      if (this.tapTimeout) {
+        clearTimeout(this.tapTimeout)
+        this.tapTimeout = null
+      }
+    }
+  },
+
+  computed: {
+    galeriaItems() {
+      const fotografosMap = this.crearFotografosMap()
+
+      return this.poemas.map(poema => {
+        const f = fotografosMap[poema.fotografoId] || {
+          nombre: 'Anónimo',
+          instaHandle: 'N/A',
+          instaLink: '#'
+        }
+
         return {
-            poemas: dataPoemas, 
-            fotografos: dataFotografos,
-            activeContainer: null,
-            tapTimeout: null,
-            BASE_URL: import.meta.env.BASE_URL, // variable de entorno url
-        };
-    },
-    mounted() {
-        // Ejecuta la lógica de doble toque cuando el componente se monta en el DOM
-        this.setupTouchInteraction();
-    },
-    methods: {
-       comprar() {
-      this.openPaymentModal('printed');
-      },
-        // método para prefijar la ruta base a la ruta de la imagen.
-        // Esto transforma 'img/casa.JPG' en '/elalmaestaenlamemoria/img/casa.JPG'
-        getImagePath(imagePath) {
-            const cleanedPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
-            return this.BASE_URL + cleanedPath;
-        },
-        //crea el mapa de búsqueda rápida
-        crearFotografosMap() {
-            return this.fotografos.reduce((map, fotografo) => {
-                map[fotografo.id] = fotografo;
-                return map;
-            }, {});
-        },
-        // ---------- LÓGICA DE DOBLE TOQUE EN CELULAR ----------
-        setupTouchInteraction() {
-            const rootElement = this.$refs.galeriaRoot;
-            
-            if (!rootElement) return;
-
-            const fotoContainers = rootElement.querySelectorAll('.foto'); 
-            
-            let activeContainer = null; 
-            let tapTimeout = null;
-            
-            const isTouchDevice = window.matchMedia('(hover: none)').matches || 
-                                     ('ontouchstart' in window);
-
-            if (!isTouchDevice) {
-                return; 
-            }
-
-            fotoContainers.forEach(container => {
-                const link = container.querySelector('.overlay-link');
-                if (!link) return; 
-
-                container.addEventListener('click', (e) => {
-                    e.preventDefault(); 
-
-                    if (activeContainer !== container) {
-                        // --- Primer Toque: Mostrar Overlay ---
-
-                        if (activeContainer) {
-                            activeContainer.classList.remove('activo');
-                            clearTimeout(tapTimeout);
-                        }
-                        
-                        container.classList.add('activo');
-                        activeContainer = container;
-
-                        tapTimeout = setTimeout(() => {
-                            container.classList.remove('activo');
-                            activeContainer = null;
-                        }, 2500); 
-
-                    } else {
-                        // --- Segundo Toque: Ir al Enlace ---
-
-                        clearTimeout(tapTimeout);
-                        container.classList.remove('activo');
-                        activeContainer = null;
-
-                        window.open(link.href, '_blank');
-                    }
-                });
-            });
-
-            // Clic o tap fuera de una imagen → ocultar overlays activos
-            document.addEventListener('click', (e) => {
-                if (activeContainer && !e.target.closest('.foto')) { 
-                    activeContainer.classList.remove('activo');
-                    activeContainer = null;
-                    clearTimeout(tapTimeout);
-                }
-            });
-        },
-    },
-    computed: {
-        galeriaItems() {
-            // Creamos el mapa de fotógrafos
-            const fotografosMap = this.crearFotografosMap(); 
-
-            // Unimos los datos
-            return this.poemas.map(poema => {
-                const fotografoInfo = fotografosMap[poema.fotografoId] || { 
-                    nombre: 'Anónimo', 
-                    instaHandle: 'N/A', 
-                    instaLink: '#' 
-                };
-
-                return {
-                    id: poema.id,
-                    poema: poema.title, 
-                    // FUNCIÓN DE RUTA
-                    src: this.getImagePath(poema.bg),
-                    fotografo: fotografoInfo.nombre,
-                    instaHandle: fotografoInfo.instaHandle,
-                    instaLink: fotografoInfo.instaLink,
-                };
-            });
-        },
-    },
-};
+          id: poema.id,
+          poema: poema.title,
+          src: this.getImagePath(poema.bg),
+          fotografo: f.nombre,
+          instaHandle: f.instaHandle,
+          instaLink: f.instaLink
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style scoped>
@@ -201,16 +216,15 @@ export default {
 .galeria-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  column-gap: 2rem;
-  row-gap: 3.5rem;
+  gap: 3rem 2rem;
   padding: 2rem;
   max-width: 100%;
-  margin-top: 10vh;
   box-sizing: border-box;
+  margin-top: 10vh;
 }
 
 .foto {
-  display: flex;  
+  display: flex;
   flex-direction: column;
   align-items: center;
 }
@@ -232,7 +246,6 @@ export default {
   z-index: 1;
 }
 
-/* Enlace invisible que cubre toda la imagen*/
 .overlay-link {
   position: absolute;
   inset: 0;
@@ -247,7 +260,7 @@ export default {
   opacity: 0;
   transition: opacity 0.4s ease;
   z-index: 2;
-  pointer-events: none; /*para que no bloquee el click debajo */
+  pointer-events: none;
 }
 
 .overlay-link span {
@@ -258,11 +271,9 @@ export default {
   text-align: center;
 }
 
-/* Hover */
-
 .foto.activo .overlay-link {
-  opacity: 1 !important ;
-  pointer-events: auto; /* Permite el clic/tap en el enlace */
+  opacity: 1 !important;
+  pointer-events: auto;
 }
 
 .foto-imagen:hover {
@@ -277,16 +288,15 @@ export default {
 
 @media (hover: none) {
   .foto-imagen:hover .overlay-link {
-    opacity: 0; /* desactiva hover en pantallas táctiles */
+    opacity: 0;
     pointer-events: none;
   }
 }
 
-
 .foto-texto {
   margin-top: 1.2rem;
   text-align: left;
-  width: 100%; 
+  width: 100%;
 }
 
 .foto-texto .poema {
@@ -316,23 +326,7 @@ export default {
   }
 }
 
-.autor {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0,0,0,0.6);
-  color: #fff;
-  font-size: 0.9rem;
-  padding: 0.5rem;
-  text-align: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.foto:hover .autor {
-  opacity: 1;
-}
+/* ========= CRÉDITOS ========= */
 
 .creditos {
   margin-top: 3rem;
@@ -365,7 +359,7 @@ export default {
   line-height: 1.6;
 }
 
-/* ========= BOTÓN COMPRA GALERÍA ========= */
+/* ========= BOTÓN COMPRA ========= */
 
 .btn-compra-wrapper {
   display: flex;
@@ -394,6 +388,4 @@ export default {
 .btn-compra:active {
   transform: translateY(0);
 }
-
-
 </style>

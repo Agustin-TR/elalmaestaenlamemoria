@@ -1,138 +1,177 @@
 <template>
-  <!-- Sección Pre-compra -->
+  <!-- PRE-COMPRA -->
   <section class="pantalla" id="info">
     <div class="libros m-5">
 
       <div class="version">
         <h3>Versión impresa</h3>
+
         <div class="foto-libro">
-          <img src='/img/libro.jpg' alt="libro" />
+          <img src="/img/libro.jpg" alt="libro" />
         </div>
-        <p>Edición limitada en papel reciclado, con sobrecubierta ilustrada. Envío internacional disponible.</p>
-        <button class="btn-compra" @click="comprar">Quiero el mío</button>
+
+        <p>
+          Edición limitada en papel 90g, con sobrecubierta ilustrada.
+          Envío gratis dentro de CABA.
+        </p>
+
+        <button class="btn-compra" @click="comprar">
+          Quiero el mío
+        </button>
       </div>
 
     </div>
   </section>
 
-  <!-- Sección Comentarios y Formulario -->
+  <!-- COMENTARIOS -->
   <section class="pantalla section-comentarios" id="comentarios">
     <h2 class="info-titulo">Lo que dicen los lectores</h2>
 
-    <!-- Botón de contacto -->
+    <!-- Botón comentar -->
     <div class="center-button-container m-5">
-      <button class="btn-compra btn-comentar" @click="showForm = !showForm">
+      <button class="btn-compra btn-comentar" @click="toggleForm">
         {{ showForm ? 'Ocultar Formulario' : 'Dejá tu comentario' }}
       </button>
     </div>
 
-    <!-- Formulario de Contacto -->
+    <!-- FORMULARIO -->
     <div v-if="showForm" class="contact-form-container mb-5">
-
-      <form class="contact-form" @submit.prevent="submitForm" action="https://formspree.io/f/xgvrvrrr" method="POST">
+      <form class="contact-form" @submit.prevent="submitForm">
         <h4 class="form-title">Sé parte del poemario</h4>
         <h6 class="form-title2">Contanos qué sentiste</h6>
 
         <div class="form-group">
           <label for="name">Nombre</label>
-          <input type="text" id="name" name="name" v-model="formName" required>
+          <input id="name" type="text" v-model="formName" required />
         </div>
 
         <div class="form-group">
-          <label for="email">Email (Opcional, para respuesta)</label>
-          <input type="email" id="email" name="email" v-model="formEmail" placeholder="ejemplo@correo.com">
+          <label for="email">
+            Email (Opcional, para respuesta)
+          </label>
+          <input id="email" type="email" v-model="formEmail" placeholder="ejemplo@correo.com" />
         </div>
 
         <div class="form-group">
           <label for="comment">Comentario</label>
-          <textarea id="comment" name="comment" v-model="formComment" rows="5" required></textarea>
+          <textarea id="comment" rows="5" v-model="formComment" required />
         </div>
 
-        <button type="submit" class="btn-submit">Enviar Mensaje</button>
+        <button type="submit" class="btn-submit">
+          Enviar Mensaje
+        </button>
 
-        <p v-if="submissionMessage" class="submission-message">{{ submissionMessage }}</p>
-
+        <p v-if="submissionMessage" class="submission-message">
+          {{ submissionMessage }}
+        </p>
       </form>
     </div>
 
-    <!-- Grid de Comentarios -->
+    <!-- GRID COMENTARIOS -->
     <div class="comentarios-grid mb-10">
       <div v-for="comentario in comentarios" :key="comentario.id" class="comentario-card">
         <div class="comentario-header">
-          <!-- Icono de comillas -->
           <svg class="quote-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-            <path
-              d="M448 318.5c0 53.6-43.1 97.4-96.2 97.5-52.9.2-95.8-43.5-95.9-97.4-.1-53.5 43.1-97.5 96.2-97.5 52.9-.1 95.8 43.6 95.9 97.4zM192 318.5c0 53.6-43.1 97.4-96.2 97.5-52.9.2-95.8-43.5-95.9-97.4-.1-53.5 43.1-97.5 96.2-97.5 52.9-.1 95.8 43.6 95.9 97.4z" />
+            <path d="M448 318.5c0 53.6-43.1 97.4-96.2 97.5
+              -52.9.2-95.8-43.5-95.9-97.4
+              -.1-53.5 43.1-97.5 96.2-97.5
+              52.9-.1 95.8 43.6 95.9 97.4z
+              M192 318.5c0 53.6-43.1 97.4
+              -96.2 97.5-52.9.2-95.8-43.5
+              -95.9-97.4-.1-53.5 43.1-97.5
+              96.2-97.5 52.9-.1 95.8 43.6
+              95.9 97.4z" />
           </svg>
-          <p class="nombre-usuario">— {{ comentario.nombreUsuario }}</p>
+
+          <p class="nombre-usuario">
+            — {{ comentario.nombreUsuario }}
+          </p>
         </div>
-        <p class="comentario-texto">{{ comentario.comentario }}</p>
+
+        <p class="comentario-texto">
+          {{ comentario.comentario }}
+        </p>
       </div>
     </div>
 
-    <button class="btn-compra mt-4 mb-5" @click="comprar">Quiero el mío</button>
+    <button class="btn-compra mt-4 mb-5" @click="comprar">
+      Quiero el mío
+    </button>
 
   </section>
 </template>
 
 <script>
-import { dataComentarios } from '@/data/comentarios.js';
+import { dataComentarios } from '@/data/comentarios.js'
 
 export default {
   name: 'Tienda',
   inject: ['openPaymentModal'],
+
   data() {
     return {
       comentarios: dataComentarios,
+
       showForm: false,
       formName: '',
       formEmail: '',
       formComment: '',
-      submissionMessage: null,
-      showModal: false,
-      modalKey: null,
-    };
-  },
-  methods: {
-    submitForm() {
-      const formData = new FormData();
-      formData.append('name', this.formName);
-      formData.append('email', this.formEmail);
-      formData.append('message', this.formComment);
-
-      fetch('https://formspree.io/f/xgvrvrrr', {
-        method: 'POST',
-        headers: { Accept: 'application/json' },
-        body: formData,
-      })
-        .then(response => {
-          if (response.ok) {
-            this.submissionMessage = '¡Gracias por tu mensaje! Hemos recibido tu información.';
-            this.formName = '';
-            this.formEmail = '';
-            this.formComment = '';
-            setTimeout(() => {
-              this.submissionMessage = null;
-              this.showForm = false;
-            }, 4000);
-          } else {
-            this.submissionMessage = 'Hubo un error al enviar el formulario. Intentá nuevamente.';
-          }
-        })
-        .catch(() => {
-          this.submissionMessage = 'No se pudo conectar con el servidor. Verificá tu conexión.';
-        });
-    },
-    comprar() {
-      this.openPaymentModal('printed');
+      submissionMessage: null
     }
   },
-};
+
+  methods: {
+    toggleForm() {
+      this.showForm = !this.showForm
+    },
+
+    comprar() {
+      this.openPaymentModal('printed')
+    },
+
+    async submitForm() {
+      const formData = new FormData()
+      formData.append('name', this.formName)
+      formData.append('email', this.formEmail)
+      formData.append('message', this.formComment)
+
+      try {
+        const res = await fetch(
+          'https://formspree.io/f/xgvrvrrr',
+          {
+            method: 'POST',
+            headers: { Accept: 'application/json' },
+            body: formData
+          }
+        )
+
+        if (!res.ok) {
+          throw new Error('Error de envío')
+        }
+
+        this.submissionMessage =
+          '¡Gracias por tu mensaje! Hemos recibido tu información.'
+
+        this.formName = ''
+        this.formEmail = ''
+        this.formComment = ''
+
+        setTimeout(() => {
+          this.submissionMessage = null
+          this.showForm = false
+        }, 4000)
+
+      } catch (e) {
+        this.submissionMessage =
+          'Hubo un error al enviar el formulario. Intentá nuevamente.'
+      }
+    }
+  }
+}
 </script>
 
 <style scoped>
 /* ========= TIENDA ========= */
-
 .info-titulo {
   font-size: 2.5rem;
   color: #333;
@@ -208,7 +247,6 @@ export default {
 /* ======================================= */
 /* ESTILOS DE COMENTARIOS Y FORMULARIO */
 /* ======================================= */
-
 .section-comentarios {
   background-color: #f8f8f8;
   min-height: 80vh;

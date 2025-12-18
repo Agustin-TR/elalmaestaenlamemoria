@@ -1,34 +1,27 @@
 <template>
   <Preloader />
 
-  <div class="main-app-container" id="main-content">
-    <Header
-      :seccion-activa="$route.path.substring(1)"
-      @cambiar-seccion="handleCambiarSeccion"
-    />
+  <div class="main-app-container">
+    <Header :seccion-activa="$route.path.substring(1)" @cambiar-seccion="handleCambiarSeccion" />
 
     <div class="content-container">
       <RouterView v-slot="{ Component }">
         <Transition :name="animacionDireccion">
           <div :key="$route.path" class="router-view-wrapper">
-            <component :is="Component" />
+            <!-- SOLO ESTE SE ANIMA -->
+            <div class="route-scroll-area">
+              <component :is="Component" />
+            </div>
           </div>
         </Transition>
       </RouterView>
     </div>
   </div>
 
-  <!-- MODAL GLOBAL -->
   <teleport to="body">
-    <PaymentModal
-      v-if="showPaymentModal && paymentKey"
-      :version-key="paymentKey"
-      @close="closePaymentModal"
-    />
+    <PaymentModal v-if="showPaymentModal && paymentKey" :version-key="paymentKey" @close="closePaymentModal" />
   </teleport>
-
 </template>
-
 
 <script>
 import Header from '@/components/Header.vue';
@@ -39,11 +32,8 @@ const ordenRutas = ["/galeria", "/inicio", "/tienda"];
 
 export default {
   name: "App",
-  components: {
-    Header,
-    Preloader,
-    PaymentModal,
-  },
+  components: { Header, Preloader, PaymentModal },
+
   data() {
     return {
       ordenRutas,
@@ -52,16 +42,19 @@ export default {
       paymentKey: null,
     };
   },
+
   provide() {
     return {
       openPaymentModal: this.openPaymentModal
     };
   },
+
   watch: {
     '$route'(to, from) {
       this.previousRoutePath = from.path;
     }
   },
+
   methods: {
     handleCambiarSeccion(targetId) {
       this.$router.push({ path: `/${targetId}` });
@@ -75,6 +68,7 @@ export default {
       this.paymentKey = null;
     }
   },
+
   computed: {
     animacionDireccion() {
       if (!this.previousRoutePath) return 'no-animation';
@@ -83,20 +77,34 @@ export default {
       const previo = this.ordenRutas.indexOf(this.previousRoutePath);
 
       if (actual === -1 || previo === -1) return 'no-animation';
-
       return actual > previo ? 'slide-up' : 'slide-down';
     }
   },
+
   mounted() {
-  this.previousRoutePath = this.$route.path;
+    this.previousRoutePath = this.$route.path;
+
+    const setViewportHeight = () => {
+      const vh = window.visualViewport
+        ? window.visualViewport.height * 0.01
+        : window.innerHeight * 0.01;
+
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+
+    setViewportHeight();
+
+    window.visualViewport?.addEventListener('resize', setViewportHeight);
+    window.addEventListener('resize', setViewportHeight);
   },
-  
+  beforeUnmount() {
+    window.visualViewport?.removeEventListener('resize', this.setViewportHeight);
+    window.removeEventListener('resize', this.setViewportHeight);
+  }
 };
 </script>
 
-
 <style>
-
 html,
 body {
   margin: 0;
@@ -106,56 +114,45 @@ body {
   overflow: hidden;
 }
 
-/* ===============================
-   CONTENEDOR RAÍZ
-=============================== */
-
+/* CONTENEDOR RAÍZ */
 .main-app-container {
   position: fixed;
   inset: 0;
-  width: 100%;
   height: calc(var(--vh, 1vh) * 100);
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* ===============================
-   CONTENEDOR DE RUTAS
-=============================== */
-
+/* CONTENEDOR DE RUTAS */
 .content-container {
   position: relative;
-  width: 100%;
-  height: 100%;
+  flex: 1;
   overflow: hidden;
 }
 
-/* ===============================
-   ROUTER VIEW
-=============================== */
-
+/* ELEMENTO ANIMADO */
 .router-view-wrapper {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
+  overflow: hidden;
+}
+
+/* ÁREA DE SCROLL REAL */
+.route-scroll-area {
+  position: absolute;
+  inset: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
 
-/* ===============================
-   TRANSICIONES
-=============================== */
-
+/* TRANSICIONES */
 .slide-up-enter-active,
 .slide-up-leave-active,
 .slide-down-enter-active,
 .slide-down-leave-active {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
   transition: transform 0.8s ease-in-out;
 }
 
@@ -183,5 +180,4 @@ body {
 .no-animation-leave-from {
   transform: translateY(0);
 }
-
 </style>

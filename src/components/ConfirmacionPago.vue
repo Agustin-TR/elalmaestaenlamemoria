@@ -102,7 +102,6 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 80vh;
     padding: 2rem;
     background-color: #f4f4f4;
 }
