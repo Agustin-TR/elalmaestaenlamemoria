@@ -57,19 +57,25 @@ export default {
   },
 
   watch: {
-    '$route'(to, from) {
+    $route(to, from) {
       this.previousRoutePath = from.path;
     }
+  },
+
+  mounted() {
+    this.previousRoutePath = this.$route.path;
   },
 
   methods: {
     handleCambiarSeccion(targetId) {
       this.$router.push({ path: `/${targetId}` });
     },
+
     openPaymentModal(versionKey) {
       this.paymentKey = versionKey;
       this.showPaymentModal = true;
     },
+
     closePaymentModal() {
       this.showPaymentModal = false;
       this.paymentKey = null;
@@ -84,58 +90,70 @@ export default {
       const previo = this.ordenRutas.indexOf(this.previousRoutePath);
 
       if (actual === -1 || previo === -1) return 'no-animation';
+
       return actual > previo ? 'slide-up' : 'slide-down';
     }
-  },
-
-  mounted() {
-    this.previousRoutePath = this.$route.path;
   }
 };
 </script>
 
 <style>
+/* ===============================
+   BASE (NO ROMPE SAFARI)
+================================ */
+
 html,
 body {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100%;
-  overflow: hidden;
+  min-height: 100%;
+  overflow-x: hidden;
 }
 
-/* CONTENEDOR RAÍZ */
+/* ===============================
+   ROOT APP
+================================ */
+
 .main-app-container {
-  position: fixed;
-  inset: 0;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
-/* CONTENEDOR DE RUTAS */
+/* ===============================
+   CONTENEDOR DE RUTAS
+================================ */
+
 .content-container {
-  position: relative;
   flex: 1;
+  position: relative;
   overflow: hidden;
 }
 
-/* ELEMENTO ANIMADO */
+/* ===============================
+   WRAPPER ANIMADO
+================================ */
+
 .router-view-wrapper {
   position: absolute;
   inset: 0;
-  overflow: hidden;
 }
 
-/* ÁREA DE SCROLL REAL */
+/* ===============================
+   SCROLL REAL
+================================ */
+
 .route-scroll-area {
-  position: absolute;
-  inset: 0;
+  height: 100%;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
 
-/* TRANSICIONES */
+/* ===============================
+   TRANSICIONES
+================================ */
+
 .slide-up-enter-active,
 .slide-up-leave-active,
 .slide-down-enter-active,
@@ -145,11 +163,21 @@ body {
   transition: transform 0.8s ease-in-out;
 }
 
-.slide-up-enter-from { transform: translateY(100%); }
-.slide-up-leave-to { transform: translateY(-100%); }
+.slide-up-enter-from {
+  transform: translateY(100%);
+}
 
-.slide-down-enter-from { transform: translateY(-100%); }
-.slide-down-leave-to { transform: translateY(100%); }
+.slide-up-leave-to {
+  transform: translateY(-100%);
+}
+
+.slide-down-enter-from {
+  transform: translateY(-100%);
+}
+
+.slide-down-leave-to {
+  transform: translateY(100%);
+}
 
 .slide-up-enter-to,
 .slide-up-leave-from,
