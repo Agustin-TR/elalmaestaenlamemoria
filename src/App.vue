@@ -1,7 +1,7 @@
 <template>
   <Preloader />
 
-  <div id="app-root" class="main-app-container">
+  <div class="main-app-container" id="main-content">
     <Header
       :seccion-activa="$route.path.substring(1)"
       @cambiar-seccion="handleCambiarSeccion"
@@ -11,16 +11,14 @@
       <RouterView v-slot="{ Component }">
         <Transition :name="animacionDireccion">
           <div :key="$route.path" class="router-view-wrapper">
-            <!-- SOLO ESTE SE ANIMA -->
-            <div class="route-scroll-area">
-              <component :is="Component" />
-            </div>
+            <component :is="Component" />
           </div>
         </Transition>
       </RouterView>
     </div>
   </div>
 
+  <!-- MODAL GLOBAL -->
   <teleport to="body">
     <PaymentModal
       v-if="showPaymentModal && paymentKey"
@@ -28,7 +26,9 @@
       @close="closePaymentModal"
     />
   </teleport>
+
 </template>
+
 
 <script>
 import Header from '@/components/Header.vue';
@@ -39,8 +39,11 @@ const ordenRutas = ["/galeria", "/inicio", "/tienda"];
 
 export default {
   name: "App",
-  components: { Header, Preloader, PaymentModal },
-
+  components: {
+    Header,
+    Preloader,
+    PaymentModal,
+  },
   data() {
     return {
       ordenRutas,
@@ -49,39 +52,29 @@ export default {
       paymentKey: null,
     };
   },
-
   provide() {
     return {
       openPaymentModal: this.openPaymentModal
     };
   },
-
   watch: {
-    $route(to, from) {
+    '$route'(to, from) {
       this.previousRoutePath = from.path;
     }
   },
-
-  mounted() {
-    this.previousRoutePath = this.$route.path;
-  },
-
   methods: {
     handleCambiarSeccion(targetId) {
       this.$router.push({ path: `/${targetId}` });
     },
-
     openPaymentModal(versionKey) {
       this.paymentKey = versionKey;
       this.showPaymentModal = true;
     },
-
     closePaymentModal() {
       this.showPaymentModal = false;
       this.paymentKey = null;
     }
   },
-
   computed: {
     animacionDireccion() {
       if (!this.previousRoutePath) return 'no-animation';
@@ -93,58 +86,59 @@ export default {
 
       return actual > previo ? 'slide-up' : 'slide-down';
     }
-  }
+  },
+  mounted() {
+  this.previousRoutePath = this.$route.path;
+  },
+  
 };
 </script>
 
+
 <style>
-/* ===============================
-   BASE (NO ROMPE SAFARI)
-================================ */
 
 html,
 body {
   margin: 0;
   padding: 0;
   width: 100%;
-  min-height: 100%;
-  overflow-x: hidden;
-}
-
-/* ===============================
-   ROOT APP
-================================ */
-
-.main-app-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ===============================
-   CONTENEDOR DE RUTAS
-================================ */
-
-.content-container {
-  flex: 1;
-  position: relative;
+  height: 100%;
   overflow: hidden;
 }
 
 /* ===============================
-   WRAPPER ANIMADO
-================================ */
+   CONTENEDOR RAÍZ
+=============================== */
+
+.main-app-container {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: calc(var(--vh, 1vh) * 100);
+  overflow: hidden;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ===============================
+   CONTENEDOR DE RUTAS
+=============================== */
+
+.content-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ===============================
+   ROUTER VIEW
+=============================== */
 
 .router-view-wrapper {
   position: absolute;
   inset: 0;
-}
-
-/* ===============================
-   SCROLL REAL
-================================ */
-
-.route-scroll-area {
+  width: 100%;
   height: 100%;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -152,7 +146,7 @@ body {
 
 /* ===============================
    TRANSICIONES
-================================ */
+=============================== */
 
 .slide-up-enter-active,
 .slide-up-leave-active,
@@ -160,6 +154,8 @@ body {
 .slide-down-leave-active {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   transition: transform 0.8s ease-in-out;
 }
 
@@ -187,4 +183,5 @@ body {
 .no-animation-leave-from {
   transform: translateY(0);
 }
+
 </style>
