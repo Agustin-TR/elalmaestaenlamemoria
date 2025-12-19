@@ -1,7 +1,7 @@
 <template>
   <Preloader />
 
-  <div class="main-app-container">
+  <div id="app-root" class="main-app-container">
     <Header
       :seccion-activa="$route.path.substring(1)"
       @cambiar-seccion="handleCambiarSeccion"

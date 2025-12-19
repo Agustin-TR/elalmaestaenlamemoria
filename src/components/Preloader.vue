@@ -20,11 +20,12 @@
 </template>
 
 <script>
-const SLIDE_UP_TIME = 800; // ms
-const FADE_IN_TIME = 300; // ms
-const ANIMATION_START_DELAY = 1500; // ms
-const BAR_ANIMATION_DURATION = 1000; // ms
-const FINAL_DELAY = 500; // ms
+    
+const SLIDE_UP_TIME = 800;
+const FADE_IN_TIME = 300;
+const ANIMATION_START_DELAY = 1500;
+const BAR_ANIMATION_DURATION = 1000;
+const FINAL_DELAY = 500;
 
 export default {
   name: "Preloader",
@@ -37,11 +38,13 @@ export default {
       revealedNameShow: false,
       slideUpActive: false,
       windowLoaded: false,
+      animationFinished: false,
     };
   },
 
   mounted() {
     document.body.style.overflow = "hidden";
+
     this.initPreloader();
 
     if (document.readyState === "complete") {
@@ -56,16 +59,13 @@ export default {
   },
 
   methods: {
-    /* ===========================
-       VISIBILIDAD APP
-       =========================== */
     mostrarApp() {
       document.body.style.overflow = "auto";
-      const main = document.getElementById("main-content");
-      if (main) main.style.opacity = 1;
     },
 
-    ocultarPreloader() {
+    cerrarPreloader() {
+      if (this.slideUpActive) return;
+
       this.slideUpActive = true;
 
       setTimeout(() => {
@@ -74,23 +74,22 @@ export default {
       }, SLIDE_UP_TIME);
     },
 
-    /* ===========================
-       SECUENCIA VISUAL ORIGINAL
-       =========================== */
+    checkCerrar() {
+      if (this.windowLoaded && this.animationFinished) {
+        this.cerrarPreloader();
+      }
+    },
+
     startAnimationSequence() {
-      // barra
       this.revealBarAnimate = true;
 
-      // nombre
       setTimeout(() => {
         this.revealedNameShow = true;
       }, 100);
 
-      // slide-up final (MISMO TIMING QUE ANTES)
       setTimeout(() => {
-        if (this.windowLoaded) {
-          this.ocultarPreloader();
-        }
+        this.animationFinished = true;
+        this.checkCerrar();
       }, BAR_ANIMATION_DURATION + FINAL_DELAY);
     },
 
@@ -103,11 +102,9 @@ export default {
 
       sessionStorage.setItem("preloaderShown", "true");
 
-      // fade in texto base
       setTimeout(() => {
         this.baseTextShow = true;
 
-        // delay largo antes de animar (RESPETADO)
         setTimeout(() => {
           this.startAnimationSequence();
         }, ANIMATION_START_DELAY);
@@ -115,42 +112,28 @@ export default {
       }, FADE_IN_TIME);
     },
 
-    /* ===========================
-       PRELOAD IMÁGENES
-       =========================== */
     handleWindowLoad() {
       this.windowLoaded = true;
+      this.checkCerrar();
 
       const imagenes = Array.from(
         document.querySelectorAll("[data-bg]")
       ).map(el => el.getAttribute("data-bg"));
 
-      if (!imagenes.length) return;
-
-      // primeras 2 bloquean
-      let cargadas = 0;
-      const primeras = imagenes.slice(0, 2);
-
-      primeras.forEach(src => {
+      imagenes.slice(0, 2).forEach(src => {
         const img = new Image();
         img.src = src;
-        img.onload = img.onerror = () => {
-          cargadas++;
-          if (cargadas === primeras.length && this.slideUpActive) {
-            this.ocultarPreloader();
-          }
-        };
       });
 
-      // resto en background
       imagenes.slice(2).forEach(src => {
         const img = new Image();
         img.src = src;
       });
-    },
-  },
+    }
+  }
 };
 </script>
+
 
 <style scoped>
 /* ========= PRELOADER ========= */
