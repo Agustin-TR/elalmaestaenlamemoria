@@ -2,6 +2,8 @@
   <!-- Root -->
   <div class="galeria-wrapper" ref="galeriaRoot">
 
+    <p> git commit -m "fix preload"</p>
+
     <!-- GALERÍA -->
     <section class="pantalla section-galeria" id="galeria">
       <div class="galeria-grid">

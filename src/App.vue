@@ -11,14 +11,16 @@
       <RouterView v-slot="{ Component }">
         <Transition :name="animacionDireccion">
           <div :key="$route.path" class="router-view-wrapper">
-            <component :is="Component" />
+            <!-- SCROLL REAL, COMO ANTES -->
+            <div class="route-scroll-area">
+              <component :is="Component" />
+            </div>
           </div>
         </Transition>
       </RouterView>
     </div>
   </div>
 
-  <!-- MODAL GLOBAL -->
   <teleport to="body">
     <PaymentModal
       v-if="showPaymentModal && paymentKey"
@@ -26,7 +28,6 @@
       @close="closePaymentModal"
     />
   </teleport>
-
 </template>
 
 
@@ -102,22 +103,13 @@ body {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100%;
-  overflow: hidden;
 }
 
-/* ===============================
-   CONTENEDOR RAÍZ
-=============================== */
 
 .main-app-container {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: calc(var(--vh, 1vh) * 100);
-  overflow: hidden;
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ===============================
@@ -125,20 +117,25 @@ body {
 =============================== */
 
 .content-container {
+  flex: 1;
   position: relative;
-  width: 100%;
-  height: 100%;
   overflow: hidden;
 }
 
 /* ===============================
-   ROUTER VIEW
+   WRAPPER ANIMADO
 =============================== */
 
 .router-view-wrapper {
   position: absolute;
   inset: 0;
-  width: 100%;
+}
+
+/* ===============================
+   SCROLL REAL
+=============================== */
+
+.route-scroll-area {
   height: 100%;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -154,8 +151,6 @@ body {
 .slide-down-leave-active {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
   transition: transform 0.8s ease-in-out;
 }
 
