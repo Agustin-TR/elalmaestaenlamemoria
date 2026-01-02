@@ -20,7 +20,7 @@ export const dataPoemas = [
   { id: 10, title: 'Te miro y la Luna', fotografoId: ' ',
     bg: 'img/foto10.png', detalle: '[...] Tengo un poco de celos\n he de admitirlo sin vergüenza\n resulta que mi lugar favorito\n es el mismo que el de la Luna [...]' },
   { id: 11, title: 'Testarudo', fotografoIdId: 4,
-    bg: 'img/foto11.jpg', detalle: '[...] con mi dedo te grabaré\n un signo una mueca [...] ' },
+    bg: 'img/Testarudo.webp', detalle: '[...] con mi dedo te grabaré\n un signo una mueca [...] ' },
   { id: 12, title: 'Sueño que me sueñes', fotografoId: 6,
     bg: 'img/ramas.JPG', detalle: '[...] los colores y la música se esconden\n en tus latidos y en tu pelo [...]' },
   { id: 13, title: 'El sol y la flor son lo mismo en vos', fotografoId: ' ',

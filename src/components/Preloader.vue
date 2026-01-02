@@ -1,12 +1,11 @@
 <template>
   <div
     v-if="preloaderVisible"
+    ref="preloaderEl"
     class="preloader"
     :class="{ 'slide-up': slideUpActive }"
-    ref="preloaderEl"
   >
     <div class="text-container">
-      <!-- TEXTO BASE -->
       <h1
         class="base-text"
         :class="{ show: baseTextShow }"
@@ -14,8 +13,10 @@
         El alma está en la memoria
       </h1>
 
-      <!-- BARRA -->
-      <div class="reveal-bar" :class="{ animate: revealBarAnimate }">
+      <div
+        class="reveal-bar"
+        :class="{ animate: revealBarAnimate }"
+      >
         <span
           class="revealed-name"
           :class="{ show: revealedNameShow }"
@@ -27,16 +28,19 @@
   </div>
 </template>
 
+
 <script>
-// ==========================================
-// CONFIGURACIÓN DE TIEMPOS
-// ==========================================
-const TIME_FADE_IN_TEXT = 300;
-const TIME_START_DELAY = 1500;
-const TIME_BAR_ANIMATION = 800;
-const TIME_NAME_OFFSET = 100;
-const TIME_FINAL_HOLD = 500;
-const TIME_SLIDE_UP_SEC = 0.8;
+// ==============================
+// TIMINGS
+// ==============================
+const TIMING = {
+  FADE_IN_TEXT: 300,
+  START_DELAY: 1500,
+  BAR_ANIMATION: 800,
+  NAME_OFFSET: 100,
+  FINAL_HOLD: 500,
+  SLIDE_UP_SEC: 0.8,
+};
 
 export default {
   name: "Preloader",
@@ -48,25 +52,70 @@ export default {
       revealBarAnimate: false,
       revealedNameShow: false,
       slideUpActive: false,
-      fontReady: false,
     };
   },
 
   async mounted() {
+    // Early exit: nada se ejecuta
+    if (sessionStorage.getItem("preloaderShown")) {
+      this.preloaderVisible = false;
+      this.showMainContent();
+      return;
+    }
+
+    sessionStorage.setItem("preloaderShown", "true");
+
     document.body.style.overflow = "hidden";
 
-    // ESPERAMOS EXPLÍCITAMENTE A LA FUENTE
     await this.waitForFonts();
 
-    this.initPreloader();
+    this.setupTransition();
+    this.startTimeline();
   },
 
   methods: {
     async waitForFonts() {
-      if (document.fonts && document.fonts.ready) {
+      if (document.fonts?.ready) {
         await document.fonts.ready;
       }
-      this.fontReady = true;
+    },
+
+    setupTransition() {
+      this.$refs.preloaderEl.style.transition =
+        `transform ${TIMING.SLIDE_UP_SEC}s ease-in-out`;
+    },
+
+    startTimeline() {
+      // Texto base
+      setTimeout(() => {
+        this.baseTextShow = true;
+      }, TIMING.FADE_IN_TEXT);
+
+      // Reveal bar
+      setTimeout(() => {
+        this.revealBarAnimate = true;
+      }, TIMING.FADE_IN_TEXT + TIMING.START_DELAY);
+
+      // Nombre
+      setTimeout(() => {
+        this.revealedNameShow = true;
+      }, TIMING.FADE_IN_TEXT + TIMING.START_DELAY + TIMING.NAME_OFFSET);
+
+      // Slide up
+      setTimeout(() => {
+        this.slideUpActive = true;
+      }, TIMING.FADE_IN_TEXT + TIMING.START_DELAY + TIMING.BAR_ANIMATION + TIMING.FINAL_HOLD);
+
+      // Cleanup final
+      setTimeout(() => {
+        this.preloaderVisible = false;
+        this.showMainContent();
+      }, TIMING.FADE_IN_TEXT
+        + TIMING.START_DELAY
+        + TIMING.BAR_ANIMATION
+        + TIMING.FINAL_HOLD
+        + TIMING.SLIDE_UP_SEC * 1000
+      );
     },
 
     showMainContent() {
@@ -74,54 +123,7 @@ export default {
       const main = document.getElementById("main-content");
       if (main) main.style.opacity = "1";
     },
-
-    startAnimationSequence() {
-      this.revealBarAnimate = true;
-
-      setTimeout(() => {
-        this.revealedNameShow = true;
-      }, TIME_NAME_OFFSET);
-
-      setTimeout(() => {
-        this.slideUpActive = true;
-
-        setTimeout(() => {
-          this.preloaderVisible = false;
-          this.showMainContent();
-        }, TIME_SLIDE_UP_SEC * 1000);
-
-      }, TIME_BAR_ANIMATION + TIME_FINAL_HOLD);
-    },
-
-    initPreloader() {
-      if (sessionStorage.getItem("preloaderShown")) {
-        this.preloaderVisible = false;
-        this.showMainContent();
-        return;
-      }
-
-      sessionStorage.setItem("preloaderShown", "true");
-
-      // transición dinámica
-      this.$nextTick(() => {
-        if (this.$refs.preloaderEl) {
-          this.$refs.preloaderEl.style.transition =
-            `transform ${TIME_SLIDE_UP_SEC}s ease-in-out`;
-        }
-      });
-
-      // EL TEXTO SOLO APARECE CUANDO LA FUENTE YA ESTÁ LISTA
-      setTimeout(() => {
-        if (this.fontReady) {
-          this.baseTextShow = true;
-
-          setTimeout(() => {
-            this.startAnimationSequence();
-          }, TIME_START_DELAY);
-        }
-      }, TIME_FADE_IN_TEXT);
-    }
-  }
+  },
 };
 </script>
 

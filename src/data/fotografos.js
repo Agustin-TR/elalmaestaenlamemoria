@@ -19,7 +19,7 @@ export const dataFotografos = [
     },
     { 
         id: 4, 
-        nombre: 'Maiten', 
+        nombre: 'Maiten Gonzalez', 
         instaHandle: '@maitengonzalezat', 
         instaLink: 'https://www.instagram.com/maitengonzalezat'  
     },
