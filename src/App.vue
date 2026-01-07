@@ -98,6 +98,8 @@ export default {
 
 <style>
 
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Tourney:ital,wght@0,100..900;1,100..900&display=swap');
+
 html,
 body {
   margin: 0;
@@ -132,11 +134,10 @@ body {
 }
 
 /* ===============================
-   SCROLL REAL
+   SCROLL
 =============================== */
 
 .route-scroll-area {
-  height: 100%;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
