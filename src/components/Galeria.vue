@@ -2,7 +2,7 @@
   <!-- Root -->
   <div class="galeria-wrapper" ref="galeriaRoot">
 
-    <p> git commit -m "nuevo preloader"</p>
+    <p> git commit -m "nuevo preloader 2"</p>
 
     <!-- GALERÍA -->
     <section class="pantalla section-galeria" id="galeria">
@@ -38,6 +38,13 @@
 
       </div>
     </section>
+
+    <!-- BOTÓN COMPRA -->
+    <div class="btn-compra-wrapper">
+      <button class="btn-compra" @click="comprar">
+        Quiero el mío
+      </button>
+    </div>
 
     <!-- CRÉDITOS -->
     <div class="creditos">

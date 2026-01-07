@@ -11,7 +11,7 @@
       <RouterView v-slot="{ Component }">
         <Transition :name="animacionDireccion">
           <div :key="$route.path" class="router-view-wrapper">
-            <!-- SCROLL REAL, COMO ANTES -->
+            <!-- SCROLL -->
             <div class="route-scroll-area">
               <component :is="Component" />
             </div>

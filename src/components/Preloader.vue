@@ -150,10 +150,10 @@ export default {
 .text-container {
   position: relative;
   text-align: center;
+  font-family: 'Cinzel', serif;
 }
 
 .base-text {
-  font-family: 'Cinzel', serif;
   font-weight: bold;
   font-size: 6vw;
   margin: 0;
@@ -187,7 +187,6 @@ export default {
 }
 
 .revealed-name {
-  font-family: 'Cinzel', serif;
   color: white;
   font-weight: bold;
   font-size: 8vw;
