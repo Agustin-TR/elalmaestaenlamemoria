@@ -98,8 +98,6 @@ export default {
 
 <style>
 
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Tourney:ital,wght@0,100..900;1,100..900&display=swap');
-
 html,
 body {
   margin: 0;

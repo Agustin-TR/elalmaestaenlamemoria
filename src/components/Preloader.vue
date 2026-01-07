@@ -150,6 +150,7 @@ export default {
   white-space: nowrap;
   opacity: 0;
   transition: opacity 0.5s ease-in;
+  font-weight: bold;
 }
 
 .base-text.show {
