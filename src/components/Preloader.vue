@@ -130,6 +130,15 @@ export default {
 <style scoped>
 /* ========= PRELOADER ========= */
 
+.preloader,
+.text-container,
+.base-text,
+.revealed-name {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+}
+
+
 .preloader {
   position: fixed;
   inset: 0;
@@ -138,7 +147,6 @@ export default {
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  font-family: 'Cinzel', serif;
 }
 
 .preloader.slide-up {
@@ -150,7 +158,6 @@ export default {
 .text-container {
   position: relative;
   text-align: center;
-  font-family: 'Cinzel', serif;
 }
 
 .base-text {
@@ -161,7 +168,6 @@ export default {
   white-space: nowrap;
   opacity: 0;
   transition: opacity 0.5s ease-in;
-  font-family: 'Cinzel', serif;
 }
 
 .base-text.show {

@@ -2,7 +2,7 @@
   <!-- Root -->
   <div class="galeria-wrapper" ref="galeriaRoot">
 
-    <p> git commit -m "main ok"</p>
+    <p> git commit -m "font 400 preloader"</p>
 
     <!-- GALERÍA -->
     <section class="pantalla section-galeria" id="galeria">
