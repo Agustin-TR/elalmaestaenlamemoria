@@ -128,9 +128,6 @@ export default {
 </script>
 
 <style scoped>
-
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap');
-
 /* ========= PRELOADER ========= */
 
 .preloader {

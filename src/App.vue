@@ -109,7 +109,6 @@ body {
 
 
 .main-app-container {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -138,6 +137,7 @@ body {
 =============================== */
 
 .route-scroll-area {
+  height: 100%;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
