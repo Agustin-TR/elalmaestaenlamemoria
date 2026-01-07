@@ -130,15 +130,6 @@ export default {
 <style scoped>
 /* ========= PRELOADER ========= */
 
-.preloader,
-.text-container,
-.base-text,
-.revealed-name {
-  font-family: 'Cinzel', serif;
-  font-weight: 700;
-}
-
-
 .preloader {
   position: fixed;
   inset: 0;
@@ -161,7 +152,6 @@ export default {
 }
 
 .base-text {
-  font-weight: bold;
   font-size: 6vw;
   margin: 0;
   line-height: 1.2;
