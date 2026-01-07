@@ -67,19 +67,11 @@ export default {
 
     document.body.style.overflow = "hidden";
 
-    await this.waitForFonts();
-
     this.setupTransition();
     this.startTimeline();
   },
 
   methods: {
-    async waitForFonts() {
-      if (document.fonts?.ready) {
-        await document.fonts.ready;
-      }
-    },
-
     setupTransition() {
       this.$refs.preloaderEl.style.transition =
         `transform ${TIMING.SLIDE_UP_SEC}s ease-in-out`;
@@ -185,7 +177,6 @@ export default {
 
 .revealed-name {
   color: white;
-  font-weight: bold;
   font-size: 8vw;
   opacity: 0;
   transition: opacity 0.3s ease;

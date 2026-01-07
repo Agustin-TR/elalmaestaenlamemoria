@@ -2,7 +2,7 @@
   <!-- Root -->
   <div class="galeria-wrapper" ref="galeriaRoot">
 
-    <p> git commit -m "main.css update"</p>
+    <p> git commit -m "preloader 5"</p>
 
     <!-- GALERÍA -->
     <section class="pantalla section-galeria" id="galeria">
