@@ -2,7 +2,7 @@
   <!-- Root -->
   <div class="galeria-wrapper" ref="galeriaRoot">
 
-    <p> git commit -m "preloader 6"</p>
+    <p> git commit -m "fotos nuevas"</p>
 
     <!-- GALERÍA -->
     <section class="pantalla section-galeria" id="galeria">
@@ -60,6 +60,11 @@
         </li>
         <li>Paula Kempfert</li>
         <li>Renata Fain</li>
+        <br>
+        <li>
+          <h3>Selección de poemas y fotografías</h3>
+        </li>
+        <li>Tadeo Orellana</li>
         <br>
         <li>
           <h3>Fotografía</h3>

@@ -7,7 +7,7 @@
         <h3>Versión impresa</h3>
 
         <div class="foto-libro">
-          <img src="/img/libro.jpg" alt="libro" />
+          <img src="/img/portada.webp" alt="libro" />
         </div>
 
         <p>

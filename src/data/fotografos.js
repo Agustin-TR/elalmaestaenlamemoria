@@ -31,129 +31,135 @@ export const dataFotografos = [
     },
     { 
         id: 6, 
-        nombre: 'Agustina Avalos', 
+        nombre: 'Veronica', 
         instaHandle: '@', 
         instaLink: 'https://www.instagram.com/'
     },
     { 
         id: 7, 
-        nombre: 'Jr Corpa', 
-        instaHandle: '@jrcorpa', 
-        instaLink: 'https://www.instagram.com/jrkorpa'
+        nombre: 'Albelo', 
+        instaHandle: '@', 
+        instaLink: ''
     },
     { 
         id: 8, 
-        nombre: 'Tanya Barrow', 
-        instaHandle: '@mummy_barrow', 
-        instaLink: 'https://www.instagram.com/mummy_barrow'
+        nombre: 'Clinaz', 
+        instaHandle: '@', 
+        instaLink: ''
     },
     { 
         id: 9, 
-        nombre: 'Mariola Grobelska', 
+        nombre: 'Colombo', 
         instaHandle: '@', 
         instaLink: ''
     },
     { 
         id: 10, 
-        nombre: '', 
+        nombre: 'Correa', 
         instaHandle: '@', 
         instaLink: ''
     },
     { 
         id: 11, 
-        nombre: '', 
+        nombre: 'Cuccato', 
         instaHandle: '@', 
         instaLink: ''
     },
     { 
         id: 12, 
-        nombre: '', 
+        nombre: 'Galvan', 
         instaHandle: '@', 
         instaLink: ''
     },
     { 
         id: 13, 
-        nombre: '', 
+        nombre: 'Gisela Nuñez', 
         instaHandle: '@', 
         instaLink: ''
     },
     { 
         id: 14, 
-        nombre: '', 
+        nombre: 'Gomez', 
         instaHandle: '@', 
         instaLink: ''
     },
     { 
         id: 15, 
-        nombre: '', 
+        nombre: 'Ledesma', 
         instaHandle: '@', 
         instaLink: ''
     },
     { 
         id: 16, 
-        nombre: '', 
+        nombre: 'Melisa Caputo', 
         instaHandle: '@', 
         instaLink: ''
     },
     { 
         id: 17, 
-        nombre: '', 
+        nombre: 'Pereyra Durán', 
         instaHandle: '@', 
         instaLink: ''
     },
-    { 
+     { 
         id: 18, 
-        nombre: '', 
+        nombre: 'Taboada', 
         instaHandle: '@', 
         instaLink: ''
     },
     { 
-        id: 19, 
-        nombre: '', 
-        instaHandle: '@', 
-        instaLink: ''
+        id: 19,
+        nombre: 'Jr Corpa', 
+        instaHandle: '@jrcorpa', 
+        instaLink: 'https://www.instagram.com/jrkorpa'
     },
     { 
         id: 20, 
-        nombre: '', 
-        instaHandle: '@', 
-        instaLink: ''
+        nombre: 'Tanya Barrow', 
+        instaHandle: '@mummy_barrow', 
+        instaLink: 'https://www.instagram.com/mummy_barrow'
     },
     { 
         id: 21, 
-        nombre: '', 
+        nombre: 'Mariola Grobelska', 
         instaHandle: '@', 
         instaLink: ''
     },
     { 
         id: 22, 
-        nombre: '', 
+        nombre: 'Eddson Lens y Roman Melnychuk', 
         instaHandle: '@', 
         instaLink: ''
     },
-    { 
+      { 
         id: 23, 
-        nombre: '', 
+        nombre: 'Ieva Balta', 
         instaHandle: '@', 
         instaLink: ''
     },
     { 
         id: 24, 
-        nombre: '', 
-        instaHandle: '@', 
-        instaLink: ''
+        nombre: 'Talal elmountassir', 
+        instaHandle: '@elmountassir_26', 
+        instaLink: 'https://www.instagram.com/elmountassir_26'
     },
     { 
         id: 25, 
-        nombre: '', 
-        instaHandle: '@', 
-        instaLink: ''
+        nombre: 'Karl Hedin', 
+        instaHandle: '@kh.fotografi_', 
+        instaLink: 'https://www.instagram.com/kh.fotografi_'
     },
     { 
         id: 26, 
-        nombre: '', 
-        instaHandle: '@', 
-        instaLink: ''
+        nombre: 'Tamara Harhai', 
+        instaHandle: '@tamara_harhai', 
+        instaLink: 'https://www.instagram.com/tamara_harhai'
+    },
+    { 
+        id: 27, 
+        nombre: 'Alejandro Barba', 
+        instaHandle: '@alejandrobrb', 
+        instaLink: 'https://www.instagram.com/alejandrobrb'
     },
     { 
         id: 50, 
