@@ -2,30 +2,31 @@
   <!-- Root -->
   <div class="galeria-wrapper" ref="galeriaRoot">
 
-    <p> git commit -m "fotos nuevas"</p>
+    <p> git commit -m "portada"</p>
 
     <!-- GALERÍA -->
     <section class="pantalla section-galeria" id="galeria">
+
+       <!-- FOTO PORTADA -->
+        <div class="foto foto-portada">
+          <div class="foto-imagen">
+            <img :src="getImagePath('img/portada.webp')" alt="Imagen principal" loading="eager" />
+          </div>
+          <div class="foto-texto">
+            <p class="fotografo">Adrián Rolo Cuevas</p>
+            </div>
+        </div>
+
+
       <div class="galeria-grid">
 
-        <div
-          class="foto"
-          v-for="item in galeriaItems"
-          :key="item.id"
-        >
-          <div class="foto-imagen">
-            <img
-              :src="item.src"
-              :alt="item.poema"
-              loading="lazy"
-            />
+       
 
-            <a
-              :href="item.instaLink"
-              target="_blank"
-              rel="noopener"
-              class="overlay-link"
-            >
+        <div class="foto" v-for="item in galeriaItems" :key="item.id">
+          <div class="foto-imagen">
+            <img :src="item.src" :alt="item.poema" loading="lazy" />
+
+            <a :href="item.instaLink" target="_blank" rel="noopener" class="overlay-link">
               <span>{{ item.instaHandle }}</span>
             </a>
           </div>
@@ -49,31 +50,41 @@
     <!-- CRÉDITOS -->
     <div class="creditos">
       <h2>Colaboradores</h2>
-      <ul>
-        <li>
+
+      <ul class="creditos-lista">
+        <li class="bloque-creditos">
           <h3>Autor</h3>
+          <ul>
+            <li>Agustín Rojas</li>
+          </ul>
         </li>
-        <li>Agustin Rojas</li>
-        <br>
-        <li>
+
+        <li class="bloque-creditos">
           <h3>Diseño y edición</h3>
+          <ul>
+            <li>Paula Kempfert</li>
+            <li>Renata Fain</li>
+          </ul>
         </li>
-        <li>Paula Kempfert</li>
-        <li>Renata Fain</li>
-        <br>
-        <li>
+
+        <li class="bloque-creditos">
           <h3>Selección de poemas y fotografías</h3>
+          <ul>
+            <li>Tadeo Orellana</li>
+          </ul>
         </li>
-        <li>Tadeo Orellana</li>
-        <br>
-        <li>
+
+        <li class="bloque-creditos">
           <h3>Fotografía</h3>
+          <ul class="creditos-fotografos">
+            <li v-for="f in fotografos" :key="f.id">
+              {{ f.nombre }}
+            </li>
+          </ul>
         </li>
-        <div v-for="f in fotografos" :key="f.id">
-          <p>{{ f.nombre }}</p>
-        </div>
       </ul>
     </div>
+
 
     <!-- BOTÓN COMPRA -->
     <div class="btn-compra-wrapper">
@@ -234,7 +245,6 @@ export default {
   padding: 2rem;
   max-width: 100%;
   box-sizing: border-box;
-  margin-top: 10vh;
 }
 
 .foto {
@@ -292,7 +302,7 @@ export default {
 
 .foto-imagen:hover {
   transform: scale(1.02);
-  box-shadow: 0 12px 28px rgba(0,0,0,0.55);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
 }
 
 .foto-imagen:hover .overlay-link {
@@ -340,6 +350,27 @@ export default {
   }
 }
 
+/* ========= PORTADA ========= */
+.foto-portada {
+  grid-column: 1 / -1;
+  max-width: 85%; /* ocupa todo el ancho disponible */
+  max-height: 600px; 
+  margin: 5rem auto 1rem auto;
+  justify-content: center;
+}
+
+@media (max-width: 600px) {
+  .foto-portada {
+    height: 300px;
+    width: 100%;
+  }
+}
+
+.foto-portada .foto-imagen {
+  aspect-ratio: 1 / 2;
+}
+
+
 /* ========= CRÉDITOS ========= */
 
 .creditos {
@@ -361,7 +392,7 @@ export default {
 
 .creditos h3 {
   font-size: 1.5rem;
-  margin-bottom: 0.3rem;
+  margin: 0.7rem 0rem 0.2rem 0rem;
   text-align: left;
   color: #ac7f4c;
 }
@@ -372,6 +403,23 @@ export default {
   font-size: 1.1rem;
   line-height: 1.6;
 }
+
+.creditos-fotografos {
+  margin-top: 0.5rem;
+}
+
+/* Pantallas grandes */
+@media (min-width: 1200px) {
+  .creditos-fotografos {
+    column-count: 2;
+    column-gap: 3rem;
+  }
+
+  .creditos-fotografos p {
+    break-inside: avoid;
+  }
+}
+
 
 /* ========= BOTÓN COMPRA ========= */
 

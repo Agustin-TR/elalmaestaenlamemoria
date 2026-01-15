@@ -61,9 +61,9 @@ export const dataFotografos = [
     },
     { 
         id: 11, 
-        nombre: 'Cuccato', 
-        instaHandle: '@', 
-        instaLink: ''
+        nombre: 'Paloma Catalina Cucatto Facciuto', 
+        instaHandle: '@palocucatto', 
+        instaLink: 'https://www.instagram.com/palocucatto'
     },
     { 
         id: 12, 
@@ -97,9 +97,9 @@ export const dataFotografos = [
     },
     { 
         id: 17, 
-        nombre: 'Pereyra Durán', 
-        instaHandle: '@', 
-        instaLink: ''
+        nombre: 'Lucas Pereyra Durán', 
+        instaHandle: '@lpereyra29', 
+        instaLink: 'https://www.instagram.com/lpereyra29'
     },
      { 
         id: 18, 
