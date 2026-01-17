@@ -25,21 +25,21 @@ export const dataFotografos = [
     },
     { 
         id: 5, 
-        nombre: 'Santiago Massimino', 
+        nombre: 'Santi Massimino', 
         instaHandle: '@santimassi', 
         instaLink: 'https://www.instagram.com/santimassi'
     },
     { 
         id: 6, 
-        nombre: 'Veronica', 
-        instaHandle: '@', 
-        instaLink: 'https://www.instagram.com/'
+        nombre: 'Veronica Gentile', 
+        instaHandle: '@veretriz', 
+        instaLink: 'https://www.instagram.com/veretriz'
     },
     { 
         id: 7, 
-        nombre: 'Albelo', 
-        instaHandle: '@', 
-        instaLink: ''
+        nombre: 'Yasmín Ailén Albelo', 
+        instaHandle: '@yas_albelo', 
+        instaLink: 'https://www.instagram.com/yas_albelo'
     },
     { 
         id: 8, 
@@ -67,33 +67,33 @@ export const dataFotografos = [
     },
     { 
         id: 12, 
-        nombre: 'Galvan', 
-        instaHandle: '@', 
-        instaLink: ''
+        nombre: 'Sofia Galvan', 
+        instaHandle: '@sofiagalvph', 
+        instaLink: 'https://www.instagram.com/sofiagalvph'
     },
     { 
         id: 13, 
-        nombre: 'Gisela Nuñez', 
-        instaHandle: '@', 
-        instaLink: ''
+        nombre: 'Gise Nuñez', 
+        instaHandle: '@gisekbj', 
+        instaLink: 'https://www.instagram.com/gisekbj'
     },
     { 
         id: 14, 
-        nombre: 'Gomez', 
-        instaHandle: '@', 
-        instaLink: ''
+        nombre: 'Mariano Gómez', 
+        instaHandle: '@marianogomez_fotografia.ph', 
+        instaLink: 'https://www.instagram.com/marianogomez_fotografia.ph'
     },
     { 
         id: 15, 
-        nombre: 'Ledesma', 
-        instaHandle: '@', 
-        instaLink: ''
+        nombre: 'Marisa Ledesma', 
+        instaHandle: '@marisaledesmafoto', 
+        instaLink: 'https://www.instagram.com/marisaledesmafoto'
     },
     { 
         id: 16, 
         nombre: 'Melisa Caputo', 
-        instaHandle: '@', 
-        instaLink: ''
+        instaHandle: '@fragmentsoftime__', 
+        instaLink: 'https://www.instagram.com/fragmentsoftime__'
     },
     { 
         id: 17, 

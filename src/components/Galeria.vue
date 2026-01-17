@@ -2,7 +2,7 @@
   <!-- Root -->
   <div class="galeria-wrapper" ref="galeriaRoot">
 
-    <p> git commit -m "portada"</p>
+    <p> git commit -m "instalink portada"</p>
 
     <!-- GALERÍA -->
     <section class="pantalla section-galeria" id="galeria">
@@ -11,8 +11,12 @@
         <div class="foto foto-portada">
           <div class="foto-imagen">
             <img :src="getImagePath('img/portada.webp')" alt="Imagen principal" loading="eager" />
+            <a href="https://www.instagram.com/adrianhmuxk" target="_blank" rel="noopener" class="overlay-link">
+              <span>@adrianhmuxk</span>
+            </a>
           </div>
           <div class="foto-texto">
+            <p class="poema">Portada</p>
             <p class="fotografo">Adrián Rolo Cuevas</p>
             </div>
         </div>
@@ -354,7 +358,7 @@ export default {
 .foto-portada {
   grid-column: 1 / -1;
   max-width: 85%; /* ocupa todo el ancho disponible */
-  max-height: 600px; 
+  max-height: 800px; 
   margin: 5rem auto 1rem auto;
   justify-content: center;
 }

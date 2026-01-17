@@ -48,7 +48,7 @@ export const dataPoemas = [
   { id: 24, title: 'Perspectiva', fotografoId: 22,
     bg: 'img/perspectiva.webp', detalle: '[...] es fácil vivir sin vos [...]' },
   { id: 25, title: 'Cartografía del deseo', fotografoId: 6,
-    bg: 'img/', detalle: '¿Qué había antes del inicio del tiempo?\n Una boca sedienta y una mano curiosa. [...]' },
+    bg: 'img/cartografia-del-deseo.webp', detalle: '¿Qué había antes del inicio del tiempo?\n Una boca sedienta y una mano curiosa. [...]' },
   { id: 26, title: 'Un tipo de revelación', fotografoId: 17,
     bg: 'img/un-tipo-de-revelacion.webp', detalle: 'Estábamos leyendo en silencio\n separados por apenas un metro\n cada uno concentrado en su libro\n con la respiración acompasada\n[...]' },
   { id: 27, title: 'El umbral', fotografoId: 16,
