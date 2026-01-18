@@ -4,7 +4,7 @@
     <div class="libros m-5">
 
       <div class="version">
-        <h3>Versión impresa (PRE-VENTA)</h3>
+        <h3>Versión impresa <br>(PRE-VENTA)</h3>
 
         <div class="foto-libro">
           <img src="/img/portada.webp" alt="libro" />
