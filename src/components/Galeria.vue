@@ -2,7 +2,7 @@
   <!-- Root -->
   <div class="galeria-wrapper" ref="galeriaRoot">
 
-    <p> git commit -m "instalink portada"</p>
+   <!-- git commit -m "pre venta"-->
 
     <!-- GALERÍA -->
     <section class="pantalla section-galeria" id="galeria">
@@ -67,7 +67,6 @@
           <h3>Diseño y edición</h3>
           <ul>
             <li>Paula Kempfert</li>
-            <li>Renata Fain</li>
           </ul>
         </li>
 
@@ -75,6 +74,13 @@
           <h3>Selección de poemas y fotografías</h3>
           <ul>
             <li>Tadeo Orellana</li>
+          </ul>
+        </li>
+
+        <li class="bloque-creditos">
+          <h3>Portada</h3>
+          <ul>
+            <li>Adrián Rolo Cuevas</li>
           </ul>
         </li>
 

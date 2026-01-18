@@ -4,14 +4,14 @@
     <div class="libros m-5">
 
       <div class="version">
-        <h3>Versión impresa</h3>
+        <h3>Versión impresa (PRE-VENTA)</h3>
 
         <div class="foto-libro">
           <img src="/img/portada.webp" alt="libro" />
         </div>
 
         <p>
-          Edición limitada en papel 90g, con sobrecubierta ilustrada.
+          Edición en papel 90g, con cubierta ilustrada.
           Envío gratis dentro de CABA.
         </p>
 
