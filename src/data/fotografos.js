@@ -12,12 +12,6 @@ export const dataFotografos = [
         instaLink: 'https://www.instagram.com/valcaruso_' 
     },
     { 
-        id: 3, 
-        nombre: 'Luana Gandolfo', 
-        instaHandle: '@', 
-        instaLink: ' ' 
-    },
-    { 
         id: 4, 
         nombre: 'Maitén Gonzalez Ataria', 
         instaHandle: '@maitengonzalez', 
@@ -103,9 +97,9 @@ export const dataFotografos = [
     },
      { 
         id: 18, 
-        nombre: 'Taboada', 
-        instaHandle: '@', 
-        instaLink: ''
+        nombre: 'Tobias Taboada', 
+        instaHandle: '@tobytaboada', 
+        instaLink: 'https://www.instagram.com/tobytaboada'
     },
     { 
         id: 19,
