@@ -64,9 +64,16 @@
         </li>
 
         <li class="bloque-creditos">
-          <h3>Diseño y edición</h3>
+          <h3>Diseño editorial</h3>
           <ul>
             <li>Paula Kempfert</li>
+          </ul>
+        </li>
+
+        <li class="bloque-creditos">
+          <h3>Diseño web</h3>
+          <ul>
+            <li>Renata Fain</li>
           </ul>
         </li>
 
