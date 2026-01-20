@@ -36,8 +36,8 @@ export const dataComentarios = [
     },
     {
         id: 8,
-        nombreUsuario: 'Sofía',
-        comentario: 'Leí "Mil canciones y un café" y me hizo sentir esa nostalgia dulce. Muy recomendable para quienes buscan un arte que les hable directamente al corazón.'
+        nombreUsuario: 'Ignacio',
+        comentario: 'Una gran persona, gran poeta, y una sensibilidad plasmada en sus obras. Orgullo total y admiración pura. Atte. El Gordo'
     },
      {
         id: 9,
@@ -58,5 +58,10 @@ export const dataComentarios = [
         id: 12,
         nombreUsuario: 'Martín',
         comentario: 'La forma en que se complementan las letras y las imágenes crea una experiencia inmersiva única. Un must-have.'
+    },
+     {
+        id: 13,
+        nombreUsuario: 'Sofía',
+        comentario: 'Leí "Mil canciones y un café" y me hizo sentir esa nostalgia dulce. Muy recomendable para quienes buscan un arte que les hable directamente al corazón.'
     },
 ];
