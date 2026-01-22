@@ -41,8 +41,8 @@ export const dataComentarios = [
     },
      {
         id: 9,
-        nombreUsuario: 'Cami',
-        comentario: 'Me encantó el detalle de los fotógrafos. Es un proyecto colaborativo muy bien logrado. Espero ver más obras así pronto. Cinco estrellas.'
+        nombreUsuario: 'Micaela',
+        comentario: 'El libro perfecto para desconectar de la vorágine cotidiana en estas vacaciones, de ágil lectura y con versos que se te quedan en la memoria, gracias Agus por compartirnos una parte de vos'
     },
      {
         id: 10,
@@ -63,5 +63,10 @@ export const dataComentarios = [
         id: 13,
         nombreUsuario: 'Sofía',
         comentario: 'Leí "Mil canciones y un café" y me hizo sentir esa nostalgia dulce. Muy recomendable para quienes buscan un arte que les hable directamente al corazón.'
+    },
+     {
+        id: 14,
+        nombreUsuario: 'Cami',
+        comentario: 'Me encantó el detalle de los fotógrafos. Es un proyecto colaborativo muy bien logrado. Espero ver más obras así pronto. Cinco estrellas.'
     },
 ];

@@ -43,15 +43,15 @@ export const dataFotografos = [
     },
     { 
         id: 9, 
-        nombre: 'Colombo', 
+        nombre: 'Micaela Colombo', 
         instaHandle: '@', 
         instaLink: ''
     },
     { 
         id: 10, 
-        nombre: 'Correa', 
-        instaHandle: '@', 
-        instaLink: ''
+        nombre: 'Milagros Correa', 
+        instaHandle: '@milicorreaph', 
+        instaLink: 'https://www.instagram.com/milicorreaph'
     },
     { 
         id: 11, 
