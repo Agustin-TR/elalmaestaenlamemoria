@@ -2,7 +2,7 @@
   <!-- Root -->
   <div class="galeria-wrapper" ref="galeriaRoot">
 
-   <!-- git commit -m "comentarios nuevos"-->
+   <!-- git commit -m "aclaracion tienda"-->
 
     <!-- GALERÍA -->
     <section class="pantalla section-galeria" id="galeria">

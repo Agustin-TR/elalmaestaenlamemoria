@@ -11,6 +11,7 @@
         </div>
 
         <p>
+          Poemario. 40 poemas / 40 fotos. <br>
           Edición en papel 90g, con cubierta ilustrada.
           Envío gratis dentro de CABA.
         </p>
