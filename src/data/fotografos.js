@@ -36,12 +36,6 @@ export const dataFotografos = [
         instaLink: 'https://www.instagram.com/yas_albelo'
     },
     { 
-        id: 8, 
-        nombre: 'Clinaz', 
-        instaHandle: '@', 
-        instaLink: ''
-    },
-    { 
         id: 9, 
         nombre: 'Micaela Colombo', 
         instaHandle: '@', 
@@ -154,6 +148,18 @@ export const dataFotografos = [
         nombre: 'Alejandro Barba', 
         instaHandle: '@alejandrobrb', 
         instaLink: 'https://www.instagram.com/alejandrobrb'
+    },
+    { 
+        id: 28, 
+        nombre: 'Alan Jiang', 
+        instaHandle: '@', 
+        instaLink: ''
+    },
+      { 
+        id: 29  , 
+        nombre: 'Daniele Levis Pelusi', 
+        instaHandle: '@yogidan2012', 
+        instaLink: 'https://www.instagram.com/yogidan2012'
     },
     { 
         id: 50, 

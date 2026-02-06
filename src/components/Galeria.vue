@@ -2,7 +2,7 @@
   <!-- Root -->
   <div class="galeria-wrapper" ref="galeriaRoot">
 
-   <!-- git commit -m "contratapa"-->
+   <!-- git commit -m "chau clinaz"-->
 
     <!-- GALERÍA -->
     <section class="pantalla section-galeria" id="galeria">
