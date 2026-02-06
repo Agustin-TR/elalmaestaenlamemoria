@@ -49,7 +49,7 @@ export default {
     data() {
         return {
             itemsData: dataPoemas,
-            activeItemIndex: null,
+            activeItemIndex: 0,
             detalle: {
                 isVisible: false,
                 text: '',
