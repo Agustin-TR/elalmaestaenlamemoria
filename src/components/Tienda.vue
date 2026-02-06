@@ -24,6 +24,22 @@
     </div>
   </section>
 
+   <section class="pantalla section-contratapa" id="contratapa">
+    <h3 class="info-titulo">Contratapa</h3>
+    <div>
+      <p>
+        <br><strong>— ¿Cuántos sueños caben en 21 gramos? ¿Cuánto dolor, cuánto amor? <br>
+        — Todo el que nos permitamos sentir.</strong><br><br>
+        Hay quienes creen que, en el instante posterior a la muerte, pesamos 21 gramos menos: el peso del alma que abandona nuestro cuerpo. Pero ¿dónde reside esa esencia mientras habitamos el mundo? <br><br>
+        Para este poemario, la respuesta es clara: <strong>El alma está en la memoria.</strong><br><br>
+        Es en la memoria donde se teje nuestra percepción de la realidad. Allí se guardan vivencias, valores y emociones que definen nuestra subjetividad para interpretar el mundo. A medida que lo habitamos, esos tejidos se transforman, haciendo que nosotros nos reinventemos en consecuencia. Nuestra personalidad no es otra cosa que el reflejo que elegimos exteriorizar: <strong>el alma traducida en comportamientos y palabras.</strong> <br><br>
+        El título de esta obra nace de una revelación íntima: al observar cómo el Alzheimer deshilachaba la memoria de mi abuela Haydeé, quien poco a poco, iba dejando de ser quien era, comprendí lo obvio: <strong><i>El alma está en la memoria.</i></strong> Aunque no se pierde el alma junto con los recuerdos; simplemente se olvida el camino para acceder a ella. A través de <strong>40 poemas y 40 fotos</strong>, estas páginas exploran esa geografía interna y esa búsqueda por no perder el camino hacia lo que somos.<br><br>
+        Esta es una invitación a que tu alma se sumerja, momentáneamente, en la subjetividad de otros para descubrir con asombro que, incluso en nuestra individualidad más profunda, existe una experiencia colectiva que nos une: <strong>sentir el arte.</strong>
+
+      </p>
+    </div>
+  </section>
+
   <!-- COMENTARIOS -->
   <section class="pantalla section-comentarios" id="comentarios">
     <h2 class="info-titulo">Lo que dicen los lectores</h2>
@@ -245,8 +261,31 @@ export default {
   background-color: #003f48;
 }
 
+/* CONTRATAPA */
+.section-contratapa {
+  background-color: #f8f8f8;
+  padding: 0px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.section-contratapa div {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto !important;
+}
+
+.section-contratapa p {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #333;
+  text-align: justify;
+  font-family: 'Georgia', serif;
+}
+
 /* ======================================= */
-/* ESTILOS DE COMENTARIOS Y FORMULARIO */
+/* COMENTARIOS Y FORMULARIO */
 /* ======================================= */
 .section-comentarios {
   background-color: #f8f8f8;

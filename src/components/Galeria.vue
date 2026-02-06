@@ -2,7 +2,7 @@
   <!-- Root -->
   <div class="galeria-wrapper" ref="galeriaRoot">
 
-   <!-- git commit -m "aclaracion tienda"-->
+   <!-- git commit -m "contratapa"-->
 
     <!-- GALERÍA -->
     <section class="pantalla section-galeria" id="galeria">
