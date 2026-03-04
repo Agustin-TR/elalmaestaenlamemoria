@@ -155,11 +155,17 @@ export const dataFotografos = [
         instaHandle: '@', 
         instaLink: ''
     },
-      { 
+    { 
         id: 29  , 
         nombre: 'Daniele Levis Pelusi', 
         instaHandle: '@yogidan2012', 
         instaLink: 'https://www.instagram.com/yogidan2012'
+    },
+    { 
+        id: 30  , 
+        nombre: 'Kagarliksky', 
+        instaHandle: '@kagarliksky_photography', 
+        instaLink: 'https://www.instagram.com/kagarliksky_photography'
     },
     { 
         id: 50, 

@@ -33,7 +33,7 @@ export const dataPoemas = [
     bg: 'img/un-poco-en-chiste.webp', detalle: 'salir del agua es huir de la muerte [...]' },
   { id: 17, title: '¿Me creíste?', fotografoId: 1,
     bg: 'img/Me-creiste.webp', detalle: 'Sé que dije que siempre te esperaría [...]' },
-  { id: 18, title: 'Ojos intensos', fotografoId: 5,
+  { id: 18, title: 'Ojos intensos', fotografoId: 30,
     bg: 'img/ojos-intensos.webp', detalle: 'La vida es un enigma que se revela cuando...' },
   { id: 19, title: 'Palabras prohibidas', fotografoId: 28,
     bg: 'img/palabras-prohibidas.webp', detalle: 'No sé si te sueño o te imagino [...]' },
