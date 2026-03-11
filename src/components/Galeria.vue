@@ -10,7 +10,7 @@
        <!-- FOTO PORTADA -->
         <div class="foto foto-portada">
           <div class="foto-imagen">
-            <img :src="getImagePath('img/portada.webp')" alt="Imagen principal" loading="eager" />
+            <img :src="getImagePath('img/portada-obra.webp')" alt="Imagen principal" loading="eager" />
             <a href="https://www.instagram.com/adrianhmuxk" target="_blank" rel="noopener" class="overlay-link">
               <span>@adrianhmuxk</span>
             </a>
