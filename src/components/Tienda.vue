@@ -208,8 +208,8 @@ export default {
 }
 
 .foto-libro {
-  width: 280px;
-  height: 300px;
+  width: 290px;
+  height: 385px;
   margin: 1rem auto;
   overflow: hidden;
   border-radius: 4px;

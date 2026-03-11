@@ -163,9 +163,9 @@ export const dataFotografos = [
     },
     { 
         id: 30  , 
-        nombre: 'Kagarliksky', 
-        instaHandle: '@kagarliksky_photography', 
-        instaLink: 'https://www.instagram.com/kagarliksky_photography'
+        nombre: 'Valentina Apella', 
+        instaHandle: '@valentina.apella', 
+        instaLink: 'https://www.instagram.com/valentina.apella'
     },
     { 
         id: 50, 
