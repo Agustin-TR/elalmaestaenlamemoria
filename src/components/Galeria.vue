@@ -2,7 +2,7 @@
   <!-- Root -->
   <div class="galeria-wrapper" ref="galeriaRoot">
 
-   <!-- git commit -m "nueva portada"-->
+   <!-- git commit -m "nueva contratapa"-->
 
     <!-- GALERÍA -->
     <section class="pantalla section-galeria" id="galeria">
