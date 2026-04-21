@@ -6,8 +6,22 @@
       <div class="version">
         <h3>Versión impresa <br>(PRE-VENTA)</h3>
 
+        <!-- Foto con botón 3D superpuesto -->
         <div class="foto-libro">
           <img src="/img/portada.webp" alt="libro" />
+
+          <!-- Botón overlay -->
+          <button class="btn-3d" @click="open3D" title="Ver modelo 3D">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8
+                a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+              <line x1="12" y1="22.08" x2="12" y2="12"/>
+            </svg>
+            Ver en 3D
+          </button>
         </div>
 
         <p>
@@ -24,7 +38,37 @@
     </div>
   </section>
 
-   <section class="pantalla section-contratapa" id="contratapa">
+  <!-- ── MODAL 3D ─────────────────────────────────────── -->
+  <Teleport to="body">
+    <Transition name="modal">
+      <div v-if="show3D" class="modal-overlay" @click.self="close3D">
+        <div class="modal-3d">
+
+          <!-- Header -->
+          <div class="modal-header">
+            <span class="modal-title">El alma está en la memoria — Modelo 3D</span>
+            <button class="modal-close" @click="close3D" aria-label="Cerrar">✕</button>
+          </div>
+
+          <!-- Hint -->
+          <p class="modal-hint">Arrastrá para rotar · Scroll para zoom · Click derecho para desplazar</p>
+
+          <!-- Viewer -->
+          <div class="modal-canvas-wrap">
+            <BookViewer
+              v-if="show3D"
+              model-path="/elalmaestaenlamemoria/assets/libro3d.glb"
+              :auto-rotate="false"
+            />
+          </div>
+
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
+
+  <!-- CONTRATAPA -->
+  <section class="pantalla section-contratapa" id="contratapa">
     <h3 class="info-titulo">Contratapa</h3>
     <div>
       <p>
@@ -43,14 +87,12 @@
   <section class="pantalla section-comentarios" id="comentarios">
     <h2 class="info-titulo">Lo que dicen los lectores</h2>
 
-    <!-- Botón comentar -->
     <div class="center-button-container m-5">
       <button class="btn-compra btn-comentar" @click="toggleForm">
         {{ showForm ? 'Ocultar Formulario' : 'Dejá tu comentario' }}
       </button>
     </div>
 
-    <!-- FORMULARIO -->
     <div v-if="showForm" class="contact-form-container mb-5">
       <form class="contact-form" @submit.prevent="submitForm">
         <h4 class="form-title">Sé parte del poemario</h4>
@@ -62,9 +104,7 @@
         </div>
 
         <div class="form-group">
-          <label for="email">
-            Email (Opcional, para respuesta)
-          </label>
+          <label for="email">Email (Opcional, para respuesta)</label>
           <input id="email" type="email" v-model="formEmail" placeholder="ejemplo@correo.com" />
         </div>
 
@@ -73,9 +113,7 @@
           <textarea id="comment" rows="5" v-model="formComment" required />
         </div>
 
-        <button type="submit" class="btn-submit">
-          Enviar Mensaje
-        </button>
+        <button type="submit" class="btn-submit">Enviar Mensaje</button>
 
         <p v-if="submissionMessage" class="submission-message">
           {{ submissionMessage }}
@@ -83,7 +121,6 @@
       </form>
     </div>
 
-    <!-- GRID COMENTARIOS -->
     <div class="comentarios-grid mb-10">
       <div v-for="comentario in comentarios" :key="comentario.id" class="comentario-card">
         <div class="comentario-header">
@@ -98,45 +135,52 @@
               96.2-97.5 52.9-.1 95.8 43.6
               95.9 97.4z" />
           </svg>
-
-          <p class="nombre-usuario">
-            — {{ comentario.nombreUsuario }}
-          </p>
+          <p class="nombre-usuario">— {{ comentario.nombreUsuario }}</p>
         </div>
-
-        <p class="comentario-texto">
-          {{ comentario.comentario }}
-        </p>
+        <p class="comentario-texto">{{ comentario.comentario }}</p>
       </div>
     </div>
 
     <button class="btn-compra mt-4 mb-5" @click="comprar">
       Quiero el mío
     </button>
-
   </section>
 </template>
 
 <script>
 import { dataComentarios } from '@/data/comentarios.js'
+import BookViewer from '@/components/BookViewer.vue'
 
 export default {
   name: 'Tienda',
   inject: ['openPaymentModal'],
+  components: { BookViewer },
 
   data() {
     return {
       comentarios: dataComentarios,
+      show3D: false,
 
       showForm: false,
       formName: '',
       formEmail: '',
       formComment: '',
-      submissionMessage: null
+      submissionMessage: null,
     }
   },
 
   methods: {
+    open3D() {
+      this.show3D = true
+      // Bloquear scroll del body mientras el modal está abierto
+      document.body.style.overflow = 'hidden'
+    },
+
+    close3D() {
+      this.show3D = false
+      document.body.style.overflow = ''
+    },
+
     toggleForm() {
       this.showForm = !this.showForm
     },
@@ -152,22 +196,14 @@ export default {
       formData.append('message', this.formComment)
 
       try {
-        const res = await fetch(
-          'https://formspree.io/f/xgvrvrrr',
-          {
-            method: 'POST',
-            headers: { Accept: 'application/json' },
-            body: formData
-          }
-        )
+        const res = await fetch('https://formspree.io/f/xgvrvrrr', {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: formData,
+        })
+        if (!res.ok) throw new Error('Error de envío')
 
-        if (!res.ok) {
-          throw new Error('Error de envío')
-        }
-
-        this.submissionMessage =
-          '¡Gracias por tu mensaje! Hemos recibido tu información.'
-
+        this.submissionMessage = '¡Gracias por tu mensaje! Hemos recibido tu información.'
         this.formName = ''
         this.formEmail = ''
         this.formComment = ''
@@ -176,13 +212,11 @@ export default {
           this.submissionMessage = null
           this.showForm = false
         }, 4000)
-
-      } catch (e) {
-        this.submissionMessage =
-          'Hubo un error al enviar el formulario. Intentá nuevamente.'
+      } catch {
+        this.submissionMessage = 'Hubo un error al enviar el formulario. Intentá nuevamente.'
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -203,10 +237,11 @@ export default {
   row-gap: 1rem;
   column-gap: 4rem;
   justify-content: center;
-  padding: 0rem;
 }
 
+/* ── Foto + overlay 3D ── */
 .foto-libro {
+  position: relative;        /* necesario para el botón absoluto */
   width: 290px;
   height: 385px;
   margin: 1rem auto;
@@ -221,8 +256,41 @@ export default {
   object-fit: cover;
   object-position: center;
   display: block;
+  transition: filter 0.3s ease;
 }
 
+/* Oscurecer levemente la foto cuando hover sobre el botón */
+.foto-libro:has(.btn-3d:hover) img {
+  filter: brightness(0.85);
+}
+
+.btn-3d {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  padding: 5px 11px;
+  font-size: 0.75rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+  letter-spacing: 0.3px;
+}
+
+.btn-3d:hover {
+  background: rgba(0, 95, 106, 0.85);
+  transform: scale(1.05);
+}
+
+/* ── Resto de .version ── */
 .version {
   background-color: rgba(0, 0, 0, 0.4);
   padding: 2rem;
@@ -233,16 +301,8 @@ export default {
   margin-top: 7vh;
 }
 
-.version h3 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.version p {
-  font-size: 1rem;
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
-}
+.version h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+.version p  { font-size: 1rem; line-height: 1.6; margin-bottom: 1.5rem; }
 
 .btn-compra {
   background-color: #005f6a;
@@ -254,27 +314,119 @@ export default {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
 .btn-compra:hover {
   transform: scale(1.1);
   background-color: #003f48;
 }
 
-/* CONTRATAPA */
+/* ═══════════════════════════════════
+   MODAL 3D
+═══════════════════════════════════ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-3d {
+  background: #0e1215;
+  border-radius: 12px;
+  width: min(860px, 92vw);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.modal-title {
+  color: #c8c0b0;
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 1.1rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s;
+}
+.modal-close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.modal-hint {
+  text-align: center;
+  color: #555;
+  font-size: 0.72rem;
+  letter-spacing: 0.3px;
+  padding: 0.4rem 0 0;
+  margin: 0;
+}
+
+.modal-canvas-wrap {
+  flex: 1;
+  min-height: 420px;
+  height: 65vh;
+}
+
+/* ── Transición del modal ── */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.25s ease;
+}
+.modal-enter-active .modal-3d,
+.modal-leave-active .modal-3d {
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+.modal-enter-from .modal-3d,
+.modal-leave-to .modal-3d {
+  transform: scale(0.96);
+  opacity: 0;
+}
+
+/* ═══════════════════════════════════
+   CONTRATAPA
+═══════════════════════════════════ */
 .section-contratapa {
   background-color: #f8f8f8;
-  padding: 0px 20px;
+  padding: 0 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-
 .section-contratapa div {
   width: 100%;
   max-width: 800px;
   margin: 0 auto !important;
 }
-
 .section-contratapa p {
   font-size: 1rem;
   line-height: 1.8;
@@ -283,9 +435,9 @@ export default {
   font-family: 'Georgia', serif;
 }
 
-/* ======================================= */
-/* COMENTARIOS Y FORMULARIO */
-/* ======================================= */
+/* ═══════════════════════════════════
+   COMENTARIOS Y FORMULARIO
+═══════════════════════════════════ */
 .section-comentarios {
   background-color: #f8f8f8;
   min-height: 80vh;
@@ -295,7 +447,6 @@ export default {
   align-items: center;
 }
 
-/* Centrado del botón de comentario */
 .center-button-container {
   width: 100%;
   text-align: center;
@@ -310,12 +461,8 @@ export default {
   background-color: #005f6a;
   box-shadow: 0 4px 10px rgba(0, 95, 106, 0.4);
 }
+.btn-comentar:hover { background-color: #003f48; }
 
-.btn-comentar:hover {
-  background-color: #003f48;
-}
-
-/* FORMULARIO DE CONTACTO */
 .contact-form-container {
   width: 100%;
   max-width: 600px;
@@ -325,37 +472,17 @@ export default {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   border: 1px solid #005f6a;
 }
+.contact-form { display: flex; flex-direction: column; gap: 1rem; }
+.form-title  { font-size: 1.8rem; color: #005f6a; text-align: center; }
+.form-title2 { font-size: 1.5rem; color: #005f6a; text-align: center; }
 
-.contact-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.form-title {
-  font-size: 1.8rem;
-  color: #005f6a;
-  text-align: center;
-}
-
-.form-title2 {
-  font-size: 1.5rem;
-  color: #005f6a;
-  text-align: center;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
+.form-group { display: flex; flex-direction: column; }
 .form-group label {
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: #333;
   font-size: 0.95rem;
 }
-
 .form-group input,
 .form-group textarea {
   padding: 0.8rem 1rem;
@@ -364,17 +491,13 @@ export default {
   font-size: 1rem;
   transition: border-color 0.3s, box-shadow 0.3s;
 }
-
 .form-group input:focus,
 .form-group textarea:focus {
   border-color: #005f6a;
   box-shadow: 0 0 0 3px rgba(0, 95, 106, 0.2);
   outline: none;
 }
-
-.form-group textarea {
-  resize: vertical;
-}
+.form-group textarea { resize: vertical; }
 
 .btn-submit {
   background-color: #005f6a;
@@ -398,7 +521,6 @@ export default {
   border: 1px solid #005f6a;
 }
 
-/* Estilos de la cuadrícula de comentarios */
 .comentarios-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -408,8 +530,6 @@ export default {
   padding: 1rem;
   width: 100%;
 }
-
-/* forzar 4 columnas en escritorio */
 @media (min-width: 1200px) {
   .comentarios-grid {
     grid-template-columns: repeat(4, 1fr);
@@ -427,7 +547,6 @@ export default {
   display: flex;
   flex-direction: column;
 }
-
 .comentario-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
@@ -438,27 +557,7 @@ export default {
   align-items: center;
   margin-bottom: 1rem;
 }
-
-.quote-icon {
-  width: 20px;
-  height: 20px;
-  fill: #005f6a;
-  margin-right: 10px;
-}
-
-.nombre-usuario {
-  font-size: 1rem;
-  font-weight: bold;
-  color: #005f6a;
-  margin: 0;
-  letter-spacing: 0.5px;
-}
-
-.comentario-texto {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  color: #555;
-  font-style: italic;
-  margin-top: 0;
-}
+.quote-icon { width: 20px; height: 20px; fill: #005f6a; margin-right: 10px; }
+.nombre-usuario { font-size: 1rem; font-weight: bold; color: #005f6a; margin: 0; letter-spacing: 0.5px; }
+.comentario-texto { font-size: 1.1rem; line-height: 1.6; color: #555; font-style: italic; margin-top: 0; }
 </style>
